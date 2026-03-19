@@ -207,6 +207,28 @@ body::after {
   .ch-nav { display: none; }
   .top-nav { top: 24px; font-size: 0.62rem; gap: 0.8rem; }
 }
+
+.row-detail {
+  display: none;
+}
+.row-detail.open {
+  display: table-row;
+}
+.row-detail td {
+  padding: 0.7rem 0.8rem;
+  font-style: italic;
+  font-size: 0.82rem;
+  color: #a89775;
+  background: rgba(201, 148, 42, 0.05);
+  border-bottom: 1px solid rgba(196, 185, 154, 0.08);
+  line-height: 1.6;
+}
+.data-table tr[data-detail]:hover td {
+  background: var(--amber-glow);
+}
+.data-table tr[data-detail] {
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -416,8 +438,9 @@ body::after {
   <div class="panel-inner narrative">
     <p>İçeride üç sayfa vardı. Birincisi bir tablo: sütunlar ve satırlar, elle yazılmış, mürekkebi koyu mavi. Her satır bir müşterinin kaydıydı; her sütun başlığında kısa, özlü bir etiket.</p>
 
-    <div class="data-table-wrapper">
-      <table class="data-table">
+    <p style="text-indent:0; font-size:0.82rem; color:var(--amber-dim); text-align:center; margin-bottom:0.5rem; letter-spacing:0.05em;">↓ Satırlara tıklayarak detayları inceleyin ↓</p>
+<div class="data-table-wrapper">
+      <table class="data-table interactive-table">
         <thead>
           <tr>
             <th>№</th>
@@ -429,12 +452,12 @@ body::after {
           </tr>
         </thead>
         <tbody>
-          <tr><td>1</td><td>J. Barrow</td><td>44</td><td>800</td><td>Mart 1900</td><td>1918</td></tr>
-          <tr><td>2</td><td>T. Marsh</td><td>51</td><td>1.100</td><td>Ocak 1901</td><td>1920</td></tr>
-          <tr><td>3</td><td>R. Hale</td><td>47</td><td>950</td><td>Haziran 1899</td><td>1921</td></tr>
-          <tr><td colspan="6" style="text-align:center; color:var(--ink-muted); font-style:italic; padding:0.5rem;">· · ·  (22 satır)  · · ·</td></tr>
-          <tr class="highlight"><td class="red-mark">21</td><td class="red-mark">G. Alderton ✕</td><td>72</td><td>2.400</td><td>Haz. 1903</td><td class="red-mark">1912 → Ekim 1903</td></tr>
-          <tr class="highlight"><td class="red-mark">22</td><td class="red-mark">W. Crane ✕</td><td>78</td><td>2.800</td><td>May. 1903</td><td class="red-mark">1910 → Ekim 1903</td></tr>
+          <tr data-detail="Standart risk profili. Poliçe primi normal aralıkta. Fenwick'in düzenli müşterisi."><td>1</td><td>J. Barrow</td><td>44</td><td>800</td><td>Mart 1900</td><td>1918</td></tr>
+          <tr data-detail="Orta risk. Poliçe tutarı ortalamanın biraz üstünde. Anomali yok."><td>2</td><td>T. Marsh</td><td>51</td><td>1.100</td><td>Ocak 1901</td><td>1920</td></tr>
+          <tr data-detail="Düşük risk. Genç müşteri, uzun vadeli poliçe. Her şey normal."><td>3</td><td>R. Hale</td><td>47</td><td>950</td><td>Haz. 1899</td><td>1921</td></tr>
+          <tr data-detail="· · · 18 satır daha — hepsi standart aralıkta · · ·"><td colspan="6" style="text-align:center; color:var(--ink-muted); font-style:italic; padding:0.5rem;">· · ·  (22 satır)  · · ·</td></tr>
+          <tr class="highlight" data-detail="⚠ ANOMALİ — Poliçe tutarı piyasa ortalamasının 2 katı. Poliçeden sadece 4 ay sonra ölüm. Tahmini ölüm tarihinden 9 yıl erken. Fenwick kırmızı çarpıyla işaretlemiş."><td class="red-mark">21</td><td class="red-mark">G. Alderton ✕</td><td>72</td><td>2.400</td><td>Haz. 1903</td><td class="red-mark">1912 → Ekim 1903</td></tr>
+          <tr class="highlight" data-detail="⚠ ANOMALİ — En yüksek poliçe tutarı. Poliçeden 5 ay sonra ölüm. Tahmini ölüm tarihinden 7 yıl erken. Alderton ile aynı ay ölmüş. Kırmızı çarpı."><td class="red-mark">22</td><td class="red-mark">W. Crane ✕</td><td>78</td><td>2.800</td><td>May. 1903</td><td class="red-mark">1910 → Ekim 1903</td></tr>
         </tbody>
       </table>
     </div>
@@ -2235,7 +2258,8 @@ body::after {
   <div class="panel-inner narrative">
     <p>Koipak, Calloway'in son beş yıldaki soruşturmalarını listeledi — bunları Scotland Yard'ın açık kayıtlarından biliyordu. Sonra her soruşturmanın yanına Thames Life ile bağlantısı olup olmadığını yazdı.</p>
 
-    <div class="data-table-wrapper">
+    <p style="text-indent:0; font-size:0.82rem; color:var(--amber-dim); text-align:center; margin-bottom:0.5rem; letter-spacing:0.05em;">↓ Satırlara tıklayarak detayları inceleyin ↓</p>
+<div class="data-table-wrapper">
       <table class="data-table">
         <thead>
           <tr>
@@ -2247,11 +2271,11 @@ body::after {
           </tr>
         </thead>
         <tbody>
-          <tr><td>1899</td><td>Barlow poliçe sahteciliği</td><td>Evet</td><td>Günah keçisi bulundu</td><td>3</td></tr>
-          <tr><td>1900</td><td>Whitby sigorta dolandırıcılığı</td><td>Hayır</td><td>Dava düşürüldü</td><td>14</td></tr>
-          <tr><td>1901</td><td>Thames kayıt uyuşmazlığı</td><td>Evet</td><td>Dosya kapatıldı</td><td>2</td></tr>
-          <tr><td>1902</td><td>Pembroke tazminat davası</td><td>Hayır</td><td>Mahkûmiyet</td><td>11</td></tr>
-          <tr class="highlight"><td>1903</td><td>Fenwick / Alderton / Crane</td><td>Evet</td><td>Pemberton gözaltında</td><td>1.5</td></tr>
+          <tr data-detail="Thames Life bağlantılı. 3 haftada kapatıldı — bir alt düzey çalışan suçlandı. Gerçek organizatör araştırılmadı."><td>1899</td><td>Barlow poliçe sahteciliği</td><td>Evet</td><td>Günah keçisi bulundu</td><td>3</td></tr>
+          <tr data-detail="Thames Life bağlantısız. Normal soruşturma süreci — 14 hafta. Yeterli kanıt bulunamadı."><td>1900</td><td>Whitby sigorta dolandırıcılığı</td><td>Hayır</td><td>Dava düşürüldü</td><td>14</td></tr>
+          <tr data-detail="Thames Life bağlantılı. Sadece 2 haftada kapatıldı — Whitfield'ın raporu bu döneme ait. Rapor kayboldu."><td>1901</td><td>Thames kayıt uyuşmazlığı</td><td>Evet</td><td>Dosya kapatıldı</td><td>2</td></tr>
+          <tr data-detail="Thames Life bağlantısız. Normal süreç — 11 hafta. Mahkûmiyet sağlandı."><td>1902</td><td>Pembroke tazminat davası</td><td>Hayır</td><td>Mahkûmiyet</td><td>11</td></tr>
+          <tr class="highlight" data-detail="⚠ Thames Life bağlantılı. Sadece 1.5 hafta! Pemberton günah keçisi olarak hızla yakalandı. Calloway soruşturmayı yönlendirdi."><td>1903</td><td>Fenwick / Alderton / Crane</td><td>Evet</td><td>Pemberton gözaltında</td><td>1.5</td></tr>
         </tbody>
       </table>
     </div>
@@ -2957,6 +2981,55 @@ body::after {
     topNav.classList.toggle('visible', window.scrollY > window.innerHeight * 0.5);
   });
   
+
+  // === INTERACTIVE TABLES ===
+  document.querySelectorAll('.data-table tbody tr[data-detail]').forEach(function(row) {
+    row.style.cursor = 'pointer';
+    row.addEventListener('click', function() {
+      var detail = this.getAttribute('data-detail');
+      if (!detail) return;
+      var next = this.nextElementSibling;
+      if (next && next.classList.contains('row-detail')) {
+        next.classList.toggle('open');
+      } else {
+        var detailRow = document.createElement('tr');
+        detailRow.className = 'row-detail open';
+        var td = document.createElement('td');
+        td.setAttribute('colspan', this.children.length || '6');
+        td.textContent = detail;
+        detailRow.appendChild(td);
+        this.after(detailRow);
+      }
+    });
+  });
+
+  // === HOVER GLOW on document blocks ===
+  document.querySelectorAll('.document-block').forEach(function(block) {
+    block.style.transition = 'border-left-color 0.3s, box-shadow 0.3s';
+    block.addEventListener('mouseenter', function() {
+      this.style.borderLeftColor = '#c9942a';
+      this.style.boxShadow = '0 4px 25px rgba(201,148,42,0.15)';
+    });
+    block.addEventListener('mouseleave', function() {
+      this.style.borderLeftColor = '';
+      this.style.boxShadow = '';
+    });
+  });
+
+  // === FORMULA HIGHLIGHT on hover ===
+  document.querySelectorAll('[style*="border-top:1px solid"]').forEach(function(formula) {
+    if (formula.textContent.includes('=') || formula.textContent.includes('×')) {
+      formula.style.cursor = 'default';
+      formula.style.transition = 'background 0.3s';
+      formula.addEventListener('mouseenter', function() {
+        this.style.background = 'rgba(201,148,42,0.08)';
+      });
+      formula.addEventListener('mouseleave', function() {
+        this.style.background = '';
+      });
+    }
+  });
+
   // Safety
   setTimeout(function() {
     panels.forEach(function(p) { p.classList.add('visible'); });
