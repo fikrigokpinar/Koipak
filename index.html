@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grifin R. Koipak ve Belirsizliğin Bilimi</title>
+<meta name="description" content="Grifin R. Koipak ve Belirsizliğin Bilimi — Fikri Gökpınar'ın istatistik dedektif romanı serisi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --ink-light: #3d3529;
+    --ink-muted: #6b5e4f;
+    --parchment: #f5f0e8;
+    --parchment-dark: #e8e0d2;
+    --parchment-deep: #d4c9b5;
+    --accent: #8b2500;
+    --gold: #b8860b;
+    --gold-light: #d4a843;
+    --noir-bg: #12100d;
+    --noir-text: #c4b99a;
+    --amber: #c9942a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'EB Garamond', Georgia, serif;
+    background: var(--parchment);
+    color: var(--ink);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* GRAIN */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ==========================================
+     HERO
+     ========================================== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(184, 134, 11, 0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 80%, rgba(139, 37, 0, 0.04) 0%, transparent 60%),
+      linear-gradient(to bottom, #ede7db, var(--parchment));
+  }
+
+  .hero-ornament {
+    font-size: 1.2rem;
+    color: var(--gold);
+    letter-spacing: 0.6em;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.2s forwards;
+  }
+
+  .hero-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 1.2rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.4s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 5.5vw, 4rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.6s forwards;
+  }
+
+  .hero-author {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    color: var(--ink-muted);
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.8s forwards;
+  }
+
+  .hero-desc {
+    max-width: 520px;
+    font-size: 0.95rem;
+    color: var(--ink-muted);
+    font-style: italic;
+    margin: 2rem auto 0;
+    opacity: 0;
+    animation: fadeUp 1s ease 1s forwards;
+    line-height: 1.8;
+  }
+
+  .hero-line {
+    width: 50px;
+    height: 1px;
+    background: var(--gold);
+    margin: 2.5rem auto;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ==========================================
+     BOOKS SECTION
+     ========================================== */
+  .books-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 2rem 5rem;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  /* BOOK CARD */
+  .book-card {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 2.5rem;
+    margin-bottom: 4rem;
+    padding-bottom: 4rem;
+    border-bottom: 1px solid var(--parchment-deep);
+    opacity: 0;
+    transform: translateY(25px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .book-card.visible { opacity: 1; transform: translateY(0); }
+  .book-card:last-child { border-bottom: none; }
+
+  .book-cover {
+    width: 220px;
+    aspect-ratio: 2/3;
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 4px 6px 20px rgba(26,20,16,0.25), 0 1px 4px rgba(26,20,16,0.15);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .book-cover-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--parchment-dark) 0%, var(--parchment-deep) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .book-cover-placeholder .placeholder-icon {
+    font-size: 2rem;
+    color: var(--gold);
+    opacity: 0.4;
+    margin-bottom: 0.5rem;
+  }
+  .book-cover-placeholder .placeholder-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--parchment-deep);
+  }
+
+  .book-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .book-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .book-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+    line-height: 1.25;
+  }
+
+  .book-subtitle {
+    font-size: 0.88rem;
+    font-style: italic;
+    color: var(--ink-muted);
+    margin-bottom: 1.2rem;
+  }
+
+  .book-desc {
+    font-size: 0.9rem;
+    color: var(--ink-light);
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+  }
+
+  .book-concepts {
+    font-size: 0.78rem;
+    color: var(--ink-muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+  }
+  .book-concepts strong {
+    color: var(--ink-light);
+    font-weight: 600;
+  }
+
+  /* READ BUTTONS */
+  .book-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--parchment);
+    border: 1px solid var(--ink);
+  }
+  .btn-primary:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink-light);
+    border: 1px solid var(--parchment-deep);
+  }
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .btn-disabled {
+    background: transparent;
+    color: var(--parchment-deep);
+    border: 1px solid rgba(212,201,181,0.4);
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .btn-icon {
+    font-size: 0.75rem;
+  }
+
+  /* STATUS BADGE */
+  .status {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+  }
+  .status-complete {
+    background: rgba(184,134,11,0.1);
+    color: var(--gold);
+    border: 1px solid rgba(184,134,11,0.2);
+  }
+  .status-upcoming {
+    background: rgba(212,201,181,0.15);
+    color: var(--parchment-deep);
+    border: 1px solid rgba(212,201,181,0.2);
+  }
+
+  /* ==========================================
+     ABOUT SECTION
+     ========================================== */
+  .about-section {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 3rem 2rem 4rem;
+    text-align: center;
+  }
+
+  .about-section p {
+    font-size: 0.9rem;
+    color: var(--ink-muted);
+    line-height: 1.9;
+    margin-bottom: 1rem;
+  }
+
+  /* ==========================================
+     FOOTER
+     ========================================== */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--parchment-deep);
+    font-size: 0.78rem;
+    font-style: italic;
+    border-top: 1px solid var(--parchment-deep);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ==========================================
+     RESPONSIVE
+     ========================================== */
+  @media (max-width: 700px) {
+    .book-card {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    .book-cover {
+      width: 160px;
+      margin: 0 auto;
+    }
+    .book-info { text-align: center; }
+    .book-actions { justify-content: center; }
+    .hero { padding: 3rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==========================================
+     HERO
+     ========================================== -->
+<header class="hero">
+  <div class="hero-ornament">❧</div>
+  <p class="hero-label">Bir İstatistik Dedektif Serisi</p>
+  <h1 class="hero-title">Grifin R. Koipak ve<br>Belirsizliğin Bilimi</h1>
+  <p class="hero-author">Yazan: Fikri GÖKPINAR</p>
+  <p class="hero-desc">1903 Londra'sı. Sis, gaz lambaları ve rakamlar. Galler'den gelme adli istatistikçi Grifin R. Koipak, sayıların gölgesinde gizlenen gerçekleri arıyor.</p>
+  <div class="hero-line"></div>
+</header>
+
+<!-- ==========================================
+     BOOKS
+     ========================================== -->
+<section class="books-section">
+  <p class="section-title">Maceralar</p>
+
+  <!-- KITAP 1 -->
+  <div class="book-card" id="book1">
+    <div class="book-cover">
+      <img src="sayilarin-golgesinde/interaktif/img/cover.png" alt="Sayıların Gölgesinde kapak">
+    </div>
+    <div class="book-info">
+      <span class="book-number">Birinci Macera</span>
+      <span class="status status-complete">✓ Tamamlandı</span>
+      <h2 class="book-title">Sayıların Gölgesinde</h2>
+      <p class="book-subtitle">Sigorta acentesi Harold Fenwick ölü bulunur. Masasındaki rakamlar bir düzene işaret eder…</p>
+      <p class="book-desc">Fenwick'in portföyündeki iki müşteri beklenenden çok erken ölmüştür. Koipak, varyans hesaplarından Bayes teoremine uzanan bir yolda, güvendiği insanın arkasındaki karanlık gerçeği keşfeder.</p>
+      <p class="book-concepts"><strong>Kavramlar:</strong> Veri &amp; gözlem, olasılık, ortalama/ortanca/mod, aykırı değer, varyans, standart sapma, hipotez testi, p-değeri, Tip I/II hata, korelasyon, regresyon, Bayes teoremi</p>
+      <div class="book-actions">
+        <a href="sayilarin-golgesinde/index.html" class="btn btn-primary"><span class="btn-icon">📖</span> Oku</a>
+        <a href="sayilarin-golgesinde/interaktif/index.html" class="btn btn-secondary"><span class="btn-icon">✦</span> İnteraktif Keşfet</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- KITAP 2 -->
+  <div class="book-card" id="book2">
+    <div class="book-cover">
+      <div class="book-cover-placeholder">
+        <div class="placeholder-icon">✦</div>
+        <div class="placeholder-text">Yakında</div>
+      </div>
+    </div>
+    <div class="book-info">
+      <span class="book-number">İkinci Macera</span>
+      <span class="status status-upcoming">Yakında</span>
+      <h2 class="book-title">Olasılığın Dili</h2>
+      <p class="book-subtitle">Londra'da bir "seri zehirleyici" şüphesi. Birden fazla mahallede benzer ölümler…</p>
+      <p class="book-desc">Koipak, ölümlerin rastlantısal bir kümelenme mi yoksa sistematik bir cinayet mi olduğunu Poisson dağılımı ve koşullu olasılık ile araştırır. Ama bu sefer düşman, rakamları Koipak kadar iyi biliyor.</p>
+      <p class="book-concepts"><strong>Kavramlar:</strong> Binom dağılımı, Poisson dağılımı, rastgele değişken, büyük sayılar yasası, merkezi limit teoremi, bağımsızlık, yanlış pozitif</p>
+      <div class="book-actions">
+        <a class="btn btn-disabled">Yakında</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- KITAP 3 -->
+  <div class="book-card" id="book3">
+    <div class="book-cover">
+      <div class="book-cover-placeholder">
+        <div class="placeholder-icon">✦</div>
+        <div class="placeholder-text">Yakında</div>
+      </div>
+    </div>
+    <div class="book-info">
+      <span class="book-number">Üçüncü Macera</span>
+      <span class="status status-upcoming">Yakında</span>
+      <h2 class="book-title">Örneklemin Sınırları</h2>
+      <p class="book-subtitle">Bir fabrikadaki işçi ölümleri. Ama resmi kayıtlar sadece hayatta kalanları gösteriyor…</p>
+      <p class="book-desc">Koipak, "görünmeyen veriyi" aramak zorunda kalır. Hayatta kalma yanlılığı, seçim yanlılığı ve örnekleme hataları, bu sefer hem davayı hem Koipak'ın kendi geçmişini aydınlatır.</p>
+      <p class="book-concepts"><strong>Kavramlar:</strong> Örnekleme yöntemleri, örnekleme hatası, yanlılık (bias), güven aralığı, örneklem büyüklüğü, hayatta kalma yanlılığı</p>
+      <div class="book-actions">
+        <a class="btn btn-disabled">Yakında</a>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================
+     ABOUT
+     ========================================== -->
+<section class="about-section">
+  <p class="section-title">Seri Hakkında</p>
+  <p>"Grifin R. Koipak ve Belirsizliğin Bilimi," istatistik kavramlarını bir dedektif romanının içine doğal olarak işleyen bir eğitim serisidir. Her kitap bağımsız bir vaka etrafında şekillenir; ama Koipak'ın kişisel hikâyesi kitaplar boyunca derinleşir.</p>
+  <p>Seri, Viktoryen Londra'nın sisli sokaklarında, bir Galli istatistikçinin gözünden, belirsizliğin bilimini anlatır.</p>
+</section>
+
+<!-- ==========================================
+     FOOTER
+     ========================================== -->
+<footer>
+  <p>Grifin R. Koipak ve Belirsizliğin Bilimi — Fikri Gökpınar</p>
+</footer>
+
+<script>
+(function() {
+  var cards = document.querySelectorAll('.book-card');
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    cards.forEach(function(c) { obs.observe(c); });
+    setTimeout(function() {
+      cards.forEach(function(c) { c.classList.add('visible'); });
+    }, 3000);
+  } else {
+    cards.forEach(function(c) { c.classList.add('visible'); });
+  }
+})();
+</script>
+</body>
+</html>
