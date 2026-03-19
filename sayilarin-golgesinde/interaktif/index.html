@@ -229,6 +229,161 @@ body::after {
 .data-table tr[data-detail] {
   cursor: pointer;
 }
+
+/* === INTERACTIVE WIDGETS === */
+.widget-panel {
+  background: rgba(35, 31, 24, 0.6);
+  border: 1px solid rgba(201, 148, 42, 0.12);
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+.widget-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.widget-hint {
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  text-align: center;
+  margin-top: 0.8rem;
+  font-style: italic;
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: rgba(196,185,154,0.15);
+  border-radius: 2px;
+  outline: none;
+  margin: 0.8rem 0;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--amber);
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(201,148,42,0.4);
+}
+.widget-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  color: var(--amber);
+  text-align: center;
+  margin: 0.5rem 0;
+}
+.widget-label {
+  font-size: 0.78rem;
+  color: #8a7d65;
+  text-align: center;
+}
+.widget-row {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+.widget-stat {
+  text-align: center;
+  flex: 1;
+  min-width: 80px;
+}
+.widget-stat .val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  color: #c4b99a;
+}
+.widget-stat .lbl {
+  font-size: 0.68rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+canvas {
+  display: block;
+  margin: 0.5rem auto;
+  max-width: 100%;
+}
+.matrix-grid {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  gap: 2px;
+  max-width: 400px;
+  margin: 1rem auto;
+  font-size: 0.78rem;
+}
+.matrix-cell {
+  padding: 0.8rem 0.6rem;
+  text-align: center;
+  border: 1px solid rgba(196,185,154,0.1);
+  cursor: pointer;
+  transition: all 0.3s;
+  line-height: 1.4;
+}
+.matrix-cell:hover {
+  background: var(--amber-glow);
+}
+.matrix-header {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  color: var(--amber-dim);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  background: rgba(35,31,24,0.8);
+}
+.matrix-cell.correct { background: rgba(40,120,60,0.12); color: #7aad7a; }
+.matrix-cell.error { background: rgba(139,37,0,0.12); color: var(--red); }
+.matrix-cell.active { box-shadow: 0 0 12px rgba(201,148,42,0.3); border-color: var(--amber); }
+.matrix-detail {
+  text-align: center;
+  font-size: 0.82rem;
+  color: #a89775;
+  margin-top: 1rem;
+  min-height: 2rem;
+  font-style: italic;
+}
+.bayes-evidence {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0.8rem 0;
+}
+.bayes-btn {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.78rem;
+  background: rgba(35,31,24,0.8);
+  color: #8a7d65;
+  border: 1px solid rgba(196,185,154,0.1);
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s;
+  border-radius: 2px;
+}
+.bayes-btn:hover { border-color: var(--amber); color: var(--amber); }
+.bayes-btn.added { border-color: var(--amber); color: var(--amber); background: rgba(201,148,42,0.08); }
+.bayes-btn .ev-label { font-weight: 600; }
+.bayes-bar {
+  height: 8px;
+  background: rgba(196,185,154,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+.bayes-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--amber-dim), var(--amber));
+  border-radius: 4px;
+  transition: width 0.8s ease;
+}
+
 </style>
 </head>
 <body>
@@ -1114,6 +1269,29 @@ body::after {
 </section>
 
 
+
+<section class="panel" data-chapter="2">
+  <div class="panel-inner">
+    <div class="widget-panel" id="meanWidget">
+      <div class="widget-title">İnteraktif: Aykırı Değer ve Ortalama</div>
+      <p class="widget-label">Aykırı değerleri (72, 78) dahil et veya çıkar — ortalamanın nasıl değiştiğini gör:</p>
+      <div style="display:flex; align-items:center; justify-content:center; gap:1rem; margin:1rem 0;">
+        <label style="font-size:0.82rem; color:#8a7d65; cursor:pointer;">
+          <input type="checkbox" id="includeOutliers" checked style="accent-color:var(--amber); margin-right:0.3rem;">
+          Aykırı değerler dahil (72, 78)
+        </label>
+      </div>
+      <div class="widget-row">
+        <div class="widget-stat"><div class="val" id="meanVal">51.9</div><div class="lbl">Ortalama</div></div>
+        <div class="widget-stat"><div class="val" id="medianVal">52</div><div class="lbl">Ortanca</div></div>
+        <div class="widget-stat"><div class="val" id="modeVal">52</div><div class="lbl">Mod</div></div>
+      </div>
+      <canvas id="meanCanvas" width="600" height="140"></canvas>
+      <p class="widget-hint">Ortanca neredeyse hiç değişmez — aykırı değerlere dayanıklıdır.</p>
+    </div>
+  </div>
+</section>
+
 <section class="panel" data-chapter="2">
   <div class="panel-inner">
     <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
@@ -1489,6 +1667,27 @@ body::after {
 </section>
 
 
+
+<section class="panel" data-chapter="3">
+  <div class="panel-inner">
+    <div class="widget-panel" id="bellWidget">
+      <div class="widget-title">İnteraktif: Normal Dağılım ve Anomali</div>
+      <p class="widget-label">Standart sapmayı değiştir — dağılımın nasıl genişlediğini ve anomalinin ne kadar uzak olduğunu gör:</p>
+      <div style="display:flex; align-items:center; gap:0.8rem; margin:0.5rem 0;">
+        <span style="font-size:0.75rem; color:var(--ink-muted);">σ = </span>
+        <input type="range" id="sigmaSlider" min="0.3" max="2.0" step="0.1" value="0.6" style="flex:1;">
+        <span style="font-size:0.9rem; color:var(--amber);" id="sigmaDisplay">0.6</span>
+      </div>
+      <canvas id="bellCanvas" width="600" height="200"></canvas>
+      <div class="widget-row">
+        <div class="widget-stat"><div class="val" id="zScoreVal">7.0σ</div><div class="lbl">Anomali Uzaklığı</div></div>
+        <div class="widget-stat"><div class="val" id="pctVal">&lt;0.0001%</div><div class="lbl">Olasılık</div></div>
+      </div>
+      <p class="widget-hint">Kırmızı nokta 1903'ün anomali değeri (0.3 ay). σ arttıkça anomali "daha normal" görünür — ama gerçek σ = 0.6.</p>
+    </div>
+  </div>
+</section>
+
 <section class="panel" data-chapter="3">
   <div class="panel-inner">
     <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
@@ -1829,6 +2028,17 @@ body::after {
 </section>
 
 
+
+<section class="panel" data-chapter="4">
+  <div class="panel-inner">
+    <div class="widget-panel" id="pvalWidget">
+      <div class="widget-title">İnteraktif: p-Değeri Karşılaştırması</div>
+      <canvas id="pvalCanvas" width="600" height="220"></canvas>
+      <p class="widget-hint">Pemberton'ın erken ölüm oranı diğer doktorların 9 katından fazla. p &lt; 0.000001</p>
+    </div>
+  </div>
+</section>
+
 <section class="panel" data-chapter="4">
   <div class="panel-inner">
     <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
@@ -2143,6 +2353,28 @@ body::after {
   </div>
 </section>
 
+
+
+<section class="panel" data-chapter="5">
+  <div class="panel-inner">
+    <div class="widget-panel" id="errorWidget">
+      <div class="widget-title">İnteraktif: Tip I ve Tip II Hata</div>
+      <p class="widget-label">Hücrelere tıklayarak her kararın sonucunu görün:</p>
+      <div class="matrix-grid">
+        <div class="matrix-header"></div>
+        <div class="matrix-header">H₀ Doğru<br><span style="font-size:0.6rem;font-weight:normal;">(Masum)</span></div>
+        <div class="matrix-header">H₀ Yanlış<br><span style="font-size:0.6rem;font-weight:normal;">(Suçlu)</span></div>
+        <div class="matrix-header">H₀ Reddet<br><span style="font-size:0.6rem;font-weight:normal;">(Suçla)</span></div>
+        <div class="matrix-cell error" data-info="TİP I HATA (α) — Masum birini suçlu ilan ettiniz. Pemberton'ı asıl suçlu sanmak buna örnek. Calloway serbest kalır." onclick="showMatrixDetail(this)">Tip I Hata ✗<br><span style="font-size:0.65rem;">α hatası</span></div>
+        <div class="matrix-cell correct" data-info="DOĞRU KARAR — Gerçek suçluyu doğru teşhis ettiniz. Koipak'ın Calloway'i bulması bu sonuçtur." onclick="showMatrixDetail(this)">Doğru ✓<br><span style="font-size:0.65rem;">1 − β (güç)</span></div>
+        <div class="matrix-header">H₀ Reddetme<br><span style="font-size:0.6rem;font-weight:normal;">(Serbest bırak)</span></div>
+        <div class="matrix-cell correct" data-info="DOĞRU KARAR — Masum biri haklı olarak serbest bırakıldı. Doğru çalışan bir sistemin sonucu." onclick="showMatrixDetail(this)">Doğru ✓<br><span style="font-size:0.65rem;">1 − α</span></div>
+        <div class="matrix-cell error" data-info="TİP II HATA (β) — Suçluyu serbest bıraktınız! Sadece Pemberton'ı suçlayıp Calloway'i kaçırmak buna örnek." onclick="showMatrixDetail(this)">Tip II Hata ✗<br><span style="font-size:0.65rem;">β hatası</span></div>
+      </div>
+      <div class="matrix-detail" id="matrixDetail">↑ Bir hücreye tıklayın</div>
+    </div>
+  </div>
+</section>
 
 <section class="panel" data-chapter="5">
   <div class="panel-inner">
@@ -2473,6 +2705,17 @@ body::after {
   </div>
 </section>
 
+
+
+<section class="panel" data-chapter="6">
+  <div class="panel-inner">
+    <div class="widget-panel" id="scatterWidget">
+      <div class="widget-title">İnteraktif: Regresyon ve Aykırı Noktalar</div>
+      <canvas id="scatterCanvas" width="600" height="300"></canvas>
+      <p class="widget-hint">Kırmızı noktalar Alderton ve Crane — regresyon çizgisinin çok uzağında. Noktaların üzerine gelin.</p>
+    </div>
+  </div>
+</section>
 
 <section class="panel" data-chapter="6">
   <div class="panel-inner">
@@ -2896,6 +3139,27 @@ body::after {
 </section>
 
 
+
+<section class="panel" data-chapter="7">
+  <div class="panel-inner">
+    <div class="widget-panel" id="bayesWidget">
+      <div class="widget-title">İnteraktif: Bayes Güncelleyici</div>
+      <p class="widget-label">Prior: Calloway'in suçlu olma olasılığı. Kanıtları ekleyerek posterior'un nasıl değiştiğini izleyin:</p>
+      <div class="widget-value" id="bayesPosterior">%1</div>
+      <div class="bayes-bar"><div class="bayes-fill" id="bayesFill" style="width:1%;"></div></div>
+      <div class="bayes-evidence" id="bayesEvidence">
+        <button class="bayes-btn" data-posterior="5" onclick="addEvidence(this,5)"><span class="ev-label">Kanıt 1:</span> Dosyadaki eksik sayfa</button>
+        <button class="bayes-btn" data-posterior="12" onclick="addEvidence(this,12)"><span class="ev-label">Kanıt 2:</span> Thames Life arşivindeki eksik 1901 sayfası</button>
+        <button class="bayes-btn" data-posterior="45" onclick="addEvidence(this,45)"><span class="ev-label">Kanıt 3:</span> Whitfield'ın ifadesi — rapor Calloway'e gitmiş</button>
+        <button class="bayes-btn" data-posterior="78" onclick="addEvidence(this,78)"><span class="ev-label">Kanıt 4:</span> Filigran — imzasız mektupların kâğıdı Calloway'in masasında</button>
+        <button class="bayes-btn" data-posterior="94" onclick="addEvidence(this,94)"><span class="ev-label">Kanıt 5:</span> Holt'un itirafı — "Sadece Müfettiş diyorlardı"</button>
+        <button class="bayes-btn" data-posterior="98" onclick="addEvidence(this,98)"><span class="ev-label">Kanıt 6:</span> Korelasyon tablosu — Thames Life davalarında anormal hız</button>
+      </div>
+      <p class="widget-hint">Her kanıt posterior olasılığı günceller. Sıfırlamak için sayfayı yenileyin.</p>
+    </div>
+  </div>
+</section>
+
 <section class="panel" data-chapter="7">
   <div class="panel-inner">
     <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
@@ -3029,6 +3293,291 @@ body::after {
       });
     }
   });
+
+
+  // === WIDGET: Mean Calculator (Ch2) ===
+  var meanData = [38,40,41,42,43,44,44,45,45,46,46,47,47,48,48,49,49,50,50,51,51,51,52,52,52,52,53,53,53,54,54,54,55,55,55,56,56,57,57,58,58,59,59,60,61];
+  var outliers = [72, 78];
+  
+  function updateMean() {
+    var incl = document.getElementById('includeOutliers').checked;
+    var data = incl ? meanData.concat(outliers) : meanData.slice();
+    data.sort(function(a,b){return a-b;});
+    var sum = data.reduce(function(a,b){return a+b;}, 0);
+    var mean = sum / data.length;
+    var median = data[Math.floor(data.length/2)];
+    
+    // Count mode
+    var counts = {};
+    data.forEach(function(v){ counts[v] = (counts[v]||0)+1; });
+    var maxCount = Math.max.apply(null, Object.values(counts));
+    var mode = Object.keys(counts).filter(function(k){return counts[k]===maxCount;})[0];
+    
+    document.getElementById('meanVal').textContent = mean.toFixed(1);
+    document.getElementById('meanVal').style.color = incl ? 'var(--amber)' : '#7aad7a';
+    document.getElementById('medianVal').textContent = median;
+    document.getElementById('modeVal').textContent = mode;
+    
+    // Draw mini histogram
+    var c = document.getElementById('meanCanvas');
+    if (!c) return;
+    var ctx = c.getContext('2d');
+    var W = c.width, H = c.height;
+    ctx.clearRect(0,0,W,H);
+    
+    var bins = {};
+    data.forEach(function(v){ var b = Math.floor(v/5)*5; bins[b]=(bins[b]||0)+1; });
+    var maxBin = Math.max.apply(null, Object.values(bins));
+    var allBins = Object.keys(bins).map(Number).sort(function(a,b){return a-b;});
+    var barW = W / (allBins.length + 2);
+    
+    allBins.forEach(function(b, i) {
+      var h = (bins[b] / maxBin) * (H - 30);
+      var x = (i + 1) * barW;
+      var isOutlier = b >= 70;
+      ctx.fillStyle = isOutlier && incl ? 'rgba(139,37,0,0.5)' : 'rgba(201,148,42,0.3)';
+      ctx.fillRect(x, H - 20 - h, barW - 4, h);
+      ctx.fillStyle = '#5a4e3f';
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(b + '-' + (b+4), x + barW/2 - 2, H - 6);
+    });
+    
+    // Mean line
+    var meanX = ((mean - allBins[0]) / (allBins[allBins.length-1] + 5 - allBins[0])) * (W - 2*barW) + barW;
+    ctx.strokeStyle = incl ? 'rgba(201,148,42,0.8)' : 'rgba(122,173,122,0.8)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(meanX, 5); ctx.lineTo(meanX, H-20); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = incl ? 'var(--amber)' : '#7aad7a';
+    ctx.font = '10px sans-serif';
+    ctx.fillText('x̄=' + mean.toFixed(1), meanX, 12);
+  }
+  
+  var outlierCheckbox = document.getElementById('includeOutliers');
+  if (outlierCheckbox) {
+    outlierCheckbox.addEventListener('change', updateMean);
+    setTimeout(updateMean, 500);
+  }
+  
+  // === WIDGET: Bell Curve (Ch3) ===
+  function drawBell() {
+    var c = document.getElementById('bellCanvas');
+    if (!c) return;
+    var ctx = c.getContext('2d');
+    var W = c.width, H = c.height;
+    ctx.clearRect(0,0,W,H);
+    
+    var sigma = parseFloat(document.getElementById('sigmaSlider').value);
+    document.getElementById('sigmaDisplay').textContent = sigma.toFixed(1);
+    
+    var mu = 4.5; // mean delay in months
+    var anomaly = 0.3; // 1903 value
+    var zScore = Math.abs(anomaly - mu) / sigma;
+    
+    document.getElementById('zScoreVal').textContent = zScore.toFixed(1) + 'σ';
+    
+    // p-value approximation
+    var p;
+    if (zScore > 6) p = '<0.0001%';
+    else if (zScore > 4) p = '<0.01%';
+    else if (zScore > 3) p = '~0.3%';
+    else if (zScore > 2) p = '~5%';
+    else p = '>' + (100 * (1 - 0.5 * (1 + Math.min(1, zScore * 0.7)))).toFixed(0) + '%';
+    document.getElementById('pctVal').textContent = p;
+    
+    // Draw curve
+    var padL = 40, padR = 40, padT = 20, padB = 30;
+    var gW = W - padL - padR, gH = H - padT - padB;
+    
+    // x range: mu-4sigma to mu+4sigma (at least 0 to 8)
+    var xMin = Math.min(0, mu - 4*sigma);
+    var xMax = Math.max(8, mu + 4*sigma);
+    
+    function toX(v) { return padL + (v - xMin) / (xMax - xMin) * gW; }
+    function gauss(x) { return Math.exp(-0.5 * Math.pow((x-mu)/sigma, 2)) / (sigma * Math.sqrt(2*Math.PI)); }
+    function toY(g) { var maxG = gauss(mu); return padT + gH - (g / maxG) * gH; }
+    
+    // Fill under curve
+    ctx.beginPath();
+    ctx.moveTo(toX(xMin), toY(0));
+    for (var x = xMin; x <= xMax; x += 0.05) {
+      ctx.lineTo(toX(x), toY(gauss(x)));
+    }
+    ctx.lineTo(toX(xMax), toY(0));
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(201,148,42,0.08)';
+    ctx.fill();
+    
+    // Curve line
+    ctx.beginPath();
+    for (var x = xMin; x <= xMax; x += 0.05) {
+      var px = toX(x), py = toY(gauss(x));
+      x === xMin ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    }
+    ctx.strokeStyle = 'rgba(201,148,42,0.6)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    // Mean line
+    ctx.strokeStyle = 'rgba(196,185,154,0.3)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(toX(mu), padT); ctx.lineTo(toX(mu), H-padB); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#8a7d65';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('μ=4.5 ay', toX(mu), H - padB + 15);
+    
+    // Anomaly point
+    var ax = toX(anomaly), ay = toY(gauss(anomaly));
+    ctx.beginPath(); ctx.arc(ax, Math.min(ay, H-padB-5), 6, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(139,37,0,0.8)';
+    ctx.fill();
+    ctx.fillStyle = '#8b2500';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('0.3 ay (1903)', ax, Math.min(ay, H-padB-5) - 12);
+    
+    // Axis
+    ctx.strokeStyle = 'rgba(196,185,154,0.2)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(padL, H-padB); ctx.lineTo(W-padR, H-padB); ctx.stroke();
+  }
+  
+  var sigmaSlider = document.getElementById('sigmaSlider');
+  if (sigmaSlider) {
+    sigmaSlider.addEventListener('input', drawBell);
+    setTimeout(drawBell, 600);
+  }
+  
+  // === WIDGET: p-value Bar Chart (Ch4) ===
+  function drawPval() {
+    var c = document.getElementById('pvalCanvas');
+    if (!c) return;
+    var ctx = c.getContext('2d');
+    var W = c.width, H = c.height;
+    ctx.clearRect(0,0,W,H);
+    
+    var data = [
+      {label: 'Londra\nortalaması', val: 2, color: 'rgba(201,148,42,0.3)'},
+      {label: 'Dr. Harris', val: 1.8, color: 'rgba(201,148,42,0.3)'},
+      {label: 'Dr. Whitmore', val: 2.5, color: 'rgba(201,148,42,0.3)'},
+      {label: 'Dr. Campbell', val: 1.5, color: 'rgba(201,148,42,0.3)'},
+      {label: 'Pemberton', val: 18.6, color: 'rgba(139,37,0,0.7)'}
+    ];
+    
+    var padL = 20, padR = 20, padB = 50, padT = 20;
+    var gW = W - padL - padR, gH = H - padT - padB;
+    var barW = gW / data.length - 10;
+    
+    data.forEach(function(d, i) {
+      var x = padL + i * (barW + 10) + 5;
+      var h = (d.val / 20) * gH;
+      ctx.fillStyle = d.color;
+      ctx.fillRect(x, padT + gH - h, barW, h);
+      
+      // Value
+      ctx.fillStyle = i === 4 ? '#8b2500' : '#8a7d65';
+      ctx.font = (i === 4 ? 'bold ' : '') + '11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('%' + d.val, x + barW/2, padT + gH - h - 6);
+      
+      // Label
+      ctx.fillStyle = '#5a4e3f';
+      ctx.font = '9px sans-serif';
+      var lines = d.label.split('\n');
+      lines.forEach(function(line, li) {
+        ctx.fillText(line, x + barW/2, H - padB + 15 + li * 12);
+      });
+    });
+  }
+  setTimeout(drawPval, 700);
+  
+  // === WIDGET: Type I/II Error Matrix (Ch5) ===
+  window.showMatrixDetail = function(el) {
+    document.querySelectorAll('.matrix-cell').forEach(function(c){c.classList.remove('active');});
+    el.classList.add('active');
+    document.getElementById('matrixDetail').textContent = el.getAttribute('data-info');
+  };
+  
+  // === WIDGET: Scatter Plot (Ch6) ===
+  function drawScatter() {
+    var c = document.getElementById('scatterCanvas');
+    if (!c) return;
+    var ctx = c.getContext('2d');
+    var W = c.width, H = c.height;
+    ctx.clearRect(0,0,W,H);
+    
+    var padL = 50, padR = 30, padT = 20, padB = 40;
+    var gW = W - padL - padR, gH = H - padT - padB;
+    
+    // Data: policy age (months) vs payment (£)
+    var normal = [{x:24,y:800},{x:18,y:950},{x:30,y:750},{x:12,y:1100},{x:36,y:700},{x:20,y:900},{x:15,y:1050},{x:28,y:780},{x:22,y:860},{x:10,y:1150},{x:32,y:720},{x:26,y:820}];
+    var outlierPts = [{x:4,y:2400,label:'Alderton'},{x:5,y:2800,label:'Crane'}];
+    
+    function toX(v) { return padL + (v / 40) * gW; }
+    function toY(v) { return padT + gH - (v / 3200) * gH; }
+    
+    // Axes
+    ctx.strokeStyle = 'rgba(196,185,154,0.2)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(padL, padT); ctx.lineTo(padL, H-padB); ctx.lineTo(W-padR, H-padB); ctx.stroke();
+    
+    ctx.fillStyle = '#5a4e3f';
+    ctx.font = '9px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Poliçe yaşı (ay)', W/2, H - 5);
+    ctx.save(); ctx.translate(12, H/2); ctx.rotate(-Math.PI/2);
+    ctx.fillText('Ödeme (£)', 0, 0); ctx.restore();
+    
+    // Regression line (from normal points)
+    ctx.strokeStyle = 'rgba(201,148,42,0.4)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6,4]);
+    ctx.beginPath(); ctx.moveTo(toX(5), toY(1200)); ctx.lineTo(toX(38), toY(650)); ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Normal points
+    normal.forEach(function(p) {
+      ctx.beginPath(); ctx.arc(toX(p.x), toY(p.y), 4, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(201,148,42,0.5)';
+      ctx.fill();
+    });
+    
+    // Outlier points
+    outlierPts.forEach(function(p) {
+      ctx.beginPath(); ctx.arc(toX(p.x), toY(p.y), 7, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(139,37,0,0.8)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(139,37,0,0.5)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.fillStyle = '#8b2500';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(p.label, toX(p.x) + 10, toY(p.y) + 4);
+    });
+  }
+  setTimeout(drawScatter, 800);
+  
+  // === WIDGET: Bayes Updater (Ch7) ===
+  window.addEvidence = function(btn, posterior) {
+    if (btn.classList.contains('added')) return;
+    btn.classList.add('added');
+    document.getElementById('bayesPosterior').textContent = '%' + posterior;
+    document.getElementById('bayesFill').style.width = posterior + '%';
+    
+    // Color transition
+    var color;
+    if (posterior < 30) color = 'var(--amber-dim)';
+    else if (posterior < 60) color = 'var(--amber)';
+    else if (posterior < 90) color = '#d4a843';
+    else color = '#8b2500';
+    document.getElementById('bayesPosterior').style.color = color;
+  };
 
   // Safety
   setTimeout(function() {
