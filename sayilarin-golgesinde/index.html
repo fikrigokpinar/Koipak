@@ -1,284 +1,853 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="no-js">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sayıların Gölgesinde — İnteraktif</title>
+<title>Grifin R. Koipak ve Belirsizliğin Bilimi — Sayıların Gölgesinde</title>
+<meta name="description" content="Grifin R. Koipak ve Belirsizliğin Bilimi serisi. Sayıların Gölgesinde — 1903 Londra'sında geçen bir istatistik dedektif romanı. Yazan: Fikri Gökpınar.">
+
+<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
 <style>
-:root {
-  --ink: #0e0b08;
-  --ink-light: #2a2318;
-  --ink-muted: #5a4e3f;
-  --parchment: #1a1610;
-  --parchment-light: #231f18;
-  --amber: #c9942a;
-  --amber-dim: #8b6914;
-  --amber-glow: rgba(201, 148, 42, 0.15);
-  --red: #8b2500;
-}
+  :root {
+    --ink: #1a1410;
+    --ink-light: #3d3529;
+    --ink-muted: #6b5e4f;
+    --parchment: #f5f0e8;
+    --parchment-dark: #e8e0d2;
+    --parchment-deep: #d4c9b5;
+    --accent: #8b2500;
+    --accent-light: #a63a17;
+    --gold: #b8860b;
+    --gold-light: #d4a843;
+    --chapter-bg: #f0ebe2;
+    --fog: rgba(245, 240, 232, 0.92);
+    --shadow: rgba(26, 20, 16, 0.12);
+    --shadow-deep: rgba(26, 20, 16, 0.25);
+  }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-body {
-  font-family: 'EB Garamond', Georgia, serif;
-  background: var(--parchment);
-  color: #c4b99a;
-  line-height: 1.8;
-  overflow-x: hidden;
-}
+  ::selection {
+    background: var(--gold-light);
+    color: var(--ink);
+  }
 
-body::after {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 99;
-}
+  html {
+    scroll-behavior: smooth;
+    font-size: 18px;
+  }
 
-.cine-bar-top, .cine-bar-bottom {
-  position: fixed; left: 0; right: 0; height: 36px; background: #000; z-index: 200;
-}
-.cine-bar-top { top: 0; }
-.cine-bar-bottom { bottom: 0; }
+  body {
+    font-family: 'EB Garamond', 'Libre Baskerville', Georgia, serif;
+    background: var(--parchment);
+    color: var(--ink);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
 
-.panel {
-  min-height: 80vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 2rem;
-  position: relative;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 1s ease, transform 1s ease;
-}
-.panel.visible { opacity: 1; transform: translateY(0); }
+  /* ============================================
+     TEXTURE OVERLAY
+     ============================================ */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
 
-.panel-inner { max-width: 700px; width: 100%; }
+  /* ============================================
+     HERO / COVER
+     ============================================ */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(184, 134, 11, 0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 80%, rgba(139, 37, 0, 0.04) 0%, transparent 60%),
+      linear-gradient(to bottom, #ede7db, var(--parchment));
+  }
 
-.panel-title { text-align: center; }
-.panel-title .chapter-label {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 0.8rem; letter-spacing: 0.35em; color: var(--ink-muted);
-  margin-bottom: 0.5rem;
-}
-.panel-title .chapter-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.8rem; font-weight: 400; color: #c4b99a;
-}
-.amber-line { width: 50px; height: 1px; background: var(--amber-dim); margin: 2rem auto; }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, var(--parchment));
+  }
 
-.epigraph-panel {
-  text-align: center; font-style: italic; color: #7a6e5a;
-  font-size: 1.02rem; line-height: 2; position: relative;
-}
-.epigraph-panel::before {
-  content: '"'; font-family: 'Cormorant Garamond', serif;
-  font-size: 5rem; color: var(--amber-dim); opacity: 0.3;
-  position: absolute; top: -2rem; left: 50%; transform: translateX(-50%);
-}
-.epigraph-source {
-  display: block; font-size: 0.76rem; font-style: normal;
-  color: var(--ink-muted); margin-top: 1rem; letter-spacing: 0.1em;
-}
+  .hero-ornament {
+    font-size: 1.4rem;
+    color: var(--gold);
+    letter-spacing: 0.6em;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
 
-.narrative p {
-  margin-bottom: 1.1rem; text-align: justify; hyphens: auto; font-size: 1.02rem;
-}
-.narrative em { color: #a89775; }
-.narrative strong { color: var(--amber); font-weight: 600; }
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
 
-.document-block {
-  background: rgba(35, 31, 24, 0.8);
-  border-left: 3px solid var(--amber-dim);
-  padding: 1.3rem 1.5rem; margin: 1.5rem 0; font-size: 0.9rem;
-  position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
-.doc-title {
-  font-family: 'Cormorant Garamond', serif; font-weight: 600;
-  font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--amber-dim); margin-bottom: 0.6rem; padding-bottom: 0.4rem;
-  border-bottom: 1px solid rgba(139, 105, 20, 0.2);
-}
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.6rem, 6vw, 4.5rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.7s forwards;
+  }
 
-.speech { margin: 1.5rem 0; display: flex; gap: 0.8rem; align-items: flex-start; }
-.speech.right { flex-direction: row-reverse; }
-.speech-avatar {
-  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Cormorant Garamond', serif; font-size: 0.65rem;
-  font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
-  border: 1px solid rgba(201, 148, 42, 0.3);
-}
-.speech-avatar.koipak { background: rgba(201, 148, 42, 0.1); color: var(--amber); }
-.speech-avatar.calloway { background: rgba(139, 37, 0, 0.1); color: var(--red); border-color: rgba(139,37,0,0.3); }
-.speech-avatar.albert { background: rgba(100, 120, 80, 0.1); color: #7a8a60; border-color: rgba(100,120,80,0.3); }
-.speech-avatar.pemberton { background: rgba(90, 78, 63, 0.15); color: #8a7d65; border-color: rgba(90,78,63,0.3); }
-.speech-avatar.holt { background: rgba(90, 78, 63, 0.15); color: #8a7d65; border-color: rgba(90,78,63,0.3); }
-.speech-avatar.whitfield { background: rgba(120, 100, 80, 0.1); color: #a89775; border-color: rgba(120,100,80,0.3); }
-.speech-avatar.hargrove { background: rgba(70, 70, 90, 0.1); color: #8888aa; border-color: rgba(70,70,90,0.3); }
+  .hero-author {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink-muted);
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.9s forwards;
+  }
 
-.speech-bubble {
-  background: var(--parchment-light); border: 1px solid rgba(196, 185, 154, 0.1);
-  border-radius: 2px 12px 12px 12px; padding: 0.9rem 1.2rem;
-  font-size: 0.92rem; max-width: 80%;
-}
-.speech.right .speech-bubble { border-radius: 12px 2px 12px 12px; }
-.speaker-name {
-  font-family: 'Cormorant Garamond', serif; font-size: 0.65rem;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted);
-  margin-bottom: 0.2rem;
-}
+  .hero-line {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 0 auto 3rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.1s forwards;
+  }
 
-.scene-break {
-  text-align: center; padding: 1.5rem 0; color: var(--amber-dim);
-  letter-spacing: 0.8em; font-size: 0.85rem; opacity: 0.5;
-}
+  /* ============================================
+     CHAPTER NAVIGATION (TABLE OF CONTENTS)
+     ============================================ */
+  .toc {
+    opacity: 0;
+    animation: fadeUp 1s ease 1.3s forwards;
+  }
 
-.data-table-container { margin: 1.5rem 0; overflow-x: auto; }
-.data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-.data-table th {
-  font-family: 'Cormorant Garamond', serif; font-weight: 600;
-  font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--amber-dim); padding: 0.6rem; text-align: left;
-  border-bottom: 2px solid var(--amber-dim);
-}
-.data-table td { padding: 0.45rem 0.6rem; border-bottom: 1px solid rgba(196,185,154,0.08); }
-.data-table tr { cursor: pointer; }
-.data-table tr:hover td { background: var(--amber-glow); }
-.data-table tr.highlight td { background: rgba(139,37,0,0.12); color: var(--red); font-weight: 600; }
-.red-mark { color: var(--red); font-weight: 700; }
+  .toc-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 1.5rem;
+  }
 
-.illustration img {
-  width: 100%; display: block; border-radius: 2px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.5); margin: 1.5rem 0;
-}
-.illustration-placeholder {
-  width: 100%; aspect-ratio: 16/9; margin: 1.5rem 0;
-  background: linear-gradient(135deg, var(--parchment-light) 0%, rgba(35,31,24,0.6) 100%);
-  border: 1px solid rgba(196,185,154,0.06); display: flex;
-  align-items: center; justify-content: center;
-}
-.illustration-placeholder span {
-  font-family: 'Cormorant Garamond', serif; font-size: 0.72rem;
-  letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-muted);
-}
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.2rem;
+  }
 
-/* CHAPTER NAV */
-.ch-nav {
-  position: fixed; left: 1.2rem; top: 50%; transform: translateY(-50%);
-  z-index: 150; display: flex; flex-direction: column; gap: 0.5rem;
-}
-.ch-nav-btn {
-  font-family: 'Cormorant Garamond', serif; font-size: 0.72rem;
-  font-weight: 500; color: var(--ink-muted); text-decoration: none;
-  width: 28px; height: 28px; display: flex; align-items: center;
-  justify-content: center; border: 1px solid rgba(196,185,154,0.08);
-  border-radius: 2px; transition: all 0.3s; background: rgba(26,22,16,0.8);
-}
-.ch-nav-btn:hover, .ch-nav-btn.active {
-  color: var(--amber); border-color: var(--amber);
-  background: rgba(201,148,42,0.08);
-}
+  .toc-list li a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--ink-light);
+    text-decoration: none;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
 
-/* TOP NAV */
-.top-nav {
-  position: fixed; top: 40px; left: 0; right: 0; z-index: 150;
-  background: rgba(26,22,16,0.92); backdrop-filter: blur(8px);
-  padding: 0.4rem 1.5rem; display: flex; align-items: center;
-  justify-content: center; gap: 1.5rem;
-  font-family: 'Cormorant Garamond', serif; font-size: 0.7rem;
-  border-bottom: 1px solid rgba(184,134,11,0.1);
-  opacity: 0; transition: opacity 0.5s;
-}
-.top-nav.visible { opacity: 1; }
-.top-nav a { color: var(--ink-muted); text-decoration: none; letter-spacing: 0.1em; transition: color 0.3s; }
-.top-nav a:hover { color: var(--amber); }
-.top-nav .current-ch { color: var(--amber); }
+  .toc-list li a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
 
-@media (max-width: 768px) {
-  .panel { padding: 60px 1.2rem; min-height: 70vh; }
-  .cine-bar-top, .cine-bar-bottom { height: 24px; }
-  .ch-nav { display: none; }
-  .top-nav { top: 24px; font-size: 0.62rem; gap: 0.8rem; }
-}
+  .toc-list li a.disabled {
+    color: var(--parchment-deep);
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .toc-list li a.active {
+    color: var(--accent);
+    border-color: var(--gold);
+  }
+
+  /* ============================================
+     SCROLL INDICATOR
+     ============================================ */
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.6s forwards;
+  }
+
+  .scroll-hint span {
+    display: block;
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    margin: 0 auto;
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.3); }
+  }
+
+  /* ============================================
+     CHAPTER SECTIONS
+     ============================================ */
+  .chapter {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 5rem 2rem 6rem;
+    position: relative;
+  }
+
+  .chapter-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    text-align: center;
+    margin-bottom: 0.8rem;
+  }
+
+  .chapter-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 400;
+    text-align: center;
+    color: var(--ink);
+    margin-bottom: 2.5rem;
+    line-height: 1.25;
+  }
+
+  .epigraph {
+    font-style: italic;
+    text-align: center;
+    color: var(--ink-muted);
+    font-size: 0.95rem;
+    line-height: 1.9;
+    margin-bottom: 3rem;
+    padding: 0 2rem;
+    position: relative;
+  }
+
+  .epigraph::before {
+    content: '"';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem;
+    color: var(--gold);
+    opacity: 0.4;
+    position: absolute;
+    top: -1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    line-height: 1;
+  }
+
+  .epigraph-source {
+    display: block;
+    margin-top: 0.6rem;
+    font-style: normal;
+    font-size: 0.82rem;
+    color: var(--parchment-deep);
+    letter-spacing: 0.05em;
+  }
+
+  /* ============================================
+     PROSE
+     ============================================ */
+  .prose p {
+    margin-bottom: 1.3rem;
+    text-align: justify;
+    hyphens: auto;
+    text-indent: 1.5em;
+  }
+
+  .prose p:first-of-type,
+  .prose h3 + p,
+  .prose h4 + p,
+  .prose .scene-break + p,
+  .prose .document-block + p,
+  .prose .dialogue + p {
+    text-indent: 0;
+  }
+
+  .prose p:first-of-type::first-letter {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.75;
+    margin: 0.08em 0.12em 0 0;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .prose em {
+    font-style: italic;
+    color: var(--ink-light);
+  }
+
+  .prose strong {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ============================================
+     SCENE BREAKS
+     ============================================ */
+  .scene-break {
+    text-align: center;
+    margin: 2.5rem 0;
+    color: var(--gold);
+    font-size: 1rem;
+    letter-spacing: 0.8em;
+    user-select: none;
+  }
+
+  /* ============================================
+     DOCUMENT BLOCKS (telegrams, notes, tables)
+     ============================================ */
+  .document-block {
+    background: linear-gradient(135deg, #faf6ee 0%, #f2ecdf 100%);
+    border: 1px solid var(--parchment-deep);
+    border-left: 3px solid var(--gold);
+    padding: 1.5rem 1.8rem;
+    margin: 2rem 0;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    position: relative;
+    box-shadow: 2px 3px 8px var(--shadow);
+  }
+
+  .document-block::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 0 20px 20px 0;
+    border-color: transparent var(--parchment) transparent transparent;
+  }
+
+  .document-block .doc-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--parchment-deep);
+  }
+
+  /* ============================================
+     DATA TABLE (Fenwick's records)
+     ============================================ */
+  .data-table-wrapper {
+    overflow-x: auto;
+    margin: 2rem 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    background: #faf6ee;
+    box-shadow: 2px 3px 8px var(--shadow);
+  }
+
+  .data-table th {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    background: var(--parchment-dark);
+    padding: 0.7rem 1rem;
+    text-align: left;
+    border-bottom: 2px solid var(--gold);
+  }
+
+  .data-table td {
+    padding: 0.55rem 1rem;
+    border-bottom: 1px solid var(--parchment-deep);
+    vertical-align: top;
+  }
+
+  .data-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .data-table tr.highlight td {
+    background: rgba(139, 37, 0, 0.06);
+    font-weight: 600;
+  }
+
+  .data-table .red-mark {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ============================================
+     SECTION HEADINGS (in-chapter)
+     ============================================ */
+  .prose h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin: 3rem 0 1.2rem;
+    text-align: center;
+    letter-spacing: 0.03em;
+  }
+
+  .prose h3::before,
+  .prose h3::after {
+    content: '—';
+    margin: 0 0.6em;
+    color: var(--gold);
+    font-weight: 300;
+  }
+
+  /* ============================================
+     MATH / FORMULA BLOCKS
+     ============================================ */
+  .formula {
+    text-align: center;
+    margin: 1.8rem 0;
+    padding: 1rem;
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--ink-light);
+    border-top: 1px solid var(--parchment-deep);
+    border-bottom: 1px solid var(--parchment-deep);
+    background: rgba(184, 134, 11, 0.03);
+    letter-spacing: 0.02em;
+  }
+
+  /* ============================================
+     DIALOGUE
+     ============================================ */
+  .dialogue {
+    margin: 1.5rem 0;
+    padding-left: 1.2rem;
+    border-left: 2px solid var(--parchment-deep);
+  }
+
+  .dialogue .speaker {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .dialogue p {
+    text-indent: 0 !important;
+    margin-bottom: 0.4rem;
+    text-align: left !important;
+  }
+
+  /* ============================================
+     CONCEPTS BOX
+     ============================================ */
+  .concepts-box {
+    margin: 3.5rem 0 2rem;
+    padding: 1.8rem 2rem;
+    border: 1px solid var(--parchment-deep);
+    background: linear-gradient(to bottom, #faf7f0, var(--parchment));
+    text-align: center;
+  }
+
+  .concepts-box h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 1rem;
+  }
+
+  .concepts-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.5rem;
+  }
+
+  .concepts-list li {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--ink-light);
+    position: relative;
+  }
+
+  .concepts-list li::before {
+    content: '◆';
+    font-size: 0.5rem;
+    color: var(--gold);
+    margin-right: 0.4rem;
+    vertical-align: middle;
+  }
+
+  /* ============================================
+     CHAPTER FOOTER / NAVIGATION
+     ============================================ */
+  .chapter-end {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--parchment-deep);
+  }
+
+  .chapter-end .ornament {
+    color: var(--gold);
+    font-size: 1.1rem;
+    letter-spacing: 0.5em;
+    margin-bottom: 1.5rem;
+  }
+
+  .chapter-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .chapter-nav a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+    text-decoration: none;
+    padding: 0.5rem 1.2rem;
+    border: 1px solid var(--parchment-deep);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    letter-spacing: 0.05em;
+  }
+
+  .chapter-nav a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .chapter-nav a.disabled {
+    color: var(--parchment-deep);
+    pointer-events: none;
+  }
+
+  /* ============================================
+     COMING SOON CHAPTERS
+     ============================================ */
+  .chapter-coming {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+
+  .coming-icon {
+    font-size: 2rem;
+    color: var(--gold);
+    opacity: 0.5;
+    margin-bottom: 1rem;
+  }
+
+  .coming-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--ink-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .coming-subtitle {
+    font-size: 0.85rem;
+    color: var(--parchment-deep);
+    font-style: italic;
+  }
+
+  /* ============================================
+     SECTION DIVIDERS
+     ============================================ */
+  .divider {
+    max-width: 680px;
+    margin: 0 auto;
+    border: none;
+    border-top: 1px solid var(--parchment-deep);
+  }
+
+  /* ============================================
+     FOOTER
+     ============================================ */
+  .site-footer {
+    text-align: center;
+    padding: 3rem 2rem 4rem;
+    color: var(--parchment-deep);
+    font-size: 0.8rem;
+    font-style: italic;
+  }
+
+  .site-footer a {
+    color: var(--ink-muted);
+    text-decoration: none;
+  }
+
+  /* ============================================
+     STICKY NAV (appears on scroll)
+     ============================================ */
+  .sticky-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--fog);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--parchment-deep);
+    padding: 0.6rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    transform: translateY(-100%);
+    transition: transform 0.4s ease;
+  }
+
+  .sticky-nav.visible {
+    transform: translateY(0);
+  }
+
+  .sticky-nav .nav-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+    letter-spacing: 0.08em;
+  }
+
+  .sticky-nav .nav-chapters {
+    display: flex;
+    gap: 0.3rem;
+  }
+
+  .sticky-nav .nav-chapters a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .sticky-nav .nav-chapters a:hover,
+  .sticky-nav .nav-chapters a.current {
+    color: var(--accent);
+    background: rgba(139, 37, 0, 0.06);
+  }
+
+  .sticky-nav .nav-chapters a.disabled {
+    color: var(--parchment-deep);
+    pointer-events: none;
+  }
+
+  /* ============================================
+     READING PROGRESS
+     ============================================ */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--gold), var(--accent));
+    z-index: 1001;
+    width: 0%;
+    transition: width 0.1s;
+  }
+
+  /* ============================================
+     ANIMATIONS
+     ============================================ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(25px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Fallback: if JS fails or observer doesn't fire, show content after 2s */
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* noscript fallback handled via class on html */
+  .no-js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ============================================
+     RESPONSIVE
+     ============================================ */
+  @media (max-width: 768px) {
+    html { font-size: 16px; }
+    .chapter { padding: 3.5rem 1.3rem 4rem; }
+    .hero { padding: 3rem 1.5rem; }
+    .prose p:first-of-type::first-letter { font-size: 3.2em; }
+    .document-block { padding: 1.2rem 1.3rem; }
+    .sticky-nav .nav-title { display: none; }
+    .dialogue { padding-left: 0.8rem; }
+    .epigraph { padding: 0 0.5rem; }
+    .toc-list { gap: 0.3rem 0.6rem; }
+    .toc-list li a { font-size: 0.88rem; padding: 0.3rem 0.6rem; }
+  }
+
+  @media (max-width: 480px) {
+    .sticky-nav .nav-chapters a { font-size: 0.7rem; padding: 0.2rem 0.35rem; }
+  }
+
+  /* ============================================
+     PRINT STYLES
+     ============================================ */
+  @media print {
+    .sticky-nav, .progress-bar, .scroll-hint { display: none; }
+    .hero { min-height: auto; page-break-after: always; }
+    .chapter { page-break-before: always; }
+    body::before { display: none; }
+  }
 </style>
 </head>
 <body>
+<script>document.documentElement.classList.remove('no-js');</script>
 
-<div class="cine-bar-top"></div>
-<div class="cine-bar-bottom"></div>
+<!-- READING PROGRESS BAR -->
+<div class="progress-bar" id="progressBar"></div>
 
-<nav class="ch-nav" id="chNav"><a href="#" data-ch="1" class="ch-nav-btn">I</a><a href="#" data-ch="2" class="ch-nav-btn">II</a><a href="#" data-ch="3" class="ch-nav-btn">III</a><a href="#" data-ch="4" class="ch-nav-btn">IV</a><a href="#" data-ch="5" class="ch-nav-btn">V</a><a href="#" data-ch="6" class="ch-nav-btn">VI</a><a href="#" data-ch="7" class="ch-nav-btn">VII</a></nav>
-
-<nav class="top-nav" id="topNav">
-  <a href="../../index.html">Seri</a>
-  <span style="color:rgba(196,185,154,0.15);">|</span>
-  <a href="../index.html">Klasik Oku</a>
-  <span style="color:rgba(196,185,154,0.15);">|</span>
-  <span class="current-ch" id="currentChLabel">I. Bölüm</span>
+<!-- STICKY NAV -->
+<nav class="sticky-nav" id="stickyNav">
+  <span class="nav-title">Koipak — Sayıların Gölgesinde</span>
+  <div class="nav-chapters">
+    <a href="#bolum-1" class="current">I</a>
+    <a href="#bolum-2">II</a>
+    <a href="#bolum-3">III</a>
+    <a href="#bolum-4">IV</a>
+    <a href="#bolum-5">V</a>
+    <a href="#bolum-6">VI</a>
+    <a href="#bolum-7">VII</a>
+  </div>
 </nav>
 
-<!-- COVER PANEL -->
-<section class="panel" data-chapter="0" style="min-height:100vh;">
-  <div class="panel-inner panel-title">
-    <p style="font-family:Cormorant Garamond,serif; font-size:0.72rem; letter-spacing:0.45em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:1rem;">Bir İstatistik Dedektif Serisi</p>
-    <h1 style="font-family:Cormorant Garamond,serif; font-size:clamp(1.8rem,4.5vw,3rem); font-weight:300; color:var(--amber); line-height:1.2; margin-bottom:0.5rem;">Grifin R. Koipak ve<br>Belirsizliğin Bilimi</h1>
-    <p style="font-family:Cormorant Garamond,serif; font-size:1.2rem; font-style:italic; color:#8a7d65;">Sayıların Gölgesinde</p>
-    <div class="amber-line"></div>
-    <p style="font-family:Cormorant Garamond,serif; font-size:0.82rem; color:var(--ink-muted); letter-spacing:0.12em;">Yazan: Fikri GÖKPINAR</p>
+<!-- ============================================
+     HERO / COVER
+     ============================================ -->
+<header class="hero" id="hero">
+  <div class="hero-ornament">❧</div>
+  <p class="hero-subtitle">Bir İstatistik Dedektif Serisi</p>
+  <h1 class="hero-title">Grifin R. Koipak ve<br>Belirsizliğin Bilimi</h1>
+  <p class="hero-author" style="margin-bottom: 0.8rem;">Sayıların Gölgesinde</p>
+  <p style="font-family: 'Cormorant Garamond', serif; font-size: 0.88rem; font-weight: 400; color: var(--ink-muted); letter-spacing: 0.15em; margin-bottom: 3rem; opacity: 0; animation: fadeUp 1s ease 1s forwards;">Yazan: Fikri GÖKPINAR</p>
+  <div class="hero-line"></div>
+
+  <nav class="toc">
+    <p class="toc-label">Bölümler</p>
+    <ul class="toc-list">
+      <li><a href="#bolum-1" class="active">I. Bölüm</a></li>
+      <li><a href="#bolum-2" class="active">II. Bölüm</a></li>
+      <li><a href="#bolum-3" class="active">III. Bölüm</a></li>
+      <li><a href="#bolum-4" class="active">IV. Bölüm</a></li>
+      <li><a href="#bolum-5" class="active">V. Bölüm</a></li>
+      <li><a href="#bolum-6" class="active">VI. Bölüm</a></li>
+      <li><a href="#bolum-7" class="active">VII. Bölüm</a></li>
+    </ul>
+  </nav>
+
+  <div class="scroll-hint">
+    <span></span>
   </div>
-</section>
+</header>
 
-<!-- ALL CHAPTERS -->
+<!-- SERIES NAV BANNER -->
+<div id="seriesBanner" style="position:fixed; bottom:0; left:0; right:0; z-index:999; background:rgba(26,20,16,0.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); padding:0.55rem 1.5rem; display:flex; align-items:center; justify-content:center; gap:1.5rem; font-family:'Cormorant Garamond',serif; font-size:0.8rem; border-top:1px solid rgba(184,134,11,0.15);">
+  <a href="../index.html" style="color:#8a7d65; text-decoration:none; letter-spacing:0.1em;">← Seri Sayfası</a>
+  <span style="color:rgba(196,185,154,0.2);">|</span>
+  <a href="interaktif/index.html" style="color:#c9942a; text-decoration:none; letter-spacing:0.08em;">✦ İnteraktif Versiyonu Keşfet</a>
+</div>
 
-<section class="panel" data-chapter="1">
-  <div class="panel-inner panel-title">
-    <p class="chapter-label">I. Bölüm</p>
-    <p class="chapter-name">Ölü Adama Ait Rakamlar</p>
-    <div class="amber-line"></div>
-  </div>
-</section>
+<!-- ============================================
+     BÖLÜM I
+     ============================================ -->
+<article class="chapter reveal" id="bolum-1">
+  <p class="chapter-number">Birinci Bölüm</p>
+  <h2 class="chapter-title">Ölü Adama Ait Rakamlar</h2>
 
-<section class="panel" data-chapter="1">
-  <div class="panel-inner epigraph-panel">
-    Dünya, gözlemlerin birikiminden ibarettir.<br>Sorun şu ki çoğu insan gözlemleri değil,<br>gözlemlerden çıkardığı ilk hissi hatırlar.
+  <div class="epigraph">
+    Dünya, gözlemlerin birikiminden ibarettir.<br>
+    Sorun şu ki çoğu insan gözlemleri değil,<br>
+    gözlemlerden çıkardığı ilk hissi hatırlar.
     <span class="epigraph-source">— Grifin R. Koipak, Kişisel Notlar, 1903</span>
   </div>
-</section>
 
+  <div class="prose">
 
-<section class="panel" data-chapter="1">
-  <div class="panel-inner">
-    <img src="img/1_1_whitechapel.png" alt="Whitechapel" style="width:100%; display:block; border-radius:2px; box-shadow:0 8px 30px rgba(0,0,0,0.5); margin-bottom:1.5rem;">
-  </div>
-</section>
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Londra'nın kasım sisini anlatmak için kelime aramaya gerek yoktur; o sisi yaşamak yeter. Boğazınıza yapışır, gözlerinizi yakar, ve eğer Whitechapel'de yaşıyorsanız — ki Grifin R. Koipak yaşıyordu — sabahın altısında pencerenizi açtığınızda karşı binanın duvarını bile göremezsiniz. Koipak yine de açtı. Her sabah açardı. Taze hava değil, bir ritüeldi bu; günün ilk gözlemi. <em>Sis var. Yoğunluk: orta. Rüzgâr: yok.</em> Zihnini böyle çalıştırırdı — dünyayı ölçerek, sayarak, kaydederek.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Arkasında, çalışma masası gecenin izlerini taşıyordu. Üç ayrı deftere dağılmış hesaplar, yarısı içilmiş bir çay — sütü çoktan kesilmiş — ve bir sigara izmariti. Küllüğe değil, masanın kenarına bırakılmıştı; bu Koipak'un bir şeye daldığının ve dünyayı unuttuğunun en güvenilir göstergesiydi. Eşi Eleanor yaşasaydı kızardı. <em>"Grifin, bir gün bu evi yakacaksın."</em> Ama Eleanor iki yıldır yoktu. Tifüs almıştı onu, 1901'in sert bir kış gecesinde, ve Koipak o günden beri masanın karşısındaki boş sandalyeye bakmamayı öğrenmişti. Öğrenemediği tek şey, o sandalyenin neden hâlâ orada durduğuydu.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Saat altıyı çeyrek geçiyordu. Kapı zili çaldı.</p>
 
     <p>Koipak kaşlarını çattı. Bu saatte kimse gelmezdi — postacı bile yediyi beklerdi. Merdivenlerden inerken ayak seslerini saydı — on dört basamak, her zaman on dört — ve kapıyı açtı.</p>
@@ -287,13 +856,6 @@ body::after {
 
     <p>"Bay Koipak? Müfettiş Calloway'den, efendim. Acil dedi."</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Koipak zarfı aldı. Cebinden bir peni çıkarıp çocuğa uzattı; çocuk teşekkür etmeden koşarak uzaklaştı. Koipak zarfı açmadan önce bir an tuttu — zarfın ağırlığını, kâğıdın kalınlığını hissetti. Alışkanlıktı bu; her nesne bir veri noktasıydı onun için.</p>
 
     <p>Zarfın içinde tek bir kart vardı:</p>
@@ -304,116 +866,44 @@ body::after {
       <em>— C.</em>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Koipak kartı çevirdi, arkasına baktı — boş. Calloway'in el yazısını tanıyordu; sert, sola yatık harfler, kelimelerin arasına fazla boşluk bırakan bir adam. Yedi yıldır tanıyordu Thomas Calloway'i. Whitechapel zehirlenme davası — Koipak'un adli istatistikçi olarak ilk büyük işi. Galler'den gelme, madenci bir babanın oğlu olan Koipak'a kimse güvenmemişti o davada. Savcı onu görünce kaşlarını kaldırmıştı: <em>"Bu aksanla jüriyi ikna mı edeceksiniz?"</em> Müfettişlerden biri koridorda mırıldanmıştı: <em>"Taffy'yi getirmişler, kömür tozundan hesap mı öğrenmiş?"</em> Koipak duymuştu ama yüzünü hiç değiştirmemişti. Yıllar içinde öğrenmişti: İngilizler bir Galli'nin kızmasını bekler, çünkü kızmak onların haklılığını teyit eder. En iyi cevap, doğru hesaptır.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Calloway farklıydı. Koipak'un analizini okumuş, bir saat boyunca sorular sormuş, sonra mahkemeye taşımıştı. Şüpheliyi mahkûm ettirdiler. Dava bittikten sonra Calloway tek bir şey söylemişti: <em>"Aksanına değil, rakamlarına baktım. Rakamlar doğruydu."</em> O günden sonra Koipak'un kapısını her zorlu davada çaldı. Londra'da bir Galli istatistikçiye güvenen tek polis müfettişiydi — ve Koipak bu güvenin ne kadar nadir olduğunu hiç unutmadı.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Limehouse'a yürümek yarım saat sürdü. Koipak yürümeyi severdi — düşünmek için en iyi araçtı. Omnibüse binmek zihnini bölüyordu; kalabalık, gürültü, birinin dirseği böğrünüze dayanır, düşüncenin ipini kaçırırsınız. Yürürken ise dünya bir arka plan olur, zihin serbest kalır.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Sis Limehouse'a doğru yoğunlaşıyordu. Thames'in nemi sokakları ıslak bir battaniye gibi sarıyordu; kaldırım taşları kaygan, duvarlar nemli, hava ağır. Rıhtımdaki işçiler çoktan başlamıştı — halatlar çekiliyordu, kutular yığılıyordu, arada bir bağırış duyuluyordu. Koipak bunların hiçbirini görmedi; gözleri açık ama zihni zarftaki iki kelimeye takılmıştı: <em>rakamlar içeriyor.</em></p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Harold Fenwick'in evi, Narrow Street'in sonundaki bir sıra evin ortasındaydı. Dışarıdan sıradan bir Viktoryen konut: üç katlı, tuğla cepheli, pencereleri siyah boyalı. Kapının önünde bir polis memuru bekliyordu; Koipak'u tanıdı ve içeri yönlendirdi.</p>
 
     <p>Calloway salonda duruyordu. Geniş omuzlu, kırk beş yaşında, kalın bıyıklı bir adam. Pardesüsünü çıkarmamıştı — kol düğmeleri bile ilikliydi, sanki her an çıkacakmış gibi. Elinde bir fincan çay vardı ama içmiş gibi görünmüyordu; parmakları fincanın etrafında kenetlenmişti, düşünceli bir şekilde.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>"Erken geldin," dedi Calloway, Koipak'u görünce. Sesinde sıcaklık vardı — her zaman olduğu gibi. "Gel, otur. Sana anlatacaklarım var."</p>
 
     <p>Koipak oturmadı. Odayı süzdü. Salon iyi döşenmiş ama sade bir yerdi: bir divan, iki koltuk, şöminenin üstünde bir saat, duvarda bir manzara tablosu — Thames'in bir yerinden, muhtemelen Greenwich. Yerde halı değil, hasır vardı. Ortadaki masanın üzerinde bir tepsi, tepside soğumuş çay ve üç fincan. <em>Üç fincan.</em> Koipak bunu kaydetti ama sormadı. Henüz değil.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>"Anlat," dedi.</p>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">C</div>
-      <div>
-        <div class="speaker-name">Calloway</div>
-        <div class="speech-bubble">"Harold Fenwick. Altmış iki yaşında. Buranın sahibi. Küçük bir sigorta acentesi işletiyordu — hayat sigortası, ağırlıklı olarak Thames Life &amp; Assurance'ın poliçelerini satardı. Dün sabah oğlu Albert onu çalışma odasında bulmuş. Masasının başında, yüzüstü. Doktor kalp krizi demiş."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Calloway</p>
+      <p>"Harold Fenwick. Altmış iki yaşında. Buranın sahibi. Küçük bir sigorta acentesi işletiyordu — hayat sigortası, ağırlıklı olarak Thames Life &amp; Assurance'ın poliçelerini satardı. Dün sabah oğlu Albert onu çalışma odasında bulmuş. Masasının başında, yüzüstü. Doktor kalp krizi demiş."</p>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>"Ama?"</p>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">C</div>
-      <div>
-        <div class="speaker-name">Calloway</div>
-        <div class="speech-bubble">"Ama Albert itiraz etti. Babasının kalp sorunu olmadığını söylüyor. Otuz yıldır her sabah altıda kalkan, düzenli yaşayan, sigara içmeyen bir adam." Calloway durdu. "Ve bir şey daha var. Fenwick, ölümünden birkaç gün önce notere gitmiş. Bir dosya bırakmış. Albert dosyayı dün akşam aldı, bana getirdi. İçinde sayılar var, Koipak. Tablolar. Ben bir şey anlamadım — ama sen anlarsın."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Calloway</p>
+      <p>"Ama Albert itiraz etti. Babasının kalp sorunu olmadığını söylüyor. Otuz yıldır her sabah altıda kalkan, düzenli yaşayan, sigara içmeyen bir adam." Calloway durdu. "Ve bir şey daha var. Fenwick, ölümünden birkaç gün önce notere gitmiş. Bir dosya bırakmış. Albert dosyayı dün akşam aldı, bana getirdi. İçinde sayılar var, Koipak. Tablolar. Ben bir şey anlamadım — ama sen anlarsın."</p>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Calloway ceketinin iç cebinden bir dosya çıkardı. Kalın, kahverengi bir karton klasör, kenarları yıpranmış. Koipak'a uzattı — ve Koipak, Calloway'in dosyayı uzatırken parmak uçlarının hafifçe titrediğini fark etti. Soğuktan mı? Heyecandan mı? Yoksa başka bir şeyden mi? Bunu da kaydetti. Karar vermedi.</p>
 
     <p>Dosyayı açtı.</p>
 
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Veri ve Gözlem</h3>
+    <h3>Veri ve Gözlem</h3>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>İçeride üç sayfa vardı. Birincisi bir tablo: sütunlar ve satırlar, elle yazılmış, mürekkebi koyu mavi. Her satır bir müşterinin kaydıydı; her sütun başlığında kısa, özlü bir etiket.</p>
 
     <div class="data-table-wrapper">
@@ -439,123 +929,55 @@ body::after {
       </table>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Koipak saydı: yirmi iki satır. Yirmi iki müşteri. Her satır bir <strong>gözlem</strong> — tek bir bireye ait ölçümlerin kaydı. Her sütun bir <strong>değişken</strong> — yaş, tutar, tarih gibi ölçülebilir ya da sınıflandırılabilir özellikler.</p>
 
     <p><em>Veri</em> budur: ham gerçeklikler. Ölçtüğünüz, saydığınız, kaydettiğiniz şeyler. Henüz yorum yoktur, henüz anlam yoktur. Veri tek başına konuşmaz — tıpkı bir tanığın, doğru soruyu sormadan konuşmayacağı gibi.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Ama Koipak tanıklara değil, verilere sorardı. Ve verilerin bir avantajı vardı: yalan söyleyemezlerdi. En azından kendileri söyleyemezdi. <em>Veriyi toplayan</em> söyleyebilirdi — ama bu başka bir meseledir. Koipak verilere güvenmeyi Londra'da öğrenmişti — insanların aksanını duyduğu anda fikrini değiştirdiği bir şehirde, sayılar aksanı duymazdı. İki artı iki, onu bir Galli söylese de bir lordun oğlu söylese de dört ederdi. Matematiğin bu körlüğü, Koipak için bir lüks değil, bir sığınaktı.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>İkinci sayfa daha kısaydı: on beş satırlık bir liste. Fenwick'in müşterilerinden bazılarının ödeme geçmişi — poliçe açılış tarihi, son prim ödemesi, durum. Üçüncü sayfa ise yarım kalmıştı. Birkaç satır hesaplama, sonra durmuştu. Sayfanın altında, kırmızı mürekkeple, iki ismin altı çizilmişti.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Koipak okumaya devam etmeden önce durdu. Dosyanın içindekilere değil, <em>dosyanın kendisine</em> baktı. Kenarları düzgün kesilmişti ama sol üst köşedeki zımba izi, bir zamanlar daha fazla sayfa olduğunu gösteriyordu. Zımba iki sayfa kalınlığında iz bırakmıştı — ama dosyada üç sayfa vardı. Yani en az bir sayfa daha olmuştu, belki iki.</p>
 
     <p>"Bu dosyada başka sayfa var mıydı?" diye sordu Koipak.</p>
 
     <p>Calloway omuz silkti. "Albert bana böyle getirdi. Noterdeki haliyle."</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Koipak başını salladı. Belki de noter sayfaları ayırmıştı. Belki Fenwick kendisi çıkarmıştı. <em>Belki.</em> Bu "belki"yi bir kenara koydu — sonra dönerdi.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Calloway onu yukarı kata, Fenwick'in çalışma odasına çıkardı. Oda küçüktü: bir masa, bir sandalye, duvarda raflar, raflarda defterler. Masa hâlâ dokunulmamıştı — Calloway'in emriyle. Üzerinde açık bir hesap defteri, birkaç kalem, bir mürekkep hokkası ve — Koipak'un dikkatini çeken — bir kutu kibrit duruyordu. Kibrit kutusunun üstünde, elle yazılmış küçük bir not:</p>
 
     <div class="document-block">
       <em>"47 — kontrol et."</em>
     </div>
 
-    <div class="speech right">
-      <div class="speech-avatar koipak">K</div>
-      <div>
-        <div class="speaker-name">Koipak</div>
-        <div class="speech-bubble">"Bu notu gördün mü?"</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Koipak</p>
+      <p>"Bu notu gördün mü?"</p>
     </div>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">C</div>
-      <div>
-        <div class="speaker-name">Calloway</div>
-        <div class="speech-bubble">"Gördüm. Kırk yedi. Muhtemelen müşteri sayısı. Noterdeki dosyada yirmi iki isim var, ama Fenwick'in toplam müşteri portföyü kırk yedi kişiymiş. Albert söyledi."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Calloway</p>
+      <p>"Gördüm. Kırk yedi. Muhtemelen müşteri sayısı. Noterdeki dosyada yirmi iki isim var, ama Fenwick'in toplam müşteri portföyü kırk yedi kişiymiş. Albert söyledi."</p>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Koipak düşündü. Yirmi iki kayıt, kırk yedi müşteri. Fenwick neden hepsini yazmamıştı? Bir seçim yapmıştı — bazılarını not etmiş, diğerlerini dışarıda bırakmıştı. Bu seçimin kendisi bile bir veri noktasıydı.</p>
 
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Popülasyon ve Örneklem</h3>
+    <h3>Popülasyon ve Örneklem</h3>
 
     <p>"Kırk yedi kişi," dedi Koipak, daha çok kendine söyler gibi. "Bu bir <strong>örneklem</strong>. Londra'daki tüm hayat sigortası müşterilerinden — binlerce, on binlerce kişiden — çekilmiş küçük bir kesit."</p>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">C</div>
-      <div>
-        <div class="speaker-name">Calloway</div>
-        <div class="speech-bubble">"Yirmi iki kişilik tabloyu kastediyorsun, kırk yedi değil."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Calloway</p>
+      <p>"Yirmi iki kişilik tabloyu kastediyorsun, kırk yedi değil."</p>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>"İkisini de. Kırk yedi kişi Londra popülasyonunun bir örneklemi. Yirmi iki kişilik tablo ise kırk yedinin bir alt örneklemi. Fenwick bir süzgeç kullanmış — dikkatini çeken müşterileri ayırmış."</p>
 
     <p><strong>Popülasyon</strong>, incelemek istediğimiz bütündür — tüm bireyler, tüm olgular. Kırk yediden yola çıkarak tüm Londra hakkında bir şey söyleyemeyiz belki, ama kırk yedinin <em>içindeki örüntüler</em> bize neyin normal, neyin anormal olduğunu gösterebilir. İstatistiğin özü budur: <strong>az ile çok hakkında konuşmak.</strong> Bir avuç gözlemden, çok daha geniş bir gerçekliğe dair çıkarım yapmak.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Koipak masaya oturdu ve tabloyu önüne açtı. Parmağını satırlar boyunca gezdirdi — her isim, her yaş, her tutar. Sonra durdu.</p>
 
     <p>Son iki satır.</p>
@@ -566,23 +988,13 @@ body::after {
 
     <p><strong>William Crane, 78.</strong> Poliçe tutarı: £2.800. Poliçe tarihi: Mayıs 1903. Tahmini ölüm yılı: 1910. <em>Gerçek ölüm: Ekim 1903.</em></p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Koipak tabloyu bir kez daha okudu. Sonra bir kez daha. Fenwick'in kırmızı çarpılarına baktı — mürekkebin kâğıda basıncından, adamın sinirli olduğu belliydi. Çarpılar düzgün değildi; sert, ani vuruşlarla çizilmişti.</p>
 
     <p>İki adam. İkisi de yetmiş yaşın üstünde. İkisi de bu sonbaharda ölmüş — Fenwick'in tahmini ölüm tarihlerinden yıllar önce.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Olasılık — Belirsizliğin Dili</h3>
+    <h3>Olasılık — Belirsizliğin Dili</h3>
 
     <p>Koipak o akşam odasına döndüğünde, masasına oturdu ve defterini açtı. Yazmaya başladı:</p>
 
@@ -591,43 +1003,22 @@ body::after {
       <em>"İki müşteri aynı sonbaharda öldü. Beklenen ölüm tarihleri çok daha ileriydi. Soru: bu bir tesadüf mü, yoksa bir örüntü mü? Bu soruyu cevaplamak için olasılığa ihtiyacım var — çünkü sezgi, özellikle ölüm söz konusu olduğunda, kötü bir danışmandır."</em>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p><strong>Olasılık</strong>, belirsizliği bir sayıya dönüştürme sanatıdır. Bir olayın gerçekleşme şansını 0 ile 1 arasında ifade ederiz:</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       P(A) = A'nın gerçekleşme sayısı &frasl; Toplam mümkün sonuç sayısı
     </div>
 
     <p>Sıfır: imkânsız. Bir: kesin. Aradaki her şey: belirsiz, ama <em>ölçülebilir</em> belirsiz.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Koipak İngiltere'nin 1901 nüfus sayımını biliyordu — rakamları ezbere değil ama kaynaklarını ezbere bilirdi. Portföydeki müşterilerin çoğu kırk ile altmış yaş arasındaydı; bu yaş grubundaki bir İngiliz erkeğinin herhangi bir yıl içinde ölme olasılığı yaklaşık yüzde üçtü. Kırk yedi kişilik portföyde, bir yılda beklenen ölüm sayısı:</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       47 × 0.03 ≈ 1.4 kişi
     </div>
 
     <p>Bir, belki iki ölüm beklenirdi. İki ölüm, tek başına, istatistiksel olarak şaşırtıcı değildi.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Ama Koipak'u durduran şey sayı değildi — <em>zamanlama</em>ydı. İki ölüm aynı ayda, aynı mevsimde, ikisi de beklenen tarihlerden yıllar önce. Bu tesadüfün olasılığı çok daha düşüktü.</p>
 
     <p>Hesaplamadı. Henüz değil. Daha fazla veriye ihtiyacı vardı.</p>
@@ -638,43 +1029,19 @@ body::after {
       <em>"Şüphe kanıt değildir. Ama şüphe, doğru soruyu sormak için gerekli ilk adımdır. Soru: Bu iki ölümü kim, ne zaman, neden bekliyordu?"</em>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p>Kalemini bıraktı. Lambanın ışığı azalıyordu — yağ bitmek üzereydi. Koipak kalktı, lambayı söndürdü ve karanlıkta pencereye gitti. Dışarıda Thames'in üstündeki sis hafifçe aydınlanıyordu; bir mavnanın feneri, yavaşça ilerliyordu suyun üstünde.</p>
 
     <p>Yarın Fenwick'in oğluyla konuşacaktı. Ve sonra, kırmızı çarpıların arkasındaki isimlerin peşine düşecekti.</p>
 
     <p>Ama o gece, yatağına uzandığında, aklına gelen son düşünce Fenwick'in dosyasındaki zımba izi oldu. Üç sayfa vardı — ama iz dört sayfalıktı. Eksik bir sayfa. <em>Eksik bir veri noktası.</em></p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner narrative">
     <p><em>Eksik veri, yanlış sonuç demektir</em>, diye düşündü Koipak.</p>
 
     <p>Ve uyudu.</p>
-  </div>
-</section>
 
+  </div><!-- /prose -->
 
-<section class="panel" data-chapter="1">
-  <div class="panel-inner">
-    <img src="img/1_4_koipak_window.jpg" alt="Koipak pencerede" style="width:100%; display:block; border-radius:2px; box-shadow:0 8px 30px rgba(0,0,0,0.5);">
-  </div>
-</section>
-
-<section class="panel" data-chapter="1">
-  <div class="panel-inner">
-    <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
-      
+  <div class="concepts-box">
     <h4>Bu Bölümde Geçen Kavramlar</h4>
     <ul class="concepts-list">
       <li>Veri &amp; Gözlem</li>
@@ -689,77 +1056,46 @@ body::after {
     <div class="chapter-nav">
       <a href="#hero" class="disabled">← Önceki</a>
       <a href="#bolum-2">II. Bölüm →</a>
-    
     </div>
-    <div class="scene-break">✦ ✦ ✦</div>
   </div>
-</section>
 
-<section class="panel" data-chapter="2">
-  <div class="panel-inner panel-title">
-    <p class="chapter-label">II. Bölüm</p>
-    <p class="chapter-name">Merkez Nerededir?</p>
-    <div class="amber-line"></div>
-  </div>
-</section>
+</article>
 
-<section class="panel" data-chapter="2">
-  <div class="panel-inner epigraph-panel">
-    Ortalama, bir kalabalığı tek bir rakama hapseder.<br>Ama kalabalık asla tek bir rakam değildir.<br>Tek bir rakamın arkasına saklanan hikâyeleri<br>ancak dağılıma bakan görür.
+<hr class="divider">
+
+<!-- ============================================
+     BÖLÜM II
+     ============================================ -->
+<article class="chapter reveal" id="bolum-2">
+  <p class="chapter-number">İkinci Bölüm</p>
+  <h2 class="chapter-title">Merkez Nerededir?</h2>
+
+  <div class="epigraph">
+    Ortalama, bir kalabalığı tek bir rakama hapseder.<br>
+    Ama kalabalık asla tek bir rakam değildir.<br>
+    Tek bir rakamın arkasına saklanan hikâyeleri<br>
+    ancak dağılıma bakan görür.
     <span class="epigraph-source">— Grifin R. Koipak, Kişisel Notlar, 1903</span>
   </div>
-</section>
 
+  <div class="prose">
 
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Fenwick'in ev halkını ancak ertesi sabah görebildi Koipak. Gece boyunca uyuyamamıştı — uyuyamadığında yaptığı şeyi yapmıştı: hesaplamak. Defterinin üç sayfasını Fenwick'in tablosundaki sayılarla doldurmuştu; mürekkep lekeli parmakları bunu kanıtlıyordu. Ama sabahın soğuk ışığında, hesapların yetmediğini biliyordu. Rakamların bir bağlama, bir hikâyeye ihtiyacı vardı. Ve hikâyeler insanlardan gelirdi.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Limehouse'daki ev, gün ışığında daha az kasvetli görünüyordu — ama daha da yorgun. Tuğlaların arasındaki harç ufalanmıştı, pencerelerin boyası çatlamıştı, kapı eşiğindeki mermer aşınmıştı. Otuz yıllık bir hayatın ağırlığını taşıyan bir evdi bu; sıradan bir İngiliz evi, sıradan bir İngiliz ölümü. Ya da öyle görünüyordu.</p>
 
     <p>Albert Fenwick kapıyı kendisi açtı. Kırk yaşında, uzun boylu, babasının aksine zayıf bir adamdı. Gözlerinin altındaki halkalar tazeydi — bir gecelik değil, birkaç gecelik. Koipak'u içeri alırken elleri titriyordu; yorgunluk ve keder, bedene böyle yerleşirdi.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>"Müfettiş Calloway sizi beklediğimizi söyledi," dedi Albert, Koipak'u babasının çalışma odasına doğru yönlendirirken. "İstatistikçiymisiniz?" Sonra duraksadı — Koipak'un aksanını duymuştu. Galler'in yumuşak, melodili İngilizcesi, Londralıların kulağında hâlâ bir "yabancı" işareti taşırdı. Albert'ın gözlerinde kısa bir şaşkınlık belirdi: bir polis müfettişinin tavsiye ettiği uzmanın Galli olmasını beklememişti.</p>
 
     <p>"Adli istatistikçi," dedi Koipak, bu bakışa aldırmadan — yılların alışkanlığıyla. "Rakamlardan hikâye çıkarırım."</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Albert durdu. Omzunun üzerinden Koipak'a baktı — yüzünde acı bir gülümseme belirdi. "Babam da öyle derdi. 'Rakamlar konuşur, Albert. Sen dinlemeyi bilmiyorsun.' Her akşam yemek masasında söylerdi bunu." Sesi kırıldı, ama topladı. "Buyurun. Oda olduğu gibi duruyor."</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Fenwick'in çalışma odası, dün gördüğünden farklı görünüyordu Koipak'a — çünkü bu sefer yalnızdı. Dün Calloway ve polis memuru vardı; dikkat dağılmıştı. Şimdi ise oda onunla konuşmaya başlamıştı.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Masa dağınıktı ama bir düzeni vardı: sol tarafta hesap defterleri, sağ tarafta yazışma dosyaları, ortada ise Fenwick'in o sabah üzerinde çalıştığı açık sayfa. Koipak dün bunu görmüştü — ama şimdi bir detay daha fark etti. Sayfanın üst kısmında, Fenwick'in el yazısıyla, küçük bir soru:</p>
 
     <div class="document-block">
@@ -773,194 +1109,103 @@ body::after {
       <em>Kenar notta, kırmızı mürekkeple: son iki yaşın altı çizili.</em>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Fenwick müşterilerinin yaşlarını sıralamıştı — küçükten büyüğe. Sonra durmuştu. "Merkez?" diye sormuştu kendine. Cevabı bulamamış mıydı, yoksa bulduğu cevap onu rahatsız mı etmişti?</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>"Babanız aktüerya hesaplamalarında en çok neyi kullanırdı?" diye sordu Koipak, gözlerini defterden kaldırmadan.</p>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">A</div>
-      <div>
-        <div class="speaker-name">Albert</div>
-        <div class="speech-bubble">"Ortalama yaşı. Poliçe primlerini hesaplamak için müşterilerinin tipik yaşını bilmesi gerekirdi."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Albert</p>
+      <p>"Ortalama yaşı. Poliçe primlerini hesaplamak için müşterilerinin tipik yaşını bilmesi gerekirdi."</p>
     </div>
 
-    <div class="speech right">
-      <div class="speech-avatar koipak">K</div>
-      <div>
-        <div class="speaker-name">Koipak</div>
-        <div class="speech-bubble">"Ortalama mı? Hangi ortalama?"</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Koipak</p>
+      <p>"Ortalama mı? Hangi ortalama?"</p>
     </div>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">A</div>
-      <div>
-        <div class="speaker-name">Albert</div>
-        <div class="speech-bubble">"Ne demek istiyorsunuz? Ortalama, ortalamadır."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Albert</p>
+      <p>"Ne demek istiyorsunuz? Ortalama, ortalamadır."</p>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Koipak kalemini masaya bıraktı. "Hayır," dedi sakin bir sesle. "Ortalama en az üç farklı şey demek olabilir. Ve hangisini kullandığınız, bazen hayat ile ölüm arasındaki fark kadar önemlidir."</p>
 
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Merkezi Eğilim Ölçüleri</h3>
+    <h3>Merkezi Eğilim Ölçüleri</h3>
 
     <p>Koipak bir kâğıt aldı ve yazmaya başladı. Albert'a anlatmak için değil — kendisi için düşünmek için. Ama Albert omzunun üstünden bakıyordu, ve Koipak bunu fark edince açıklamaktan geri durmadı. Bazen en karmaşık düşünceler, birine anlatırken berraklaşırdı.</p>
 
     <p>Portföydeki kırk yedi müşterinin yaş listesini üç farklı "merkez" ile özetlemek mümkündü:</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p><strong>Aritmetik ortalama:</strong> Tüm değerleri topla, sayıya böl. En bilinen ölçü — ama en aldatıcı olanı da.</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       x̄ = (38 + 40 + 41 + … + 72 + 78) / 47 ≈ 51.9 yaş
     </div>
 
     <p><strong>Ortanca (medyan):</strong> Değerleri sırala, tam ortadakini al. Kırk yedi kişide yirmi dördüncü kişinin yaşı.</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       Medyan = 52 yaş (24. değer)
     </div>
 
     <p><strong>Tepe değer (mod):</strong> En çok tekrar eden yaş.</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       Mod = 52 yaş (4 kişi)
     </div>
 
     <p>Üçü de elli ikinin etrafında — güzel, düzenli, simetrik bir dağılım izlenimi. Portföyün kalbi elli yaşlarında atıyor. Ama Koipak'un asıl ilgilendiği şey bu değildi.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>"Babanızın kırmızı çarpıyla işaretlediği iki müşteriye bakın," dedi Albert'a. "Alderton, yetmiş iki. Crane, yetmiş sekiz. Diğer müşterilerle aralarında on bir yaşlık bir boşluk var — portföydeki en yaşlı 'normal' müşteri altmış bir. Sonra birden yetmiş iki ve yetmiş sekize sıçrıyor. Bu iki isim dağılımın geri kalanından <em>kopmuş</em>."</p>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">A</div>
-      <div>
-        <div class="speaker-name">Albert</div>
-        <div class="speech-bubble">"Daha yüksek risk. Yaşlı müşteriler daha pahalı poliçe taşır. Daha yüksek prim öderler."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Albert</p>
+      <p>"Daha yüksek risk. Yaşlı müşteriler daha pahalı poliçe taşır. Daha yüksek prim öderler."</p>
     </div>
 
-    <div class="speech right">
-      <div class="speech-avatar koipak">K</div>
-      <div>
-        <div class="speaker-name">Koipak</div>
-        <div class="speech-bubble">"Doğru. Ya da tersinden bakarsak — daha çabuk ölürlerse, sigorta şirketi daha erken ödeme yapar."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Koipak</p>
+      <p>"Doğru. Ya da tersinden bakarsak — daha çabuk ölürlerse, sigorta şirketi daha erken ödeme yapar."</p>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Albert'ın yüzü gerildi. Koipak bu ifadeyi tanıyordu: birinin aklına daha önce hiç gelmemiş, ama duyunca apaçık olan bir fikrin yarattığı tedirginlik.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Aykırı Değerler</h3>
+    <h3>Aykırı Değerler</h3>
 
     <p>Koipak kâğıdını çevirdi ve yeni bir hesap yaptı. Alderton ve Crane'i portföyden çıkarıp ortalamayı yeniden hesapladı:</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       Ortalama (tüm liste): 51.9 yaş<br>
       Ortalama (bu iki kişi hariç): 50.9 yaş
     </div>
 
     <p>Sadece iki kişi, ortalamayı bir tam yıl yukarı çekiyordu. Ama asıl mesele bu bile değildi. Koipak, IQR yöntemini uyguladı — çeyrekler arası genişliğin bir buçuk katını üst çeyreğe ekledi:</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       Q₁ = 47 &nbsp;|&nbsp; Q₃ = 56 &nbsp;|&nbsp; IQR = 9<br>
       Üst sınır = Q₃ + 1.5 × IQR = 56 + 13.5 = 69.5
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Altmış dokuz buçuğun üstündeki her değer, istatistik dilinde bir <strong>aykırı değerdir</strong> — dağılımın geri kalanından belirgin biçimde kopmuş bir gözlem. Alderton, yetmiş iki; Crane, yetmiş sekiz. İkisi de sınırın çok ötesinde.</p>
 
     <p>Aykırı değerler ortalamayı çeker, sürükler, yanıltır — tıpkı bir ipin ucundaki ağırlık gibi. Oysa ortanca hiç değişmemişti: elli iki, iki kişiyi çıkarsan da elli iki. Koipak bu yüzden ortancayı seviyordu — aykırı değerlere dayanıklıydı, ortalama gibi kolay sürüklenmezdi.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p><em>"Bir yalancı, ortalamayı seçer,"</em> diye yazdı Koipak defterinin kenarına. <em>"Dürüst bir istatistikçi, önce dağılımın tamamına bakar."</em></p>
 
     <p>Albert masanın karşısına oturmuş, Koipak'u izliyordu. Adam rakamlarla konuşuyordu sanki — kâğıda eğilmiş, kalemini kâh koyuyor kâh kaldırıyor, zaman zaman dudaklarını kıpırdatıyordu. Eleanor böyle anlarında gülümserdi; <em>"Yine sayılarla dans ediyorsun, Grifin."</em> Koipak bu düşünceyi uzaklaştırdı. Şimdi değil.</p>
 
     <p>Nihayet başını kaldırdı. "Albert, babanızın Alderton ve Crane ile ilişkisi salt ticari miydi? Yoksa başka bir bağ var mıydı?"</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Albert bir an sessiz kaldı — çok uzun bir sessizlik. Sonra ayağa kalktı ve dolabın üst rafına uzandı. Küçük, deri kaplı bir defter çıkardı. Siyah, yıpranmış, bir cep defteri boyutunda. "Bunu size vermek isteyip istemediğimi bilmiyorum," dedi. "Ama sormak zorundaydınız."</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Koipak defteri açtığında gördüğü şey onu bir an için dondurdu.</p>
 
     <p>Fenwick, Alderton ve Crane için ayrı bir sayfa tutmuştu. Yaşları, poliçe tutarları, prim ödeme tarihleri — bunlar tablodakiyle aynıydı. Ama burada ek bilgiler vardı. Her iki müşterinin de Thames Life &amp; Assurance'ın <em>özel poliçe</em> programına dahil olduğu yazıyordu. Piyasa ortalamasının neredeyse iki katı tutarında poliçeler. Ve her ikisi de, Fenwick'in ölümünden tam yirmi gün önce vefat etmişti.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Ama asıl dikkat çekici şey sayfanın altındaydı. Fenwick, her iki ismin yanına küçük harflerle bir not düşmüştü:</p>
 
     <div class="document-block">
@@ -975,101 +1220,49 @@ body::after {
       <em>"Mektup yazıldı. Yanıt yok. C. ile görüşmeli."</em>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Koipak son satırı iki kez okudu. <em>"C. ile görüşmeli."</em> C harfi. Bir ismin baş harfi. Fenwick birine ulaşmaya çalışıyordu — bir mektup yazmış, yanıt alamamış, ve bu kişiyle bizzat görüşmeye karar vermişti.</p>
 
     <p>"Bu 'C' kim?" diye sordu Koipak.</p>
 
     <p>Albert başını salladı. "Bilmiyorum. Babamın iş çevresinde tanıdığı çok kişi vardı — Thames Life'ta müdürler, diğer acenteler, bankacılar. Kimin baş harfi olduğunu söyleyemem."</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Koipak notu bir kez daha okudu. <em>C.</em> Bir mektup yazılmıştı, yanıt gelmemişti. Fenwick yüz yüze görüşmeye karar vermişti. Ve birkaç gün sonra ölmüştü. Bu sıralama tesadüf olabilirdi — ama Koipak tesadüfleri not ederdi, çünkü bazen tesadüfler birikir ve bir örüntü oluştururdu.</p>
 
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Beklenen Değer</h3>
+    <h3>Beklenen Değer</h3>
 
     <p>Koipak defteri kapattı ve Albert'a döndü. "Babanızın 'beklenen değil' notu önemli," dedi. "Bu istatistiğin en temel sorularından birini işaret ediyor: <strong>Beklenen değer</strong> — bir olayın uzun vadede ortalama olarak nereye düşeceğini söyleyen sayı."</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Albert anlamaya çalışıyordu — Koipak bunu gözlerinden gördü. Anlatmaya devam etti, ama bu sefer Albert'ın anlayacağı dille:</p>
 
     <p>"Yetmiş iki yaşında bir İngiliz erkeğinin önümüzdeki yıl içinde ölme olasılığı yaklaşık yüzde yedi. Düşük değil ama kesin de değil. Bu olasılığı kullanarak, bir sigorta şirketi müşterinin <em>beklenen</em> ölüm tarihini hesaplar. Alderton için bu tarih 1912'ydi. Ama adam 1903'te öldü — poliçesini aldıktan yalnızca dört ay sonra."</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       E(X) = Σ [ x · P(X = x) ]<br>
       <span style="font-size:0.85rem; font-style:normal; color:var(--ink-muted);">Beklenen değer: her olası sonucun, olasılığıyla çarpımının toplamı.</span>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>"Fenwick bunu hesaplamıştı," dedi Koipak, deftere bakarak. "Ve hesap tutmuyordu. İki müşteri, ikisi de beklenenden çok erken. Bu bir tesadüf olabilir — ama Fenwick tesadüfe inanmamış."</p>
 
     <p>Albert yutkundu. "Peki siz? Siz tesadüfe inanıyor musunuz?"</p>
 
     <p>Koipak bir an düşündü. Eleanor'un yüzü geldi aklına — tifüs, beklenmedik, açıklanamaz. O da "beklenen değil"di. O da "erkenden"di. "Ben tesadüfe ne inanırım ne inanmam," dedi sonunda. "Ama onu ölçerim. Ve ölçüm, inançtan her zaman daha güvenilirdir."</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Koipak, Fenwick'in evinden çıkmaya hazırlanırken Albert son bir şey söyledi:</p>
 
     <p>"Bay Koipak — babam ölmeden önceki gece geç saatte eve geldi. Normalde akşam yedide dönerdi. O gece saat on bire yakındı. Pardösüsü ıslaktı, ayakkabıları çamurlu. Hiçbir şey söylemedi. Çalışma odasına kapandı. Sabah onu orada buldum."</p>
 
     <p>"O gece nereye gittiğini söyledi mi?"</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>"Hayır. Ama bir şey daha var." Albert durdu, sanki söyleyip söylememek arasında gidip geliyordu. "O gece kapı zili çaldı. Geç saatti — belki on bir buçuk. Ben yatağımdaydım ama duydum. Babam açtı. Sesler geldi — iki erkek sesi. Babamınki ve bir başkasının. Tartışmıyorlardı ama… gergin bir konuşmaydı. On dakika kadar sürdü. Sonra kapı kapandı."</p>
 
     <p>"Diğer sesi tanıdınız mı?"</p>
 
     <p>Albert başını salladı. "Hayır. Kalın bir sesti. On dakika kadar konuştular. Tartışmıyorlardı ama… gergin bir konuşmaydı. Sonra kapı kapandı."</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Koipak dışarı çıktığında hava kararmıştı. Sis yine çökmüştü — dünden daha yoğun, daha soğuk. Sokak lambalarının ışığı birkaç metre ötede eriyordu. Fenwick son gecesinde birisiyle görüşmüştü. Kimle? Ve ne hakkında? Koipak henüz bilmiyordu — ama defterdeki "C" harfi ve bu gece ziyareti, aynı hikâyenin iki parçası gibi duruyordu.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>O gece odasına döndüğünde masasına oturdu. Defterini açtı. Gecenin sessizliğinde, kalemin kâğıda sürtünme sesi dışında hiçbir şey yoktu. Yazdı:</p>
 
     <div class="document-block">
@@ -1077,24 +1270,13 @@ body::after {
       <em>"Fenwick iki aykırı değer bulmuş. İki ölüm, beklenen değerin çok altında bir zamanda. Ve sonra Fenwick de ölmüş. Üç veri noktası — henüz bir dağılım oluşturmak için yeterli değil. Ama bir yön göstermek için yeterli. Yön: Thames Life &amp; Assurance. Yarın oraya gideceğim."</em>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="2">
-  <div class="panel-inner narrative">
     <p>Kalemini bıraktı. Lambasını söndürmeden önce, masanın karşısındaki boş sandalyeye baktı — bu sefer bilerek. Eleanor'un oraya oturduğu son akşamı hatırladı. <em>"Rakamlar her şeyi çözer mi, Grifin?"</em> diye sormuştu. Koipak gülümsemişti: <em>"Her şeyi değil. Ama neyin çözülmesi gerektiğini gösterir."</em></p>
 
     <p>Eleanor haklıydı. Rakamlar her şeyi çözmezdi. Ama Fenwick'in defterindeki notlar — "beklenen değil," "erkenden," ve o gizemli "C" harfi — birer kıymık gibi saplanmıştı zihnine. Yarın Thames Life &amp; Assurance'ın kapısını çalacaktı. Cevaplar orada olmalıydı.</p>
-  </div>
-</section>
 
+  </div><!-- /prose -->
 
-<section class="panel" data-chapter="2">
-  <div class="panel-inner">
-    <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
-      
+  <div class="concepts-box">
     <h4>Bu Bölümde Geçen Kavramlar</h4>
     <ul class="concepts-list">
       <li>Aritmetik Ortalama</li>
@@ -1111,66 +1293,35 @@ body::after {
     <div class="chapter-nav">
       <a href="#bolum-1">← I. Bölüm</a>
       <a href="#bolum-3">III. Bölüm →</a>
-    
     </div>
-    <div class="scene-break">✦ ✦ ✦</div>
   </div>
-</section>
 
-<section class="panel" data-chapter="3">
-  <div class="panel-inner panel-title">
-    <p class="chapter-label">III. Bölüm</p>
-    <p class="chapter-name">Dağılmanın Ölçüsü</p>
-    <div class="amber-line"></div>
-  </div>
-</section>
+</article>
 
-<section class="panel" data-chapter="3">
-  <div class="panel-inner epigraph-panel">
-    Bir şeyin ne kadar değişken olduğunu bilmeden,<br>onun hakkında hiçbir şey bilmiyorsunuz demektir.
+<hr class="divider">
+
+<article class="chapter reveal" id="bolum-3">
+  <p class="chapter-number">Üçüncü Bölüm</p>
+  <h2 class="chapter-title">Dağılmanın Ölçüsü</h2>
+
+  <div class="epigraph">
+    Ortalama sana merkezin nerede olduğunu söyler.<br>
+    Ama merkez etrafında ne kadar kaos olduğunu<br>
+    ancak dağılma anlatır. Ve kaosun yokluğu —<br>
+    işte asıl şüpheli olan budur.
     <span class="epigraph-source">— Grifin R. Koipak, Kişisel Notlar, 1903</span>
   </div>
-</section>
 
+  <div class="prose">
 
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Thames Life &amp; Assurance'ın genel müdürlüğü, Cornhill Caddesi'nin köşesinde dikiliyordu — siyah granit cephesi, altın yaldızlı tabelası, ve her sabah tam dokuzda açılan ağır meşe kapısıyla. Bina kendine güveniyordu; bu güven, şirketin kuruluşundan bu yana elli yıl boyunca tek bir skandala bulaşmamış olmasından geliyordu. Ya da öyle deniyordu. Koipak, binaların güvenine inanmazdı. Rakamların güvenine inanırdı — ve rakamlar henüz konuşmamıştı.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Sabah sekiz buçukta kapının önündeydi. Soğuktu; parmak uçları uyuşmuştu ama bunu fark etmiyordu. Elinde Fenwick'in deri kaplı defterinin bir kopyası, cebinde ise Calloway'in mahkeme izni vardı. Calloway izni hızlı çıkarmıştı — Koipak daha sabah istemişti, öğlene kalmadan elindeydi. <em>Hızlı iş</em>, diye düşündü Koipak. <em>Calloway her zaman hızlıdır.</em> Bunu bir iltifat olarak düşünmüştü; henüz başka bir anlam yüklemiyordu.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Arşiv memuru — kısa boylu, ince gözlüklü, sessiz bir adam — Koipak'u süzdü. Mahkeme iznini okudu, başını salladı, sonra Koipak konuşunca duraksadı. Galler aksanı. Memurun bakışları değişti — çok az, ama Koipak bu türden bakışları tanırdı. <em>Sen ne iş yaparsın ki burada?</em> diyen bir bakış. Londra'nın zarif kurumlarında bir Galli, hâlâ yanlış yerde duran bir mobilya gibi karşılanırdı. Memur kibarlığını bozmadı ama "efendim" demeyi bıraktı. Koipak aldırış etmedi; zaten kelimelerle değil, sayılarla konuşacaktı.</p>
     
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Bodrum kattaki arşiv odasında uzun tahta raflar boyunca poliçe dosyaları diziliyordu: on yıllık kayıtlar, binlerce isim, her biri bir hayat. Koipak tam olarak ne aradığını biliyordu: Thames Life'ın son altı yılda yaptığı <em>erken ödemelerin</em> kaydı. Poliçe imzalandıktan altı ay içinde ödeme gerektiren vakalar — yani müşterinin poliçeyi aldıktan kısa süre sonra ölmesi.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Arşiv memuru dosyaları masaya taşırken Koipak oturdu ve çalışmaya başladı. Bir saat sürdü. İki saat. Memur bir ara çay getirdi; Koipak teşekkür etti ama çayın soğuduğunu fark etmedi. Sonunda tablo tamamlandı.</p>
 
     <div class="document-block">
@@ -1191,106 +1342,64 @@ body::after {
       </table>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Koipak tabloyu üç kez okudu. 1898'den 1902'ye kadar beş yılın ortalamaları kendi aralarında neredeyse uyumluydu: üç buçuk ay ile beş ay arasında, sakin bir düzen. İnsanlar hastalanır, teşhis alır, birkaç ay içinde vefat eder — hayatın acı ama öngörülebilir ritmi. Sonra 1903: <strong>0.3 ay.</strong> On günden az. Alderton ve Crane, poliçelerini imzaladıktan neredeyse hemen sonra ölmüşlerdi.</p>
 
     <p>Bu sadece farklı bir ortalama değildi. Bu, beş yıllık bir örüntünün tamamen dışında bir rakamdı.</p>
 
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Varyans — Dağılmanın Dili</h3>
+    <h3>Varyans — Dağılmanın Dili</h3>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Koipak kâğıdını çıkardı. Merkezi eğilim ölçüleri — ortalama, ortanca, mod — ona merkezin nerede olduğunu söylemişti. Ama merkez tek başına yetmiyordu. Asıl soru şuydu: <em>değerler merkezden ne kadar uzaklaşıyor?</em></p>
 
     <p>Buna <strong>varyans</strong> denir — değerlerin ortalamadan sapmalarının karelerinin ortalaması. Kareler alınır çünkü sapmaların toplamı her zaman sıfırdır; kare almak, hem negatif hem pozitif sapmaları aynı tarafa çevirir.</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       s² = Σ(xᵢ − x̄)² &frasl; (n − 1)
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Koipak, beş yıllık gecikme sürelerini tek tek yazdı: 4.2, 3.8, 5.1, 4.6, 4.9. Ortalamaları:</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       x̄ = (4.2 + 3.8 + 5.1 + 4.6 + 4.9) &frasl; 5 = 4.52 ay
     </div>
 
     <p>Sonra her değerin ortalamadan sapmasını hesapladı, karelerini aldı, topladı ve dörde böldü:</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       s² = [(4.2−4.52)² + (3.8−4.52)² + (5.1−4.52)² + (4.6−4.52)² + (4.9−4.52)²] &frasl; 4<br>
       <span style="font-size:0.85rem; font-style:normal; color:var(--ink-muted);">= [0.1024 + 0.5184 + 0.3364 + 0.0064 + 0.1444] / 4 ≈ 0.277</span>
     </div>
 
     <p>Varyans küçüktü: 0.277. Beş yıllık veriler birbirine yakındı, dağılım dardı. Her şey ortalamanın etrafında düzgünce kümelenmişti.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Ama şimdi 1903'ün değerini — 0.3 ayı — tabloya eklediğinde?</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       x̄<sub>yeni</sub> = (4.2 + 3.8 + 5.1 + 4.6 + 4.9 + 0.3) &frasl; 6 = 3.82 ay<br><br>
       s²<sub>yeni</sub> ≈ 3.19
     </div>
 
     <p>Varyans 0.277'den 3.05'e fırlamıştı. <em>On bir kat artış.</em> Tek bir gözlem — 1903 — tüm dağılımı paramparça etmişti.</p>
 
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Standart Sapma — Ölçeği Anlamak</h3>
+    <h3>Standart Sapma — Ölçeği Anlamak</h3>
 
     <p>Varyans faydalı bir ölçüdür ama bir sorunu vardır: birimi karedir. Gecikme süresi "ay" cinsindeyse, varyansın birimi "ay²" olur — yorumlanması güçtür. Bu yüzden pratikte varyansın karekökü kullanılır; buna <strong>standart sapma</strong> denir:</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       s = √s²
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Beş yıllık standart sapma:</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       s = √0.277 ≈ 0.53 ay
     </div>
 
     <p>"Normal" bir değer, ortalamanın bir-iki standart sapma çevresindeydi: 4.52 ± 1.06 ay. Yani yaklaşık 3.5 ile 5.6 ay arası. 1903'ün 0.3 aylık değeri ise ortalamadan kaç standart sapma uzaktaydı?</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       z = (x − x̄) &frasl; s = (0.3 − 4.52) &frasl; 0.53 ≈ −8.0
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Koipak kalemi masaya bıraktı ve bir an o rakama baktı. <strong>Sekiz standart sapma.</strong> Doğadaki pek çok değişken <strong>normal dağılım</strong> gösterir — çan eğrisi şeklinde, ortalamanın etrafında simetrik olarak yığılır. Bu dağılımda basit bir kural geçerlidir:</p>
 
     <div class="document-block">
@@ -1300,31 +1409,14 @@ body::after {
       Değerlerin %99.7'si → ortalama ± 3 standart sapma içinde
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Üç standart sapma dışındaki değerler, binde üçten az olasılıkla ortaya çıkar. Sekiz standart sapma ise — Koipak bunu hesaplamaya bile gerek duymadı — milyarlarda bir olasılık demekti. Yıldırım çarpma olasılığından düşük. Aynı gün iki kez yıldırım çarpma olasılığından bile düşük.</p>
 
     <p><em>İstatistik bunu "imkânsız" demez,</em> diye yazdı Koipak defterine. <em>Ama "bu bir tesadüf değildir" der.</em></p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Arşiv memuru kapıya yaslanmış, Koipak'u izliyordu. Adam saatlerce orada oturmuş, kalem ve kâğıtla baş başa kalmıştı. Öğle vakti geldiğinde memur bir şeyler söylemek istedi ama Koipak'un yüzündeki ifade onu durdurdu — o ifade, bir şeyin tam yerine oturduğu andaki ifadeydi. Kaşlar çatık değildi, gülümseme yoktu; sadece bir durgunluk, bir <em>bilme</em> hali.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Koipak kalktı. Masadaki dosyaları toplarken bir şey fark etti — önemsiz bir şey gibi görünüyordu ama Koipak'un zihni "önemsiz" kelimesine güvenmezdi. 1901 yılının dosyası diğerlerinden farklıydı. Diğer yılların dosyaları sıralıydı — her poliçe numarası ardışık, her sayfa yerinde. Ama 1901'in dosyasında bir boşluk vardı: sayfa numaraları 14'ten 16'ya atlıyordu. Sayfa 15 yoktu.</p>
 
     <p>"Bu dosyada bir sayfa eksik," dedi Koipak, memura dönerek.</p>
@@ -1333,105 +1425,51 @@ body::after {
 
     <p>"Son altı ayda bu dosyaları kim inceledi?"</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Memur düşündü. "Bir polis müfettişi geldi, iki ay kadar önce. Mahkeme izni vardı — sizinki gibi. Dosyaları inceledi, notlar aldı, gitti."</p>
 
     <p>"Adını hatırlıyor musunuz?"</p>
 
     <p>"Calloway. Müfettiş Calloway."</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Koipak merdivenleri çıkarken adımlarını yavaşlattı. <em>Calloway bu dosyaları daha önce görmüştü.</em> İki ay önce. Ama Koipak'a hiç bahsetmemişti. İlk gün, Fenwick'in evinde, "İçinde sayılar var, Koipak. Ben bir şey anlamadım" demişti. Ya gerçekten anlamamıştı — ya da anlamış ve söylememişti.</p>
 
     <p>İki ihtimal. İkisi de mümkün. Koipak henüz birini seçmedi. Bir istatistikçi olarak biliyordu: yeterli veri olmadan hipotez kurmak, verisiz ateş etmek gibidir — hem tehlikeli hem de israftır.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Ama eksik sayfa onu rahatsız ediyordu. Noterdeki dosyada da bir sayfa eksikti. Şimdi Thames Life'ın arşivinde de. İki farklı yerde, iki eksik sayfa. Tesadüf olabilirdi — dosyalar kaybolur, sayfalar yanlış yere konur. Ama tesadüf, art arda gelmeye başladığında, tesadüf olmaktan çıkar.</p>
 
     <p>Dışarı çıktığında öğle güneşi sisin içinden sızıyordu — Kasım'da nadir görülen bir netlik. Koipak bir an durdu ve Cornhill Caddesi'nin kalabalığına baktı. Herkes bir yere gidiyordu, herkesin bir amacı vardı. Ama onların arasında, fark edilmeden, birisi de sayfaları yok ediyordu.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Calloway'i öğleden sonra ofisinde buldu. Müfettiş masasında oturuyordu; önünde bir fincan kahve, yanında birkaç dosya. Koipak'u görünce gülümsedi — her zamanki sıcak gülümseme.</p>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">C</div>
-      <div>
-        <div class="speaker-name">Calloway</div>
-        <div class="speech-bubble">"Ne buldun?"</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Calloway</p>
+      <p>"Ne buldun?"</p>
     </div>
 
     <p>Koipak oturdu. Thames Life'ın kayıtlarını anlattı: beş yıllık düzen, 1903'ün dramatik sapması, sekiz standart sapma. Calloway dikkatle dinledi — kaşlarını çattı, başını salladı, doğru yerlerde "ilginç" dedi. Profesyoneldi; Koipak bunu takdir ederdi.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Sonra Koipak sordu — doğrudan değil, yan yoldan, bir istatistikçinin soruyu soruş biçimiyle:</p>
 
     <p>"Thames Life'ın arşivinde 1901 dosyasında bir sayfa eksik. Arşiv memuru, iki ay önce bir müfettişin dosyaları incelediğini söyledi."</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Calloway'in yüzü değişmedi. Kahve fincanını aldı, bir yudum içti, masaya bıraktı. "Ben baktım, evet. Fenwick davası açılmadan önce ön araştırma yaptım. Thames Life hakkında birkaç şikâyet gelmişti, kontrol ettim. Bir şey bulamadım — o yüzden sana söylemedim. Eksik sayfa…" Omuz silkti. "Arşiv memuru hata yapmış olmalı. Yıllık dosyalar düzenli tutulmaz bazen. Ben hallederim."</p>
 
     <p>"Hallederim" dedi Calloway. İki kelime. Koipak bu iki kelimeyi kaydetti — çünkü "hallederim" bir teklif değildi, bir kapanıştı. Konuyu kapatıyordu.</p>
 
     <p>Koipak başını salladı. "Tamam," dedi. Ve gitti.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Ama kapıdan çıkarken, omzunun üstünden son bir kez baktı. Calloway masasına dönmüştü — ama kahvesine değil, dosyalardan birine bakıyordu. Ve yüzündeki ifade, sıcak gülümsemenin tam tersi olan bir şeydi. Kısa sürdü; Koipak kapıyı kapatmadan önce kayboldu. Ama Koipak görmüştü.</p>
 
     <p>Soğuk bir ifadeydi. <em>Hesap yapan</em> bir ifade.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>O gece Koipak odasına döndüğünde masasına oturmadı. Pencereye gitti. Thames görünmüyordu — sis yine her yerdeydi — ama nehrin orada olduğunu biliyordu. Her zaman oradaydı, görünse de görünmese de.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Defterini açtı. Yazdı:</p>
 
     <div class="document-block">
@@ -1441,35 +1479,17 @@ body::after {
       <em>1903'teki 0.3 aylık değer, sistemin doğal değişkenliğiyle açıklanamaz. Birileri müdahale etmiş. Soru: kim?"</em>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Kalemini bıraktı. O gece ilk kez, uyumadan önce, Calloway hakkında düşündü — ve düşündüğü şey onu rahatsız etti. Yedi yıldır güvendiği bir adama şüpheyle bakmak, ortalamanın güvenli bölgesinden ayrılıp standart sapmaların uzak diyarlarına yürümek gibidir: her adımda zemin daha az sağlam, manzara daha az tanıdıktır.</p>
 
     <p>Ama Koipak istatistikçiydi. Ve istatistikçiler, rahat bölgede kalmak yerine verinin götürdüğü yere giderler.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="3">
-  <div class="panel-inner narrative">
     <p>Yarın, Margaret Whitfield'ı bulacaktı. Thames Life'ın eski muhasebecisi — 1901'de kovulan kadın. 1901 dosyasının eksik sayfasının o yıla ait olması tesadüf olamazdı.</p>
 
     <p><em>Olamazdı</em>, diye düşündü Koipak. Ve bu sefer, bu kelimeyi bir istatistikçi olarak değil, bir insan olarak düşünüyordu.</p>
-  </div>
-</section>
 
+  </div><!-- /prose -->
 
-<section class="panel" data-chapter="3">
-  <div class="panel-inner">
-    <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
-      
+  <div class="concepts-box">
     <h4>Bu Bölümde Geçen Kavramlar</h4>
     <ul class="concepts-list">
       <li>Varyans</li>
@@ -1485,30 +1505,26 @@ body::after {
     <div class="chapter-nav">
       <a href="#bolum-2">← II. Bölüm</a>
       <a href="#bolum-4">IV. Bölüm →</a>
-    
     </div>
-    <div class="scene-break">✦ ✦ ✦</div>
   </div>
-</section>
 
-<section class="panel" data-chapter="4">
-  <div class="panel-inner panel-title">
-    <p class="chapter-label">IV. Bölüm</p>
-    <p class="chapter-name">Hipotez</p>
-    <div class="amber-line"></div>
-  </div>
-</section>
+</article>
 
-<section class="panel" data-chapter="4">
-  <div class="panel-inner epigraph-panel">
-    Bir şüpheliyi bulmak kolaydır.<br>Ama şüpheyi kanıta dönüştürmek —<br>işte orada bilim başlar.
+<hr class="divider">
+
+<article class="chapter reveal" id="bolum-4">
+  <p class="chapter-number">Dördüncü Bölüm</p>
+  <h2 class="chapter-title">Hipotez</h2>
+
+  <div class="epigraph">
+    Bir şüpheliyi bulmak kolaydır.<br>
+    Ama şüpheyi kanıta dönüştürmek —<br>
+    işte orada bilim başlar.
     <span class="epigraph-source">— Grifin R. Koipak, Kişisel Notlar, 1903</span>
   </div>
-</section>
 
+  <div class="prose">
 
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Ölüm belgelerini Calloway getirdi — iki adet, sarı zarflarda, resmi mühürlü. Koipak zarfları açmadan önce bir an elinde tuttu; her zaman böyle yapardı. Bir belgenin ağırlığı, kâğıdının kalınlığı, mührünün basıncı — bunlar da birer veriydi. Sonra açtı.</p>
 
     <div class="document-block">
@@ -1525,13 +1541,6 @@ body::after {
       İmzalayan hekim: <strong>Dr. Silas Pemberton.</strong>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Koipak belgeleri yan yana koydu. İki farklı adam. İki farklı adres. İki farklı tarih. Ama aynı doktor.</p>
 
     <p>"Thames Life'ın 1903 primlerini kimin onayladığını da buldurdum," dedi Calloway, kollarını göğsünde kavuşturmuş, Koipak'u izlerken. "Tıbbi danışman imzası gerekiyor. Tahmin et kimin imzası."</p>
@@ -1540,33 +1549,16 @@ body::after {
 
     <p>"Pemberton. 1899'dan beri şirketin tıbbi danışmanı."</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Koipak belgelere bir kez daha baktı. İki ölüm, bir doktor. Bu bir korelasyondu — henüz bir kanıt değil. Londra'da yüzlerce doktor vardı, ama Thames Life'ın tıbbi danışmanı bir taneydi. Pemberton'ın her iki vakada da imzası olması, pozisyonunun doğal bir sonucu olabilirdi.</p>
 
     <p><em>Olabilirdi.</em> Ama Koipak "olabilir"lerle iş yapmıyordu. Sayılarla yapıyordu.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Hipotez Testi</h3>
+    <h3>Hipotez Testi</h3>
 
     <p>O gece Koipak masasına oturdu ve bir istatistikçinin en güçlü aracını kurdu: <strong>hipotez testi.</strong></p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Fikir basittir. Önce "hiçbir şey olmadığını" varsayarsınız — olağandışı bir durum yoktur, gözlemlediğiniz şey rastlantının eseridir. Buna <strong>sıfır hipotezi</strong> denir ve H₀ ile gösterilir. Sonra verinizin bu varsayımla ne kadar çeliştiğini ölçersiniz.</p>
 
     <div class="document-block">
@@ -1575,46 +1567,29 @@ body::after {
       <strong>H₁:</strong> Pemberton'ın vakalarında erken ölüm oranı anlamlı biçimde yüksektir. (Bir şeyler var.)
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Mantık şudur: eğer H₀ doğruysa — yani Pemberton'ın vakalarında gerçekten olağandışı bir şey yoksa — gözlemlediğimiz örüntünün sırf rastlantıyla ortaya çıkma olasılığı ne kadardır? Bu olasılık çok küçükse, H₀'ı reddederiz.</p>
 
     <p><em>Mahkeme "makul şüphenin ötesinde" kanıt ister. İstatistik bunu bir sayıyla ifade eder.</em></p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Calloway kayıtları iki günde getirmişti. Pemberton, 1899'dan bu yana Thames Life için kırk üç poliçe onaylamıştı. Koipak bunları tek tek inceledi; her poliçenin yanına ödeme tarihini, müşterinin yaşını ve poliçe başlangıç tarihini yazdı. Gece geç vakta, mum ışığında, tablo tamamlandı.</p>
 
     <p>Kırk üç vakadan sekizi "erken ödeme" içeriyordu — müşteri poliçeyi imzaladıktan altı ay içinde ölmüştü. Londra genelindeki diğer tıbbi danışmanların onayladığı poliçelerde bu oran yaklaşık yüzde ikiydi.</p>
 
     <p>Pemberton'ın oranı:</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       8 / 43 ≈ %18.6
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Yüzde on sekiz buçuk. Beklenenin dokuz katından fazla.</p>
 
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">p-Değeri</h3>
+    <h3>p-Değeri</h3>
 
     <p>Koipak hesaplarını kontrol etti, sonra bir kez daha. Sonucu <strong>p-değeri</strong> olarak ifade etti — sıfır hipotezi doğruyken, gözlemlenen örüntünün ya da daha uç bir örüntünün salt rastlantıyla ortaya çıkma olasılığı.</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       p-değeri ≈ 0.0000003<br>
       <span style="font-size:0.85rem; font-style:normal; color:var(--ink-muted);">Milyonda üçten az.</span>
     </div>
@@ -1627,76 +1602,40 @@ body::after {
       p &lt; 0.001 → çok güçlü kanıt
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Koipak'un bulduğu değer, "çok güçlü kanıt" eşiğinin bile çok altındaydı. Pemberton'ın vakalarındaki erken ölüm oranının rastlantıyla açıklanması, istatistiksel olarak neredeyse imkânsızdı.</p>
 
     <p><em>İstatistik "suçlu" demez. Ama "bu tesadüf değildir" der.</em></p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Sabah yedide Calloway'in kapısındaydı. Kapı açıldığında Calloway henüz tıraş olmamıştı — üç günlük sakallı, gözleri kırmızı, ama uyanıktı. Koipak'u eşiğinde görünce şaşırmadı; sanki bekliyormuş gibiydi.</p>
 
-    <div class="speech right">
-      <div class="speech-avatar koipak">K</div>
-      <div>
-        <div class="speaker-name">Koipak</div>
-        <div class="speech-bubble">"Pemberton'ın vakalarında erken ölüm oranı yüzde on sekiz buçuk. Beklenenin dokuz katı. p-değeri milyonda üçün altında."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Koipak</p>
+      <p>"Pemberton'ın vakalarında erken ölüm oranı yüzde on sekiz buçuk. Beklenenin dokuz katı. p-değeri milyonda üçün altında."</p>
     </div>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">C</div>
-      <div>
-        <div class="speaker-name">Calloway</div>
-        <div class="speech-bubble">"Türkçesi?"</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Calloway</p>
+      <p>"Türkçesi?"</p>
     </div>
 
-    <div class="speech right">
-      <div class="speech-avatar koipak">K</div>
-      <div>
-        <div class="speaker-name">Koipak</div>
-        <div class="speech-bubble">"Türkçesi: Pemberton'ın onayladığı poliçelerde insanlar beklenenden çok daha hızlı ölüyor. Ve bu bir tesadüf değil."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Koipak</p>
+      <p>"Türkçesi: Pemberton'ın onayladığı poliçelerde insanlar beklenenden çok daha hızlı ölüyor. Ve bu bir tesadüf değil."</p>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Calloway bir an durdu. Sonra ceketini aldı. "Gidelim," dedi.</p>
 
     <p>Pemberton'ın gözaltına alınması iki saat sürdü. Doktor, Southwark'taki muayenehanesinde hastaları kabul ederken yakalandı. Direnmedi — aksine, polis geldiğinde sanki rahatlamış gibi görünüyordu. Elleri titremiyordu; ama yüzü çökmüştü, sanki uzun zamandır taşıdığı bir yükü nihayet yere bırakmanın yorgunluğu vardı üzerinde.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Koipak gözaltı sürecine katılmadı. Calloway'in işiydi bu — ve Calloway işini iyi bilirdi. Hızlıydı, kararlıydı, soruları netti. Koipak bunu admire ederdi normalde. Ama bugün bir şey farklıydı. Calloway <em>fazla</em> hızlıydı. Sabah yedide kapısını çaldığında uyanık ve giyinikti — üç günlük sakal buna rağmen. Pemberton'ın adresini sormamıştı. Gözaltı emrini öğlene kalmadan çıkarmıştı.</p>
 
     <p>Koipak bu gözlemleri kaydetti. Yorum yapmadı. Henüz değil.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Margaret Whitfield</h3>
+    <h3>Margaret Whitfield</h3>
 
     <p>Pemberton gözaltındayken, Koipak bir başka adrese yürüdü. Margaret Whitfield — Thames Life &amp; Assurance'ın eski muhasebecisi. III. Bölüm'de arşivdeki eksik 1901 dosyasını ararken adını bulmuştu; Whitfield 1901'de Thames Life'tan ayrılmıştı. <em>Ayrılmıştı mı, kovulmuştu mu?</em> Bunu öğrenmek istiyordu.</p>
 
@@ -1708,13 +1647,6 @@ body::after {
 
     <p>"Polis?"</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>"Değilim. Adli istatistikçiyim. Thames Life'ın kayıtlarındaki bir anomali üzerinde çalışıyorum."</p>
 
     <p>Whitfield'ın gözlerinde bir şey değişti — korku mu, rahatlama mı, Koipak ayırt edemedi. Kadın Koipak'u bir an süzdü, aksanını tartıyordu. Sonra kapıyı biraz daha açtı. "Galli misiniz?"</p>
@@ -1722,12 +1654,9 @@ body::after {
     <p>"Evet."</p>
 
     <p>"İyi. İçeri girin." Koipak'un şaşkın bakışını gördü. "Thames Life'ta dört yıl çalıştım. Tek kadın muhasebeci. Beni dinleyen olmadı — çünkü kadındım. Sizi de dinlemeyeceklerdir — çünkü Galli'siniz. Ama bu yüzden tam da birbirimize söyleyeceklerimiz var."</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Whitfield çay koymadı, oturmadı, kibarlık göstermedi. Doğrudan konuştu:</p>
 
     <p>"1901'de kayıtlarda tutarsızlıklar buldum. Üç poliçe — hepsi altmış beş yaş üstü müşteriler, hepsi yüksek tutarlı, hepsi onay tarihinden kısa süre sonra ödeme gerektirmiş. Aynı örüntü. Rapor yazdım."</p>
@@ -1745,54 +1674,30 @@ body::after {
     <p>Whitfield, Koipak'un gözlerinin içine baktı.</p>
 
     <p>"Calloway. Müfettiş Calloway."</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Koipak dışarı çıktığında bacakları ağırdı. Clerkenwell'in dar sokaklarında yürüdü — nereye gittiğini bilmeden, sadece yürümek için. Zihninde iki tablo dönüyordu: biri Pemberton'ın istatistikleri, diğeri Whitfield'ın hikâyesi.</p>
 
     <p>Pemberton'ın erken ölüm oranı yüzde on sekiz buçuktu ve p-değeri milyonda üçün altındaydı. Bu sağlam bir bulguydu. Ama şimdi yeni bir soru belirmişti: Pemberton tek başına mıydı?</p>
 
     <p>Whitfield 1901'de bir rapor yazmıştı. Rapor Calloway'e gitmişti. Rapor kaybolmuştu. Whitfield kovulmuştu. Ve 1901 dosyasındaki sayfalar eksikti.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Bu noktaları birleştirmek kolaydı — <em>çok kolaydı.</em> Koipak bunu biliyordu ve bu yüzden dikkatli olması gerekiyordu.</p>
 
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Anlamlılık Düzeyi</h3>
+    <h3>Anlamlılık Düzeyi</h3>
 
     <p>Bir hipotez testinde, H₀'ı reddetmek için önceden bir eşik belirlenir — buna <strong>anlamlılık düzeyi (α)</strong> denir. Genellikle α = 0.05 alınır: yani "yüzde beş yanılma riski kabul edilebilir" denir.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Pemberton için p &lt; α — çok net. Ama Calloway için? Koipak'un elinde bir p-değeri yoktu, sadece bir tanık ifadesi ve birkaç eksik sayfa vardı. Bu, hipotez testi bile kuramayacağı kadar az veriydi.</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       Pemberton: p &lt; 0.000001 → H₀ reddedilir. Güçlü kanıt.<br>
       Calloway: Veri yetersiz. Henüz test kurulamaz.
     </div>
 
     <p><em>Şüphe her zaman veriden önce gelir</em>, diye yazdı Koipak o gece defterine. <em>Ama şüpheyi kanıta dönüştürmek için sabır lazım. Ve daha fazla veri.</em></p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="4">
-  <div class="panel-inner narrative">
     <p>Koipak o gece uyumadı. Masasında oturdu, defterinin açık sayfasına baktı ve düşündü. Pemberton yarın sorgulanacaktı. Calloway sorguyu yönetecekti. Ve Koipak, sorgunun ne ortaya çıkaracağından çok, ne ortaya <em>çıkarmayacağından</em> endişelenmeye başlamıştı.</p>
 
     <p>Bu yeni bir duyguydu — ve bir istatistikçi için en tehlikeli duygu: <strong>verisiz şüphe.</strong> Sezgi. His. Bağırsak hissi.</p>
@@ -1802,14 +1707,10 @@ body::after {
     <p>Belki de Eleanor haklıydı.</p>
 
     <p>Sabahı bekledi.</p>
-  </div>
-</section>
 
+  </div><!-- /prose -->
 
-<section class="panel" data-chapter="4">
-  <div class="panel-inner">
-    <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
-      
+  <div class="concepts-box">
     <h4>Bu Bölümde Geçen Kavramlar</h4>
     <ul class="concepts-list">
       <li>Hipotez Testi</li>
@@ -1826,166 +1727,91 @@ body::after {
     <div class="chapter-nav">
       <a href="#bolum-3">← III. Bölüm</a>
       <a href="#bolum-5">V. Bölüm →</a>
-    
     </div>
-    <div class="scene-break">✦ ✦ ✦</div>
   </div>
-</section>
 
-<section class="panel" data-chapter="5">
-  <div class="panel-inner panel-title">
-    <p class="chapter-label">V. Bölüm</p>
-    <p class="chapter-name">Yanılmanın İki Yüzü</p>
-    <div class="amber-line"></div>
-  </div>
-</section>
+</article>
 
-<section class="panel" data-chapter="5">
-  <div class="panel-inner epigraph-panel">
-    Doğru kararın bedeli, yanlış kararın<br>bedelinden her zaman düşüktür.<br>Ama hangi kararın yanlış olduğunu<br>ancak sonradan öğrenirsiniz.
+<hr class="divider">
+
+<article class="chapter reveal" id="bolum-5">
+  <p class="chapter-number">Beşinci Bölüm</p>
+  <h2 class="chapter-title">Yanılmanın İki Yüzü</h2>
+
+  <div class="epigraph">
+    Doğru kararın bedeli, yanlış kararın<br>
+    bedelinden her zaman düşüktür.<br>
+    Ama hangi kararın yanlış olduğunu<br>
+    ancak sonradan öğrenirsiniz.
     <span class="epigraph-source">— Grifin R. Koipak, Kişisel Notlar, 1903</span>
   </div>
-</section>
 
+  <div class="prose">
 
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
     <p>Pemberton sorguya alındığında sabahın onu çeyrek geçiyordu. Scotland Yard'ın bodrum katındaki sorgu odası dar, düşük tavanlı, tek penceresi demir parmaklıklıydı. Duvarlar sarı boyalıydı ama yılların sigarası onları grimsi kahverengiye çevirmişti. Masanın bir tarafında Calloway oturuyordu — sakin, hazırlıklı, elinde not defteri. Diğer tarafında Dr. Silas Pemberton — elli beş yaşında, bir zamanlar düzgün olan saçları dağınık, gözlerinin altında halkalar. Koipak köşedeki sandalyeye oturmuştu: gözlemci olarak oradaydı, sorgulayıcı olarak değil.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
     <p>Calloway sorguyu mesleki bir soğukkanlılıkla yürüttü. Sorular netti, ses tonu seviyeydi, zorlama yoktu. Koipak bunu admire ederdi — Calloway'in sorgu tekniği, istatistikteki sistematik örnekleme gibi çalışırdı: her soru bir öncekini inşa eder, her yanıt bir sonrakini yönlendirir.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
     <p>Pemberton konuşmaya başladığında sesi kırılgandı. Koipak, adamın korkmuş olduğunu gördü — ama <em>neden</em> korktuğu sorusu tam net değildi. Yakalanmaktan mı? Yoksa başka bir şeyden mi?</p>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">C</div>
-      <div>
-        <div class="speaker-name">Calloway</div>
-        <div class="speech-bubble">"Doktor Pemberton, Thames Life &amp; Assurance'ın tıbbi danışmanı olarak kaç poliçe onayladınız?"</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Calloway</p>
+      <p>"Doktor Pemberton, Thames Life &amp; Assurance'ın tıbbi danışmanı olarak kaç poliçe onayladınız?"</p>
     </div>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">P</div>
-      <div>
-        <div class="speaker-name">Pemberton</div>
-        <div class="speech-bubble">"Kırk üç. 1899'dan bu yana."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Pemberton</p>
+      <p>"Kırk üç. 1899'dan bu yana."</p>
     </div>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">C</div>
-      <div>
-        <div class="speaker-name">Calloway</div>
-        <div class="speech-bubble">"Bu kırk üç poliçeden sekizinde müşteri altı ay içinde ölmüş. Yüzde on sekiz buçuk. Bunu nasıl açıklarsınız?"</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Calloway</p>
+      <p>"Bu kırk üç poliçeden sekizinde müşteri altı ay içinde ölmüş. Yüzde on sekiz buçuk. Bunu nasıl açıklarsınız?"</p>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
     <p>Pemberton yutkundu. Elleri masanın altındaydı — Koipak bunları göremiyordu ama adamın omuzlarının gerilmesinden, parmakların birbirine kenetlendiğini tahmin etti.</p>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">P</div>
-      <div>
-        <div class="speaker-name">Pemberton</div>
-        <div class="speech-bubble">"Yaşlı hastalar. Yüksek riskli poliçeler. Aktüeryal hesaplamalarda her zaman bir hata payı vardır."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Pemberton</p>
+      <p>"Yaşlı hastalar. Yüksek riskli poliçeler. Aktüeryal hesaplamalarda her zaman bir hata payı vardır."</p>
     </div>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">C</div>
-      <div>
-        <div class="speaker-name">Calloway</div>
-        <div class="speech-bubble">"Diğer tıbbi danışmanlarda bu oran yüzde iki. Sizde yüzde on sekiz buçuk. Bu hata payından büyük, doktor."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Calloway</p>
+      <p>"Diğer tıbbi danışmanlarda bu oran yüzde iki. Sizde yüzde on sekiz buçuk. Bu hata payından büyük, doktor."</p>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
     <p>Pemberton bir an sustu. Sonra omuzları düştü — fiziksel olarak, sanki bir ipin koparılmasıyla. Ve konuştu:</p>
 
     <p>"Belgeleri imzaladım. Kabul ediyorum. Ölüm belgelerini imzaladım."</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
     <p>Oda sessizleşti. Calloway kalemi bıraktı. Koipak öne eğildi.</p>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">C</div>
-      <div>
-        <div class="speaker-name">Calloway</div>
-        <div class="speech-bubble">"Kendi inisiyatifinizle mi?"</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Calloway</p>
+      <p>"Kendi inisiyatifinizle mi?"</p>
     </div>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">P</div>
-      <div>
-        <div class="speaker-name">Pemberton</div>
-        <div class="speech-bubble">"Hayır." Sesi fısıltıya düşmüştü. "Mektuplar gelirdi. İmzasız mektuplar. Ne yapmam gerektiğini söylerlerdi — hangi vakaları onaylayacağımı, hangi belgeleri imzalayacağımı. Hiç yüz yüze görüşmedik. Sadece mektuplar."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Pemberton</p>
+      <p>"Hayır." Sesi fısıltıya düşmüştü. "Mektuplar gelirdi. İmzasız mektuplar. Ne yapmam gerektiğini söylerlerdi — hangi vakaları onaylayacağımı, hangi belgeleri imzalayacağımı. Hiç yüz yüze görüşmedik. Sadece mektuplar."</p>
     </div>
 
-    <div class="speech right">
-      <div class="speech-avatar koipak">K</div>
-      <div>
-        <div class="speaker-name">Koipak</div>
-        <div class="speech-bubble">"Mektuplar kimden geliyordu?"</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Koipak</p>
+      <p>"Mektuplar kimden geliyordu?"</p>
     </div>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">P</div>
-      <div>
-        <div class="speaker-name">Pemberton</div>
-        <div class="speech-bubble">"Bilmiyorum. İmzasızdılar. Ama kâğıdı hatırlıyorum — kalın, krem rengi, bir filigranı vardı. Bir arma gibi bir şey."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Pemberton</p>
+      <p>"Bilmiyorum. İmzasızdılar. Ama kâğıdı hatırlıyorum — kalın, krem rengi, bir filigranı vardı. Bir arma gibi bir şey."</p>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
     <p>Calloway not aldı. Koipak ise Pemberton'ın yüzünü izliyordu. Adam yalan söylemiyor gibiydi — korkuyordu, ama söyledikleri tutarlıydı. Ya da en azından <em>kendi içinde</em> tutarlıydı. Bu ikisi aynı şey değildi.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Tip I ve Tip II Hata</h3>
+    <h3>Tip I ve Tip II Hata</h3>
 
     <p>Sorgudan sonra Koipak, Calloway'in ofisinde bekledi. Calloway Pemberton'ı hücreye geri götürmüştü; Koipak yalnızdı. Düşünüyordu.</p>
 
@@ -1999,34 +1825,17 @@ body::after {
       Suçluyu serbest bırakmak.
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
     <p>Pemberton suçunu itiraf etmişti — ama ne kadar suçluydu? Belgeleri imzalamıştı, evet. Ama insanları o mu öldürmüştü? Yoksa o da bir araç mıydı — başka birinin elindeki bir kalem?</p>
 
     <p>Eğer Koipak Pemberton'ı <em>asıl suçlu</em> olarak kabul ederse ve yanılırsa, bu bir Tip I hata olurdu: masum olmasa da, <em>asıl</em> sorumlu olmayan birini baş suçlu ilan etmek. Ve gerçek organizatör serbest kalırdı — bu da Tip II hata.</p>
 
     <p><em>İki hata aynı anda yaşanabilir mi?</em> diye düşündü Koipak. <em>Evet. Yanlış kişiyi suçlarsanız, hem masumu mahkûm eder hem suçluyu serbest bırakırsınız.</em></p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
     <p>Bu düşünce onu rahatsız etti. Çünkü Calloway sorguyu çok düzgün yönetmişti — sorular doğruydu, itiraf geldi, dosya kapanabilirdi. Ama Koipak'un içinde bir şey kapanmıyordu.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Filigran</h3>
+    <h3>Filigran</h3>
 
     <p>Calloway'in ofisi küçük ama düzenliydi. Masa, iki sandalye, dosya dolabı, duvarda Londra haritası. Koipak beklerken odayı süzüyordu — alışkanlıktı bu, her odayı bir veri seti gibi okurdu.</p>
 
@@ -2036,13 +1845,6 @@ body::after {
 
     <p>Koipak dondu.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
     <p>Pemberton tam bir saat önce şöyle demişti: <em>"Kalın, krem rengi, bir filigranı vardı. Bir arma gibi bir şey."</em></p>
 
     <p>Aynı kâğıt mıydı? Koipak emin olamazdı — filigranları karşılaştırmak için ikisini yan yana koyması gerekirdi. Ama benzerlik çarpıcıydı. Ve bu kâğıt Calloway'in masasındaydı.</p>
@@ -2051,37 +1853,20 @@ body::after {
 
     <p>Kâğıdın en üstündeki yaprağı aldı. Katladı. Cebine koydu.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
     <p>Hayatında ilk kez, veri toplamak yerine kanıt <em>çalmıştı.</em> Bu onu rahatsız etti — ama daha az rahatsız eden alternatif, o kâğıdın kaybolmasıydı. Tıpkı Whitfield'ın raporu gibi. Tıpkı eksik sayfalar gibi.</p>
 
     <p>Calloway içeri girdi. "Pemberton ifadesini imzaladı," dedi. Yüzünde memnuniyet vardı — işini bitirmiş bir adamın memnuniyeti. "Dava kapanıyor, Koipak. Senin rakamların olmasaydı burada olamazdık."</p>
 
     <p>Koipak gülümsedi. Cebi ağırdı.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Güven Aralığı</h3>
+    <h3>Güven Aralığı</h3>
 
     <p>O gece Koipak odasına döndüğünde cebindeki kâğıdı masaya koydu. Filigrana baktı — ışığa tuttu. Bir arma: iki aslan, ortada bir kalkan, kalkanın içinde "TL&amp;A" harfleri. Thames Life &amp; Assurance.</p>
 
     <p>Bu, Thames Life'ın resmi yazışma kâğıdıydı. Ve Calloway'in masasındaydı.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
     <p>Koipak defterini açtı. Yazdı:</p>
 
     <div class="document-block">
@@ -2092,39 +1877,21 @@ body::after {
       <em>Her yeni veri noktası, güven aralığını daraltır. Henüz yeterli değil. Ama yön belirginleşiyor."</em>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
     <p>Koipak kalemini bıraktı. Dışarıda rüzgâr pencereyi dövüyordu — kasım artık kışa dönmüştü. Lambanın ışığında filigrana bir kez daha baktı. <em>TL&amp;A.</em> Thames Life &amp; Assurance.</p>
 
     <p>Yedi yıl önce, Whitechapel'deki o davada, Calloway Koipak'a şöyle demişti: <em>"Aksanına değil, rakamlarına baktım."</em> Koipak bu cümleyi bir hediye gibi saklamıştı — Londra'da bir Galli'ye söylenmiş en nazik sözlerden biriydi. O an yemin etmişti: bu adama güveneceğim.</p>
 
     <p>Ama şimdi rakamlar, aksanına değil rakamlarına bakan o adamı işaret ediyordu.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="5">
-  <div class="panel-inner narrative">
     <p>Koipak'un içinde iki ses çarpışıyordu. Birincisi istatistikçi sesi: <em>Veri henüz yetersiz. Güven aralığı geniş. Tip I hata riski var — masum birini suçlayabilirsin.</em> İkincisi ise Eleanor'un sesi, o eski, yumuşak ses: <em>"Bazen sezgi, verilerin henüz toplamadığın parçasıdır."</em></p>
 
     <p>Koipak lambasını söndürmedi o gece. Defterine son bir satır yazdı:</p>
 
     <p><em>"Yarın Pemberton'ı bir kez daha göreceğim. Bu sefer Calloway olmadan."</em></p>
-  </div>
-</section>
 
+  </div><!-- /prose -->
 
-<section class="panel" data-chapter="5">
-  <div class="panel-inner">
-    <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
-      
+  <div class="concepts-box">
     <h4>Bu Bölümde Geçen Kavramlar</h4>
     <ul class="concepts-list">
       <li>Tip I Hata</li>
@@ -2140,39 +1907,29 @@ body::after {
     <div class="chapter-nav">
       <a href="#bolum-4">← IV. Bölüm</a>
       <a href="#bolum-6">VI. Bölüm →</a>
-    
     </div>
-    <div class="scene-break">✦ ✦ ✦</div>
   </div>
-</section>
 
-<section class="panel" data-chapter="6">
-  <div class="panel-inner panel-title">
-    <p class="chapter-label">VI. Bölüm</p>
-    <p class="chapter-name">İki Değişken Arasındaki Gölge</p>
-    <div class="amber-line"></div>
-  </div>
-</section>
+</article>
 
-<section class="panel" data-chapter="6">
-  <div class="panel-inner epigraph-panel">
-    İki şeyin birlikte hareket etmesi,<br>birinin diğerini hareket ettirdiği<br>anlamına gelmez. Ama bazen —<br>sadece bazen — gelir.
+<hr class="divider">
+
+<article class="chapter reveal" id="bolum-6">
+  <p class="chapter-number">Altıncı Bölüm</p>
+  <h2 class="chapter-title">İki Değişken Arasındaki Gölge</h2>
+
+  <div class="epigraph">
+    İki şeyin birlikte hareket etmesi,<br>
+    birinin diğerini hareket ettirdiği<br>
+    anlamına gelmez. Ama bazen —<br>
+    sadece bazen — gelir.
     <span class="epigraph-source">— Grifin R. Koipak, Kişisel Notlar, 1903</span>
   </div>
-</section>
 
+  <div class="prose">
 
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>Pemberton'ı ikinci kez ziyaret etmek için Koipak'un Calloway'e yalan söylemesi gerekti. Hayatında ilk kez birine kasıtlı olarak yanlış bilgi verdi: "Bugün arşivde çalışacağım," dedi sabah Calloway'e uğradığında. Calloway başını salladı, kahvesinden bir yudum aldı, bir şey sormadı. Koipak kapıdan çıkarken sırtında Calloway'in bakışını hissetti — mı? Yoksa hayal mi ediyordu? Paranoya, verisiz şüphenin yan etkisiydi; Koipak bunu biliyordu.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>Scotland Yard'ın hücresinde Pemberton dünden daha sakin görünüyordu. İtirafın getirdiği tuhaf bir rahatlama vardı üzerinde — yükünü bırakmış bir adamın bitkinliği. Koipak karşısına oturduğunda Pemberton şaşırmadı.</p>
 
     <p>"Müfettiş yok mu?" dedi Pemberton.</p>
@@ -2180,12 +1937,9 @@ body::after {
     <p>"Yok. Sadece ben."</p>
 
     <p>Pemberton bir an düşündü. Sonra başını salladı — sanki bunu bekliyormuş gibi. "Doğru soruları müfettiş değil siz sorarsınız zaten. Sorun."</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>Koipak cebinden filigranlı kâğıdı çıkardı. Masaya koydu. Pemberton'ın gözleri kâğıda takıldı — ve yüzündeki renk çekildi.</p>
 
     <p>"Bu kâğıdı tanıyor musunuz?"</p>
@@ -2202,23 +1956,13 @@ body::after {
 
     <p>"O yüzden ne?"</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>Pemberton uzun bir nefes aldı. "Mektuplarda bir şey her zaman dikkatimi çekmişti. Yazan kişi, poliçe süreçlerini biliyordu — ama sadece şirket tarafını değil, <em>soruşturma</em> tarafını da. Hangi vakaların polise bildirilmesi gerektiğini, hangilerinin sessizce kapanacağını biliyordu. Ben bunu, Thames Life'ın içinden biri sanıyordum." Durdu. "Ama bir polis müfettişi de bilirdi. Hatta daha iyi bilirdi."</p>
 
     <p>Koipak deftere yazmadı. Sadece dinledi. Ve dinledikçe, zihnindeki tablo yeniden şekilleniyordu — tıpkı bir regresyon çizgisinin yeni veri noktalarıyla eğimini değiştirmesi gibi.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Korelasyon</h3>
+    <h3>Korelasyon</h3>
 
     <p>Koipak o öğleden sonra odasına kapandı. Masasının üstüne bütün verileri yaydı: Fenwick'in tablosu, Thames Life arşivinden aldığı notlar, Pemberton'ın sorgu kayıtları, Whitfield'ın ifadesi, ve kendi defterindeki hesaplar. Sonra yeni bir şey yaptı — daha önce yapmadığı bir şey.</p>
 
@@ -2226,13 +1970,6 @@ body::after {
 
     <p>Şimdiye kadar Calloway verinin dışındaydı — bir gözlemci, bir yardımcı, güvenilir bir sabit. Ama ya sabit değilse? Ya Calloway da denklemin içindeyse?</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>Koipak, Calloway'in son beş yıldaki soruşturmalarını listeledi — bunları Scotland Yard'ın açık kayıtlarından biliyordu. Sonra her soruşturmanın yanına Thames Life ile bağlantısı olup olmadığını yazdı.</p>
 
     <div class="data-table-wrapper">
@@ -2256,13 +1993,6 @@ body::after {
       </table>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>Koipak kalemi bıraktı ve tabloya baktı. Bir örüntü vardı — çıplak gözle bile görülebilen bir örüntü.</p>
 
     <p>Thames Life ile bağlantılı davalarda: ortalama süre <strong>2.2 hafta</strong>. Hızlı kapanış. Her seferinde bir "günah keçisi" bulunmuş ya da dosya sessizce kapatılmıştı.</p>
@@ -2271,136 +2001,75 @@ body::after {
 
     <p><strong>Korelasyon</strong>, iki değişkenin birlikte nasıl hareket ettiğini ölçer. −1 ile +1 arasında bir değer alır:</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       r = +1 → tam pozitif ilişki<br>
       r = 0 → ilişki yok<br>
       r = −1 → tam negatif ilişki
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>Koipak, Calloway'in soruşturma süresi ile Thames Life bağlantısı arasındaki korelasyonu hesapladı: <strong>r = −0.91.</strong> Güçlü negatif korelasyon. Thames Life bağlantılı davalarda Calloway çok hızlı kapattı; diğerlerinde normal süre işledi.</p>
 
     <p>Ama Koipak iyi bilirdi: <em>korelasyon, nedensellik değildir.</em></p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Regresyon ve Artık</h3>
+    <h3>Regresyon ve Artık</h3>
 
     <p>Korelasyon "ilişki var mı?" diye sorar. <strong>Regresyon</strong> ise bir adım ileriye gider: "Bu ilişkiyi kullanarak tahmin yapabilir miyim?"</p>
 
     <p>Koipak, Thames Life'ın son üç yıldaki altmış beş yaş üstü poliçe ödemelerini yeniden analiz etti. Yatay eksende poliçe yaşı (kaç ay sonra ödeme yapıldı), dikey eksende ödeme tutarı.</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       Ŷ = β₀ + β₁X<br>
       <span style="font-size:0.85rem; font-style:normal; color:var(--ink-muted);">Ŷ: tahmin edilen ödeme, X: poliçe yaşı (ay), β₁: eğim</span>
     </div>
 
     <p>Çoğu veri noktası çizginin yakınında kümelenmişti — normal ödeme zamanlaması. Ama iki nokta çizginin çok uzağındaydı. Yukarıda, sağdan fırlayan iki nokta.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>Alderton. Crane.</p>
 
     <p>Gerçek değer ile tahmin arasındaki farka <strong>artık (residual)</strong> denir. Büyük artık, beklenmedik durum demektir. Alderton ve Crane'in artıkları, diğer vakaların üç katından fazlaydı.</p>
 
     <p>Ama Koipak şimdi başka bir şeye bakıyordu. Regresyon çizgisinin <em>eğimini</em> değiştiren bir <strong>üçüncü değişken</strong> vardı — gözle görünmeyen, tabloda yer almayan, ama her şeyi etkileyen bir değişken.</p>
 
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Confounding — Gizli Üçüncü Değişken</h3>
+    <h3>Confounding — Gizli Üçüncü Değişken</h3>
 
     <p>İstatistikte buna <strong>confounding variable</strong> — karıştırıcı değişken — denir. İki değişken arasındaki ilişkiyi gizlice etkileyen, ama tabloda görünmeyen bir etken.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>Klasik örnek: buz dondurma satışları ile boğulma vakaları arasında güçlü pozitif korelasyon vardır. Ama buz dondurma boğulmaya neden olmaz. Gizli üçüncü değişken <em>sıcak hava</em>dır — ikisini de artırır.</p>
 
     <p>Koipak'un davasında: Pemberton ile erken ölümler arasında korelasyon vardı. Ama Pemberton tek başına mıydı? Yoksa gizli bir üçüncü değişken — onu yönlendiren, onu kullanan, ve aynı zamanda soruşturmayı da kontrol eden biri — var mıydı?</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>Eğer Calloway bu üçüncü değişkense, o zaman Pemberton'ın suçu da, soruşturmanın hızı da, eksik sayfalar da aynı kaynaktan beslenen ayrı semptomlar olurdu. Korelasyon, nedensellik olmayabilir — ama bazen korelasyonun arkasındaki gizli neden, her şeyi açıklar.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Holt</h3>
+    <h3>Holt</h3>
 
     <p>Koipak ertesi sabah Thames Life &amp; Assurance'ın genel müdürü Reginald Holt'u ziyaret etti. Holt onu beklediği belli olan bir soğukkanlılıkla karşıladı — kırk sekiz yaşında, gümüş saçlı, masasının arkasında bir kale gibi oturan bir adam.</p>
 
     <p>"Bay Koipak," dedi Holt. Aksanı duymuştu — Koipak bunu gözlerindeki tanıdık kıpırdamadan anladı. Ama Holt bir şey söylemedi; çok kibardı bunun için, ya da çok korkmuştu.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>"Şirketinizin ödeme kalıpları doğal değil," dedi Koipak, oturmadan. Çantasından hesaplarını çıkardı. "Varyans analizi, regresyon artıkları, korelasyon katsayıları — hepsi aynı yere işaret ediyor. Bu sistemi birisi yönetiyor."</p>
 
     <p>Holt masadan kalktı. Pencereye yürüdü. Thames görünüyordu — gri, sessiz, her şeyi bilen. Uzun bir sessizlik oldu.</p>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">H</div>
-      <div>
-        <div class="speaker-name">Holt</div>
-        <div class="speech-bubble">"Ne istiyorsunuz, Bay Koipak?"</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Holt</p>
+      <p>"Ne istiyorsunuz, Bay Koipak?"</p>
     </div>
 
-    <div class="speech right">
-      <div class="speech-avatar koipak">K</div>
-      <div>
-        <div class="speaker-name">Koipak</div>
-        <div class="speech-bubble">"Üçüncü değişkenin adını."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Koipak</p>
+      <p>"Üçüncü değişkenin adını."</p>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>Holt döndü. Yüzü griydi — gümüş saçlarıyla neredeyse bütünleşmişti. "Üçüncü değişken mi?"</p>
 
     <p>"Pemberton belgeleri imzaladı. Ama ona ne yapacağını söyleyen biri var. Poliçe süreçlerini bilen, soruşturmaları kontrol eden, kanıtları yok eden biri. Şirketinizin bir polis bağlantısı var, Bay Holt. Ve siz bunu biliyorsunuz."</p>
 
     <p>Holt iskemlesine çöktü. Çökmek doğru kelimeydi — oturmak değil, kendini bırakmak. Yaşlı bir adam gibi değil, üstündeki ağırlığa daha fazla dayanamayan bir adam gibi.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>"Polis bağlantımız var," dedi sonunda. Sesi fısıltıydı. "Her zaman vardı. Ben adını bilmiyorum — hiç yüz yüze görüşmedik. Mektuplar gelirdi. Thames Life'ın kâğıdına yazılmış, ama şirket dışından gelen mektuplar. Sadece 'Müfettiş' imzası vardı."</p>
 
     <p>Koipak hareket etmedi. <em>"Müfettiş."</em></p>
@@ -2409,24 +2078,14 @@ body::after {
 
     <p>"Fenwick ne yaptı?"</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>"Tablosundaki anomalileri buldu. 'Müfettiş'e mektup yazdı — ama 'Müfettiş'in kim olduğunu bilmiyordu. Mektubu Thames Life üzerinden gönderdi. Biz — ben — mektubu ilettik." Holt başını eğdi. "Ve sonra Fenwick öldü."</p>
 
     <p>Koipak odadan çıktığında bacakları titremiyordu, elleri titremiyordu — ama zihni titriyordu. Holt'un söyledikleri, güven aralığını daraltmıştı. "Müfettiş" — sadece bir kelime, ama Londra polisinde Calloway'in rütbesiyle kaç kişi Thames Life ile bağlantılıydı?</p>
 
     <p>Koipak artık korelasyonun nedenselliğe dönüşme eşiğinde duruyordu. Son bir kanıta ihtiyacı vardı.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>O gece Koipak odasında, masasının başında, defterine son bir satır yazdı:</p>
 
     <div class="document-block">
@@ -2436,24 +2095,13 @@ body::after {
       <em>Anomali Calloway'di. Her zaman Calloway'di."</em>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="6">
-  <div class="panel-inner narrative">
     <p>Kalemini bıraktı. Lambasını söndürdü. Karanlıkta pencereye gitti — Thames görünmüyordu, ama orada olduğunu biliyordu. Her zaman oradaydı.</p>
 
     <p>Yarın her şey bitecekti. Bir şekilde.</p>
-  </div>
-</section>
 
+  </div><!-- /prose -->
 
-<section class="panel" data-chapter="6">
-  <div class="panel-inner">
-    <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
-      
+  <div class="concepts-box">
     <h4>Bu Bölümde Geçen Kavramlar</h4>
     <ul class="concepts-list">
       <li>Korelasyon Katsayısı (r)</li>
@@ -2469,68 +2117,47 @@ body::after {
     <div class="chapter-nav">
       <a href="#bolum-5">← V. Bölüm</a>
       <a href="#bolum-7">VII. Bölüm →</a>
-    
     </div>
-    <div class="scene-break">✦ ✦ ✦</div>
   </div>
-</section>
 
-<section class="panel" data-chapter="7">
-  <div class="panel-inner panel-title">
-    <p class="chapter-label">VII. Bölüm</p>
-    <p class="chapter-name">Sonuç ve Çıkarım</p>
-    <div class="amber-line"></div>
-  </div>
-</section>
+</article>
 
-<section class="panel" data-chapter="7">
-  <div class="panel-inner epigraph-panel">
-    İstatistik asla kesinlik vaat etmez.<br>Sadece belirsizliğin içinden geçerek<br>gerçeğe ulaşmanın yolunu gösterir.
+<hr class="divider">
+
+<article class="chapter reveal" id="bolum-7">
+  <p class="chapter-number">Yedinci Bölüm</p>
+  <h2 class="chapter-title">Sonuç ve Çıkarım</h2>
+
+  <div class="epigraph">
+    İstatistik asla kesinlik vaat etmez.<br>
+    Sadece belirsizliğin içinden geçerek<br>
+    gerçeğe ulaşmanın yolunu gösterir.
     <span class="epigraph-source">— Grifin R. Koipak, Kişisel Notlar, 1903</span>
   </div>
-</section>
 
+  <div class="prose">
 
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Mektup sabahın beşinde gitti. Koipak onu bizzat Başmüfettiş Hargrove'un Pimlico'daki evine bıraktı — Scotland Yard'a değil, çünkü Yard'da Calloway'in gözleri ve kulakları vardı. Zarfın içinde filigranlı kâğıt, Pemberton'ın ikinci ifadesi, Whitfield'ın yazılı beyanı, Holt'un itirafı, ve Koipak'un kendi hazırladığı istatistiksel analiz raporu — varyans hesapları, korelasyon tablosu, regresyon artıkları, p-değerleri, hepsi.</p>
 
     <p>Zarfın kapağına tek bir cümle yazmıştı: <em>"Müfettiş Calloway hakkında, acil."</em></p>
 
     <p>Sonra eve döndü. Bekledi. Beklerken defterini açtı ve son bölümü yazmaya başladı — çünkü Koipak'un bekleme biçimi buydu: düşünmek, yazmak, hesaplamak.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Bayes Teoremi</h3>
+    <h3>Bayes Teoremi</h3>
 
     <p>Koipak masasına oturdu ve bu davanın istatistiksel otopsisini yaptı. Yedi gün önce — sadece yedi gün, ama bir ömür gibi hissediliyordu — Calloway'in kapısında durmuş, elinde Fenwick'in dosyasıyla, güvendiği adamın güvendiği istatistikçi olarak işe başlamıştı. O an Calloway'in suçlu olma ihtimalini düşünmüş müydü?</p>
 
     <p>Hayır. Sıfıra yakındı. <strong>Prior olasılık</strong> — yeni kanıt görmeden önceki inanç — çok düşüktü. Yedi yıllık güven, onlarca ortak dava, Whitechapel'deki o ilk el uzatma. Prior, deneyimden beslenirdi ve Koipak'un deneyimi şuydu: Calloway iyi bir adamdır.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Ama <strong>Bayes teoremi</strong> der ki: yeni kanıt geldiğinde, prior güncellenir. Buna <strong>posterior olasılık</strong> denir — kanıt sonrası inanç.</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       P(A|B) = P(B|A) · P(A) / P(B)<br>
       <span style="font-size:0.85rem; font-style:normal; color:var(--ink-muted);">Posterior = Likelihood × Prior / Kanıtın genel olasılığı</span>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Koipak defterine kanıtları sıraladı — her biri posterior'u güncelleyen bir veri noktası:</p>
 
     <div class="document-block">
@@ -2550,22 +2177,12 @@ body::after {
       → Posterior: ~0.98
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Yüzde doksan sekiz. Koipak kalemi bıraktı. <em>Kesinlik değil</em>, diye düşündü. <em>İstatistik asla kesinlik vermez. Ama yüzde doksan sekiz, bir mahkemenin "makul şüphenin ötesinde" dediği eşiğin üstündedir.</em></p>
 
     <p>Ve henüz parmak izi sonuçları gelmemişti.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Saat ikide kapı zili çaldı. Koipak açmadan önce durdu — bir an, belki iki saniye. Kapının arkasında kimin olduğunu biliyordu. Sadece bir kişi, bu saatte, haber vermeden gelirdi.</p>
 
     <p>Kapıyı açtı.</p>
@@ -2574,13 +2191,6 @@ body::after {
 
     <p>"İçeri girebilir miyim?" dedi Calloway.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>"Tabii."</p>
 
     <p>Calloway içeri girdi. Odayı süzdü — Koipak'un masasındaki defterlere, hesaplara, duvardaki haritaya. Sonra Koipak'a döndü.</p>
@@ -2593,54 +2203,28 @@ body::after {
 
     <p>"Otur," dedi Koipak. Sesi sakindi — ama kalbi değildi.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Calloway oturmadı. Pencereye yürüdü. Dışarıda Thames'in üstünde yağmur çizgileri görünüyordu — gri çizgiler, gri su, gri gökyüzü. Her şey griydi. Koipak bunu uygun buldu; siyah-beyaz bir dava olsaydı, yedi gün sürmezdi.</p>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">C</div>
-      <div>
-        <div class="speaker-name">Calloway</div>
-        <div class="speech-bubble">"Ne kadar zamandır biliyorsun?"</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Calloway</p>
+      <p>"Ne kadar zamandır biliyorsun?"</p>
     </div>
 
-    <div class="speech right">
-      <div class="speech-avatar koipak">K</div>
-      <div>
-        <div class="speaker-name">Koipak</div>
-        <div class="speech-bubble">"Bilmek doğru kelime değil. Şüphelenmek — Thames Life arşivindeki eksik sayfalardan itibaren. Filigranla şüphe güçlendi. Holt'un ifadesiyle neredeyse kesinleşti."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Koipak</p>
+      <p>"Bilmek doğru kelime değil. Şüphelenmek — Thames Life arşivindeki eksik sayfalardan itibaren. Filigranla şüphe güçlendi. Holt'un ifadesiyle neredeyse kesinleşti."</p>
     </div>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">C</div>
-      <div>
-        <div class="speaker-name">Calloway</div>
-        <div class="speech-bubble">"'Neredeyse.' Her zaman böyle konuşursun. Yüzde doksanlar, güven aralıkları, p-değerleri. Hiçbir zaman 'evet' ya da 'hayır' demezsin."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Calloway</p>
+      <p>"'Neredeyse.' Her zaman böyle konuşursun. Yüzde doksanlar, güven aralıkları, p-değerleri. Hiçbir zaman 'evet' ya da 'hayır' demezsin."</p>
     </div>
 
-    <div class="speech right">
-      <div class="speech-avatar koipak">K</div>
-      <div>
-        <div class="speaker-name">Koipak</div>
-        <div class="speech-bubble">"Çünkü 'evet' ya da 'hayır' yalan olurdu. Dünya öyle çalışmıyor. Belirsizlik her zaman var — onu yönetmek bilimdir, yok saymak tehlike."</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Koipak</p>
+      <p>"Çünkü 'evet' ya da 'hayır' yalan olurdu. Dünya öyle çalışmıyor. Belirsizlik her zaman var — onu yönetmek bilimdir, yok saymak tehlike."</p>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Calloway döndü. Yüzünde garip bir ifade vardı — kızgınlık değil, yorgunluk değil, daha çok bir <em>merak</em>. Sanki Koipak'ı ilk kez gerçekten görüyormuş gibi.</p>
 
     <p>"Seni bu davaya ben çağırdım," dedi Calloway, sesi alçalmıştı. "Biliyor musun neden?"</p>
@@ -2651,21 +2235,11 @@ body::after {
 
     <p>"Neyi?"</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>"Seni." Calloway'in yüzünde, bir an için, eski sıcaklığın gölgesi belirdi. "Diğer dedektifler kanıtı bulunca durur. Sen kanıtın <em>kaynağını</em> soruyorsun. Korelasyonu buldun — ama nedenselliği aradın. Pemberton'ı buldun — ama confounding variable'ı aradın. Ben o confounding variable'dım, Koipak. Ve sen beni buldun."</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Koşullu Olasılık</h3>
+    <h3>Koşullu Olasılık</h3>
 
     <p>Koipak konuşmadı. Dinledi. Calloway konuşmaya devam etti — ve konuştukça, hikâye tamamlandı.</p>
 
@@ -2673,75 +2247,37 @@ body::after {
 
     <p>"Alderton ve Crane?" diye sordu Koipak.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>"Doğal sebeplerle ölmediler." Calloway'in sesi düzdü — bir rapor okur gibi. "Ama benim ellerimle de değil. Bir üçüncü kişi — Thames Life'ın içinden biri. Ben sadece… sonrasını yönettim."</p>
 
     <p>"Ve Fenwick?"</p>
 
     <p>Calloway sessizleşti. Bu sessizlik diğerlerinden farklıydı — daha ağır, daha uzun. Koipak bekledi.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>"Fenwick anomaliyi buldu. Akıllı bir adamdı — senin gibi rakamlara bakan biriydi. Tablosundaki kırmızı çarpılar, benim sistemimdeki ilk çatlaktı." Calloway yutkundu. "Thames Life üzerinden bana mektup yazdı — ama benim kim olduğumu bilmiyordu. Sadece 'Müfettiş'e yazıyordu. Mektubu aldım. Ve… Fenwick'le görüştüm."</p>
 
     <p>"Son gecesinde. Saat on bir buçukta."</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Calloway başını salladı. "Kalın bir ses. Güven veren türden." Albert'ın sözlerini tekrarlıyordu — bilmeden. "Fenwick'e her şeyi açıkladım. Durmasını söyledim. Kabul etti — ya da öyle sandım. Ertesi gün notere gittiğini öğrendiğimde…"</p>
 
     <p>"Dosyayı bıraktığını."</p>
 
     <p>"Evet. Ve o akşam Fenwick öldü." Calloway'in sesi kırıldı — ilk kez. "Ben öldürmedim onu, Koipak. Thames Life'ın içindeki adam — Fenwick'in notere gittiğini öğrenince… Ben durduramadım. Durdurmalıydım. Ama durduramadım."</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Koipak bu ifadeyi tartıyordu — <strong>koşullu olasılık</strong> gibi. P(Fenwick ölür | Calloway düzeni yönetiyor) — bu olasılık, Calloway düzende olmasaydı sıfıra yakın olurdu. Calloway tetikçi değildi, ama tetikçinin var olmasını mümkün kılan koşulları yaratmıştı. İstatistikte buna <em>koşullu bağımlılık</em> derler: bir olay, diğerinin varlığında çok daha olası hale gelir.</p>
 
-    <div style="text-align:center; margin:1.5rem 0; padding:0.8em; font-style:italic; color:#8a7d65; border-top:1px solid rgba(139,105,20,0.15); border-bottom:1px solid rgba(139,105,20,0.15);">
+    <div class="formula">
       P(A|B) ≠ P(A)<br>
       <span style="font-size:0.85rem; font-style:normal; color:var(--ink-muted);">B koşulunda A'nın olasılığı, koşulsuz olasılığından farklıdır.</span>
     </div>
 
     <p>Calloway, Fenwick'in ölüm koşulunu yaratmıştı. Eli temiz değildi — sadece farklı bir türden kirliydi.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Calloway cebine uzandı. Koipak gerildi — ama Calloway çıkardığı şey bir silah değildi. Küçük, katlanmış bir kâğıttı.</p>
 
     <p>"Bunu sana vermek istiyorum," dedi Calloway. "Fenwick'in mektubu. Bana yazdığı mektup. Noterdeki dosyadan çıkardığım sayfa — eksik sayfa."</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Koipak kâğıdı aldı. Açtı. Fenwick'in el yazısı — tanıyordu artık, o sert, sinirli harfleri. Mektup kısaydı:</p>
 
     <div class="document-block">
@@ -2754,13 +2290,6 @@ body::after {
       Harold Fenwick"</em>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Koipak mektubu okudu. Sonra bir kez daha okudu. <em>"Rakamlar yalan söylemez, efendim. Ama birisi rakamlara yalan söyletiyor."</em> Fenwick de bir istatistikçiydi — kendi çapında, kendi diliyle. Ve haklıydı.</p>
 
     <p>"Neden bunu sakladın?" dedi Koipak. "Neden yok etmedin?"</p>
@@ -2771,34 +2300,21 @@ body::after {
 
     <p>"Hatırlıyorum."</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>"O an doğru söylüyordum. Rakamlarına baktım ve doğruyu gördüm. Ama sonra… rakamları kendi çıkarım için kullanmaya başladım. Aynı aracı — istatistiği, olasılığı, sistemi — farklı bir amaç için çevirdim." Calloway'in sesi fısıltıya düşmüştü. "Fenwick bunu gördü. Sen de gördün. Aradaki fark şu: Fenwick'i susturabildim. Seni susturamazdım."</p>
 
     <p>"Denemeyecek misin?"</p>
 
     <p>Calloway'in yüzüne bir gölge düştü — yorgunluğun ötesinde bir şey. "Hayır," dedi. "Bu sefer değil."</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Tam o anda, dışarıdan ayak sesleri geldi. Birden fazla kişi — üç, belki dört. Merdiven boyunca çıkan sert, kararlı adımlar. Kapı çalındı — sert, resmi.</p>
 
     <p>Koipak açtı. Başmüfettiş Hargrove duruyordu — altmış yaşlarında, uzun boylu, beyaz favorili. Arkasında iki polis memuru.</p>
 
-    <div class="speech ">
-      <div class="speech-avatar calloway">H</div>
-      <div>
-        <div class="speaker-name">Hargrove</div>
-        <div class="speech-bubble">"Bay Koipak. Raporunuzu aldım. Müfettiş Calloway burada mı?"</div>
-      </div>
+    <div class="dialogue">
+      <p class="speaker">Hargrove</p>
+      <p>"Bay Koipak. Raporunuzu aldım. Müfettiş Calloway burada mı?"</p>
     </div>
 
     <p>Koipak kenara çekildi. Calloway salonda duruyordu — pardesüsü hâlâ üstünde, şapkası elinde. Hargrove içeri girdi. İki adam birbirine baktı.</p>
@@ -2810,13 +2326,10 @@ body::after {
     <p>Sessizlik. Sonra Calloway pardesüsünü çıkardı. Katladı. Sandalyenin üstüne koydu. Ve ellerini uzattı.</p>
 
     <p>Kelepçe sesi, Koipak'un hayatında duyduğu en sessiz sesti.</p>
-  </div>
-</section>
 
+    <div class="scene-break">✦ ✦ ✦</div>
 
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
-    <h3 style="font-family:Cormorant Garamond,serif; font-size:1.3rem; text-align:center; color:#c9942a; margin:1.5rem 0 1rem;">Çıkarım</h3>
+    <h3>Çıkarım</h3>
 
     <p>Calloway dışarı çıkarılırken kapıda durdu. Omzunun üstünden Koipak'a baktı — son kez.</p>
 
@@ -2826,13 +2339,6 @@ body::after {
 
     <p>Odasına döndü. Masasına oturdu. Dışarıda yağmur dinmişti; bulutların arasından ilk kez bir çizgi güneş ışığı süzülüyordu — zayıf, emin olamayan bir ışık, ama orada olan.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Koipak defterini açtı. Son sayfaya geldi. Ve yazdı:</p>
 
     <div class="document-block">
@@ -2845,22 +2351,8 @@ body::after {
       <em>Bunu zamanla öğreneceğim. Şimdilik, bir sonraki dosyayı açıyorum."</em>
     </div>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Koipak kalemini bıraktı. Masanın karşısındaki boş sandalyeye baktı — Eleanor'un sandalyesine. İlk kez, o sandalyenin neden hâlâ orada durduğunu anladı: çünkü bazı boşluklar doldurulmak için değil, hatırlamak için vardır. Eleanor'un yokluğu, tıpkı Calloway'in ihaneti gibi, bir veri noktasıydı — acı veren, ama gerçek. Ve gerçek, acı verse de, yalanın konforundan her zaman daha iyidir.</p>
 
-    
-  </div>
-</section>
-
-
-<section class="panel" data-chapter="7">
-  <div class="panel-inner narrative">
     <p>Dışarıda güneş, bulutların arasından Thames'e vurmuştu. Nehir, ilk kez o hafta, gümüş renginde parlıyordu. Koipak pencereye gitti ve baktı. Sis yoktu. Londra, kendini gösteriyordu — olduğu gibi, güzel ve çirkin, gri ve altın.</p>
 
     <p>Koipak gülümsedi. Küçük, yorgun, ama gerçek bir gülümseme.</p>
@@ -2868,14 +2360,10 @@ body::after {
     <p>Sonra masasına döndü. Yeni bir dosya vardı — Calloway'in son sözü doğruydu: rakamlar her zaman bekliyordu.</p>
 
     <p>Ve Koipak, her zaman olduğu gibi, dinlemeye hazırdı.</p>
-  </div>
-</section>
 
+  </div><!-- /prose -->
 
-<section class="panel" data-chapter="7">
-  <div class="panel-inner">
-    <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
-      
+  <div class="concepts-box">
     <h4>Bu Bölümde Geçen Kavramlar</h4>
     <ul class="concepts-list">
       <li>Bayes Teoremi</li>
@@ -2892,76 +2380,98 @@ body::after {
     <div class="chapter-nav">
       <a href="#bolum-6">← VI. Bölüm</a>
       <a href="#hero" class="disabled">Birinci Macera — Tamamlandı.</a>
-    
     </div>
-    <div class="scene-break">✦ ✦ ✦</div>
   </div>
-</section>
 
-<section class="panel" data-chapter="7" style="min-height:60vh;">
-  <div class="panel-inner" style="text-align:center;">
-    <div class="scene-break">✦ FİNAL ✦</div>
-    <p style="font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--ink-muted); letter-spacing:0.1em; margin-top:1rem;">Sayıların Gölgesinde — Birinci Macera</p>
-    <p style="font-family:'Cormorant Garamond',serif; font-size:0.82rem; color:var(--amber-dim); margin-top:0.5rem;">Koipak'un yeni macerası yakında.</p>
-    <div class="amber-line" style="margin-top:2rem;"></div>
-    <p style="font-family:'Cormorant Garamond',serif; font-size:0.78rem; color:var(--ink-muted); letter-spacing:0.08em;">Fikri GÖKPINAR</p>
-  </div>
-</section>
+</article>
 
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer class="site-footer">
+  <p>Grifin R. Koipak ve Belirsizliğin Bilimi</p>
+  <p style="margin-top:0.3rem;"><em>Sayıların Gölgesinde</em> — Birinci Macera</p>
+  <p style="margin-top:0.5rem; font-style:normal; letter-spacing:0.1em;">Yazan: Fikri GÖKPINAR</p>
+  <p style="margin-top:1rem; font-size:0.75rem; color:var(--parchment-deep);">Koipak'un yeni macerası yakında.</p>
+</footer>
+
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
 <script>
 (function() {
-  var panels = document.querySelectorAll('.panel');
-  var chNav = document.querySelectorAll('.ch-nav-btn');
-  var topNav = document.getElementById('topNav');
-  var chLabel = document.getElementById('currentChLabel');
-  var romanMap = {'1':'I','2':'II','3':'III','4':'IV','5':'V','6':'VI','7':'VII'};
-  
-  // Reveal panels
+  // Reveal on scroll — with fallback
+  var reveals = document.querySelectorAll('.reveal');
+
   if ('IntersectionObserver' in window) {
-    var obs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting) { e.target.classList.add('visible'); }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px 50px 0px' });
-    panels.forEach(function(p) { obs.observe(p); });
-  }
-  
-  // Track current chapter
-  var chObs = new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) {
-      if (e.isIntersecting) {
-        var ch = e.target.getAttribute('data-chapter');
-        if (ch && ch !== '0') {
-          chNav.forEach(function(btn) {
-            btn.classList.toggle('active', btn.getAttribute('data-ch') === ch);
-          });
-          chLabel.textContent = (romanMap[ch] || '') + '. Bölüm';
+    var revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
         }
-      }
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px 50px 0px' });
+
+    reveals.forEach(function(el) { revealObserver.observe(el); });
+
+    // Safety net: if after 3 seconds some reveals haven't fired, force them
+    setTimeout(function() {
+      reveals.forEach(function(el) {
+        if (!el.classList.contains('visible')) {
+          el.classList.add('visible');
+        }
+      });
+    }, 3000);
+  } else {
+    // No IntersectionObserver support — show everything
+    reveals.forEach(function(el) { el.classList.add('visible'); });
+  }
+
+  // Sticky nav
+  var hero = document.getElementById('hero');
+  var stickyNav = document.getElementById('stickyNav');
+  if ('IntersectionObserver' in window && hero && stickyNav) {
+    var navObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        stickyNav.classList.toggle('visible', !entry.isIntersecting);
+      });
+    }, { threshold: 0 });
+    navObserver.observe(hero);
+  }
+
+  // Progress bar
+  var progressBar = document.getElementById('progressBar');
+  if (progressBar) {
+    window.addEventListener('scroll', function() {
+      var scrollTop = window.scrollY;
+      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      progressBar.style.width = progress + '%';
     });
-  }, { threshold: 0.3 });
-  panels.forEach(function(p) { chObs.observe(p); });
-  
-  // Chapter nav click
-  chNav.forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      var ch = this.getAttribute('data-ch');
-      var target = document.querySelector('[data-chapter="' + ch + '"]');
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
-    });
-  });
-  
-  // Show top nav after scroll
-  window.addEventListener('scroll', function() {
-    topNav.classList.toggle('visible', window.scrollY > window.innerHeight * 0.5);
-  });
-  
-  // Safety
-  setTimeout(function() {
-    panels.forEach(function(p) { p.classList.add('visible'); });
-  }, 4000);
+  }
+
+  // Highlight current chapter in sticky nav
+  var chapters = document.querySelectorAll('.chapter, .chapter-coming');
+  var navLinks = document.querySelectorAll('.sticky-nav .nav-chapters a');
+  if ('IntersectionObserver' in window && chapters.length && navLinks.length) {
+    var chapterObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var id = entry.target.id;
+          navLinks.forEach(function(link) {
+            link.classList.remove('current');
+            if (link.getAttribute('href') === '#' + id) {
+              link.classList.add('current');
+            }
+          });
+        }
+      });
+    }, { threshold: 0.2 });
+    chapters.forEach(function(ch) { chapterObserver.observe(ch); });
+  }
 })();
 </script>
+
 </body>
 </html>
