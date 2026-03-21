@@ -319,6 +319,11 @@
     color: var(--gold);
     border: 1px solid rgba(184,134,11,0.2);
   }
+  .status-available {
+    background: rgba(139, 105, 20, 0.15);
+    color: var(--gold-light);
+    border: 1px solid rgba(139, 105, 20, 0.4);
+  }
   .status-upcoming {
     background: rgba(212,201,181,0.15);
     color: var(--parchment-deep);
@@ -416,20 +421,18 @@
   <!-- KITAP 2 -->
   <div class="book-card" id="book2">
     <div class="book-cover">
-      <div class="book-cover-placeholder">
-        <div class="placeholder-icon">✦</div>
-        <div class="placeholder-text">Yakında</div>
-      </div>
+      <img src="zehirin-dagilimi/interaktif/img/kapak.jpg" alt="Zehirin Dağılımı kapak">
     </div>
     <div class="book-info">
       <span class="book-number">İkinci Macera</span>
-      <span class="status status-upcoming">Yakında</span>
-      <h2 class="book-title">Olasılığın Dili</h2>
-      <p class="book-subtitle">Londra'da bir "seri zehirleyici" şüphesi. Birden fazla mahallede benzer ölümler…</p>
-      <p class="book-desc">Koipak, ölümlerin rastlantısal bir kümelenme mi yoksa sistematik bir cinayet mi olduğunu Poisson dağılımı ve koşullu olasılık ile araştırır. Ama bu sefer düşman, rakamları Koipak kadar iyi biliyor.</p>
-      <p class="book-concepts"><strong>Kavramlar:</strong> Binom dağılımı, Poisson dağılımı, rastgele değişken, büyük sayılar yasası, merkezi limit teoremi, bağımsızlık, yanlış pozitif</p>
+      <span class="status status-available">Yayında</span>
+      <h2 class="book-title">Zehirin Dağılımı</h2>
+      <p class="book-subtitle">Bermondsey, Stepney, Poplar. Üç mahalle, üç haftada dokuz ölüm. Resmi kayıt: gıda zehirlenmesi.</p>
+      <p class="book-desc">Koipak, Poisson dağılımı ile ölümlerin kümelenmesini analiz eder — ama sayıların çok düzenli olduğunu fark eder. Gerçek rastlantı bu kadar mükemmel olamaz. Ve imzasız mektupların izi, daha önce gördüğü bir örüntüye benziyor.</p>
+      <p class="book-concepts"><strong>Kavramlar:</strong> Poisson dağılımı, binom dağılımı, büyük sayılar yasası, merkezi limit teoremi, değişim katsayısı, yapay rastgelelik testi</p>
       <div class="book-actions">
-        <a class="btn btn-disabled">Yakında</a>
+        <a href="zehirin-dagilimi/index.html" class="btn btn-primary"><span class="btn-icon">📖</span> Oku</a>
+        <a href="zehirin-dagilimi/interaktif/index.html" class="btn btn-secondary"><span class="btn-icon">✦</span> İnteraktif Keşfet</a>
       </div>
     </div>
   </div>
