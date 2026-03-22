@@ -34,308 +34,362 @@ body::after { content:''; position:fixed; top:0; left:0; right:0; bottom:0; back
 .narrative em { color:#a89775; }
 .narrative strong { color:var(--amber); font-weight:600; }
 .document-block { background:rgba(35,31,24,0.8); border-left:3px solid var(--amber-dim); padding:1.3rem 1.5rem; margin:1.5rem 0; font-size:0.9rem; position:relative; box-shadow:0 4px 20px rgba(0,0,0,0.3); }
-.document-block .doc-label { font-size:0.65rem; letter-spacing:0.3em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem; font-family:'Cormorant Garamond',serif; }
-.document-block p { font-style:italic; color:#9a8e75; margin-bottom:0.4rem; }
-.section-divider { text-align:center; color:var(--amber-dim); letter-spacing:0.8em; padding:1.5rem 0; font-size:0.85rem; }
-.concept-box { background:var(--parchment-light); border:1px solid rgba(139,105,20,0.3); border-radius:3px; padding:1.2rem 1.5rem; margin-top:2.5rem; }
-.concept-box h4 { font-family:'Cormorant Garamond',serif; font-size:0.72rem; letter-spacing:0.3em; color:var(--amber-dim); margin-bottom:0.8rem; text-transform:uppercase; }
-.concept-list { list-style:none; display:flex; flex-wrap:wrap; gap:0.5rem; }
-.concept-list li { font-size:0.78rem; color:#8a7e6a; border:1px solid rgba(139,105,20,0.2); padding:0.2rem 0.7rem; border-radius:20px; }
-.formula-block { background:rgba(0,0,0,0.3); border:1px solid rgba(139,105,20,0.2); border-radius:3px; padding:1rem 1.5rem; margin:1.2rem 0; text-align:center; color:var(--amber); font-size:1.05rem; letter-spacing:0.05em; }
-table.data-table { width:100%; border-collapse:collapse; margin:1.2rem 0; font-size:0.88rem; }
-table.data-table th { background:rgba(139,105,20,0.15); color:var(--amber); font-family:'Cormorant Garamond',serif; font-size:0.7rem; letter-spacing:0.15em; padding:8px 12px; text-align:left; border-bottom:1px solid rgba(139,105,20,0.3); }
-table.data-table td { padding:7px 12px; border-bottom:1px solid rgba(255,255,255,0.04); color:#9a8e75; }
-table.data-table tr:hover td { background:rgba(139,105,20,0.05); }
-.section-head { font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--amber); margin:2rem 0 0.8rem; letter-spacing:0.08em; }
-.cover-panel { min-height:100vh; background:linear-gradient(to bottom, #0a0806, #1a1610); display:flex; align-items:center; justify-content:center; text-align:center; }
-.cover-img { width:min(320px,70vw); border-radius:3px; box-shadow:0 20px 60px rgba(0,0,0,0.8); margin-bottom:2.5rem; }
-.cover-series { font-family:'Cormorant Garamond',serif; font-size:0.72rem; letter-spacing:0.4em; color:var(--amber-dim); margin-bottom:1rem; }
-.cover-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,6vw,3.5rem); font-weight:300; color:#c4b99a; line-height:1.2; margin-bottom:0.5rem; }
-.cover-author { font-family:'Cormorant Garamond',serif; font-size:0.9rem; letter-spacing:0.2em; color:var(--ink-muted); margin-bottom:2rem; }
-.cover-btn { display:inline-block; border:1px solid var(--amber-dim); color:var(--amber); padding:0.7rem 2rem; font-family:'Cormorant Garamond',serif; font-size:0.8rem; letter-spacing:0.2em; text-decoration:none; transition:background 0.2s; }
-.cover-btn:hover { background:rgba(139,105,20,0.2); }
-.nav-strip { position:sticky; top:36px; z-index:100; background:rgba(14,11,8,0.95); border-bottom:1px solid rgba(139,105,20,0.15); padding:0 1rem; display:flex; gap:0; overflow-x:auto; backdrop-filter:blur(6px); }
-.nav-strip a { display:block; padding:12px 16px; font-family:'Cormorant Garamond',serif; font-size:0.68rem; letter-spacing:0.15em; color:var(--ink-muted); text-decoration:none; white-space:nowrap; border-bottom:2px solid transparent; transition:color 0.2s,border-color 0.2s; }
-.nav-strip a:hover,.nav-strip a.active { color:var(--amber); border-bottom-color:var(--amber); }
-.scene-img { width:100%; max-width:640px; display:block; margin:2rem auto; border-radius:2px; box-shadow:0 8px 32px rgba(0,0,0,0.6); border:1px solid rgba(139,105,20,0.12); }
-.final { text-align:center; padding:4rem 2rem 6rem; border-top:1px solid rgba(139,105,20,0.15); }
-.final-symbol { font-size:1.5rem; color:var(--amber-dim); letter-spacing:0.8em; margin-bottom:1.5rem; }
-.final-label { font-family:'Cormorant Garamond',serif; font-size:0.68rem; letter-spacing:0.35em; color:var(--ink-muted); margin-bottom:1rem; }
-.back-link { display:inline-block; margin-top:1.5rem; color:var(--amber-dim); font-size:0.8rem; text-decoration:none; letter-spacing:0.1em; border-bottom:1px solid rgba(139,105,20,0.3); padding-bottom:2px; }
-.back-link:hover { color:var(--amber); }
-@media(max-width:600px) { .panel { padding:60px 1.2rem; } }
+.doc-title { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber-dim); margin-bottom:0.6rem; padding-bottom:0.4rem; border-bottom:1px solid rgba(139,105,20,0.2); }
+.speech { margin:1.5rem 0; display:flex; gap:0.8rem; align-items:flex-start; }
+.speech.right { flex-direction:row-reverse; }
+.speech-avatar { width:40px; height:40px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:0.65rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; border:1px solid rgba(201,148,42,0.3); }
+.speech-avatar.koipak { background:rgba(201,148,42,0.1); color:var(--amber); }
+.speech-avatar.albert { background:rgba(100,120,80,0.1); color:#7a8a60; border-color:rgba(100,120,80,0.3); }
+.speech-avatar.hargrove { background:rgba(70,70,90,0.1); color:#8888aa; border-color:rgba(70,70,90,0.3); }
+.speech-bubble { background:var(--parchment-light); border:1px solid rgba(196,185,154,0.1); border-radius:2px 12px 12px 12px; padding:0.9rem 1.2rem; font-size:0.92rem; max-width:80%; }
+.speech.right .speech-bubble { border-radius:12px 2px 12px 12px; }
+.speaker-name { font-family:'Cormorant Garamond',serif; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:0.2rem; }
+.scene-break { text-align:center; padding:1.5rem 0; color:var(--amber-dim); letter-spacing:0.8em; font-size:0.85rem; opacity:0.5; }
+.data-table-container { margin:1.5rem 0; overflow-x:auto; }
+.data-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+.data-table th { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--amber-dim); padding:0.6rem; text-align:left; border-bottom:2px solid var(--amber-dim); }
+.data-table td { padding:0.45rem 0.6rem; border-bottom:1px solid rgba(196,185,154,0.08); }
+.data-table tr:hover td { background:var(--amber-glow); }
+.formula-block { background:rgba(0,0,0,0.3); border:1px solid rgba(139,105,20,0.2); border-radius:3px; padding:0.9rem 1.5rem; margin:1.2rem 0; text-align:center; color:var(--amber); font-size:1.05rem; }
+.section-head { font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:var(--amber); margin:1.8rem 0 0.7rem; letter-spacing:0.05em; border-bottom:1px solid rgba(139,105,20,0.2); padding-bottom:0.4rem; }
+.concepts-list { list-style:none; display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.8rem; }
+.concepts-list li { font-size:0.75rem; color:#8a7d65; border:1px solid rgba(139,105,20,0.2); padding:0.2rem 0.7rem; border-radius:20px; }
+.chapter-end { margin-top:2.5rem; }
+.ornament { text-align:center; color:var(--amber-dim); letter-spacing:0.8em; margin-bottom:1rem; font-size:0.85rem; opacity:0.6; }
+.chapter-nav { display:flex; justify-content:space-between; font-family:'Cormorant Garamond',serif; font-size:0.8rem; }
+.chapter-nav a { color:var(--ink-muted); text-decoration:none; transition:color 0.3s; }
+.chapter-nav a:hover { color:var(--amber); }
+.chapter-nav a.disabled { color:rgba(90,78,63,0.3); pointer-events:none; }
+.ch-nav { position:fixed; left:1.2rem; top:50%; transform:translateY(-50%); z-index:150; display:flex; flex-direction:column; gap:0.5rem; }
+.ch-nav-btn { font-family:'Cormorant Garamond',serif; font-size:0.72rem; font-weight:500; color:var(--ink-muted); text-decoration:none; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(196,185,154,0.08); border-radius:2px; transition:all 0.3s; background:rgba(26,22,16,0.8); }
+.ch-nav-btn:hover,.ch-nav-btn.active { color:var(--amber); border-color:var(--amber); background:rgba(201,148,42,0.08); }
+.top-nav { position:fixed; top:40px; left:0; right:0; z-index:150; background:rgba(26,22,16,0.92); backdrop-filter:blur(8px); padding:0.4rem 1.5rem; display:flex; align-items:center; justify-content:center; gap:1.5rem; font-family:'Cormorant Garamond',serif; font-size:0.7rem; border-bottom:1px solid rgba(184,134,11,0.1); opacity:0; transition:opacity 0.5s; }
+.top-nav.visible { opacity:1; }
+.top-nav a { color:var(--ink-muted); text-decoration:none; letter-spacing:0.1em; transition:color 0.3s; }
+.top-nav a:hover { color:var(--amber); }
+.top-nav .current-ch { color:var(--amber); }
+@media(max-width:768px) { .panel { padding:60px 1.2rem; min-height:70vh; } .cine-bar-top,.cine-bar-bottom { height:24px; } .ch-nav { display:none; } .top-nav { top:24px; font-size:0.62rem; gap:0.8rem; } }
 </style>
 </head>
 <body>
 <div class="cine-bar-top"></div>
 <div class="cine-bar-bottom"></div>
 
-<!-- KAPAK -->
-<div class="cover-panel">
-  <div>
-    <img src="interaktif/img/kapak.jpg" class="cover-img" alt="Zehirin Dağılımı kapak"/>
-    <div class="cover-series">Bir İstatistik Dedektif Serisi · İkinci Macera</div>
-    <div class="cover-title">Zehirin Dağılımı</div>
-    <div class="cover-author">Fikri Gökpınar</div>
-    <a href="#bolum1" class="cover-btn">Okumaya Başla</a>
-  </div>
-</div>
-
-<!-- NAV -->
-<nav class="nav-strip">
-  <a href="#bolum1">I · Üç Mahalle</a>
-  <a href="#bolum2">II · Poisson</a>
-  <a href="#bolum3">III · Binom</a>
-  <a href="#bolum4">IV · Büyük Sayılar</a>
-  <a href="#bolum5">V · CLT</a>
-  <a href="#bolum6">VI · Yapay Rastgelelik</a>
-  <a href="#bolum7">VII · Sistem</a>
-  <a href="interaktif/index.html" style="color:var(--amber); margin-left:auto;">✦ İnteraktif</a>
+<nav class="ch-nav" id="chNav">
+  <a href="#" data-ch="1" class="ch-nav-btn">I</a>
+  <a href="#" data-ch="2" class="ch-nav-btn">II</a>
+  <a href="#" data-ch="3" class="ch-nav-btn">III</a>
+  <a href="#" data-ch="4" class="ch-nav-btn">IV</a>
+  <a href="#" data-ch="5" class="ch-nav-btn">V</a>
+  <a href="#" data-ch="6" class="ch-nav-btn">VI</a>
+  <a href="#" data-ch="7" class="ch-nav-btn">VII</a>
 </nav>
 
-<!-- I. BÖLÜM -->
-<div class="panel" id="bolum1">
-<div class="panel-inner">
-  <div class="panel-title">
-    <div class="chapter-label">I. Bölüm</div>
-    <div class="chapter-name">Üç Mahalle, Dokuz Ölüm</div>
+<nav class="top-nav" id="topNav">
+  <a href="../index.html">Seri</a>
+  <span style="color:rgba(196,185,154,0.15);">|</span>
+  <a href="interaktif/index.html">İnteraktif Keşfet</a>
+  <span style="color:rgba(196,185,154,0.15);">|</span>
+  <span class="current-ch" id="currentChLabel">I. Bölüm</span>
+</nav>
+
+<!-- KAPAK -->
+<section class="panel" data-chapter="0" style="min-height:100vh; padding:0; position:relative; overflow:hidden;">
+  <div style="position:absolute; inset:0; background:url('interaktif/img/kapak.jpg') center/cover no-repeat; filter:brightness(0.45) saturate(0.8);"></div>
+  <div style="position:absolute; inset:0; background:radial-gradient(ellipse at center, transparent 25%, rgba(0,0,0,0.7) 100%);"></div>
+  <div style="position:absolute; bottom:0; left:0; right:0; height:180px; background:linear-gradient(to bottom, transparent, #1a1610);"></div>
+  <div class="panel-inner panel-title" style="position:relative; z-index:2;">
+    <p style="font-family:'Cormorant Garamond',serif; font-size:0.72rem; letter-spacing:0.45em; text-transform:uppercase; color:rgba(196,185,154,0.5); margin-bottom:1rem;">Bir İstatistik Dedektif Serisi · İkinci Macera</p>
+    <h1 style="font-family:'Cormorant Garamond',serif; font-size:clamp(1.8rem,4.5vw,3rem); font-weight:300; color:var(--amber); line-height:1.2; margin-bottom:0.5rem; text-shadow:0 2px 20px rgba(0,0,0,0.8);">Zehirin Dağılımı</h1>
+    <p style="font-family:'Cormorant Garamond',serif; font-size:1rem; font-style:italic; color:#8a7d65;">Grifin R. Koipak ve Belirsizliğin Bilimi</p>
+    <div class="amber-line"></div>
+    <p style="font-family:'Cormorant Garamond',serif; font-size:0.82rem; color:var(--ink-muted); letter-spacing:0.12em;">Fikri Gökpınar</p>
   </div>
-  <div class="amber-line"></div>
-  <img src="interaktif/img/1_1.jpg" class="scene-img" alt=""/>
-  <div class="narrative">
-    <p>Aralık soğuğu Kasım'dan farklıdır. Kasım sisi serer üstüne, ağırlaştırır, boğazına yapıştırır; ama Aralık keser — temiz, acımasız, tartışmasız. Koipak bu ayrımı her yıl fark ederdi. <em>"Sis yok. Soğuk: keskin. Rüzgâr: kuzeydoğudan."</em></p>
-    <p>Hargrove'un zarfı sabahın sekizini çeyrek geçe gelmişti. Bermondsey, Stepney, Poplar. Üç mahalle, üç haftada dokuz ölüm. Resmi kayıt: gıda zehirlenmesi.</p>
-    <p>"Bir salgın böyle görünmez," demişti Hargrove. "Salgın yayılır — bir merkezden dışarıya, dalgalar halinde. Bu ölümler üç farklı mahallede, neredeyse aynı anda başlıyor. Ve sonra duruyor."</p>
+</section>
 
+<!-- I -->
+<section class="panel" id="bolum1" data-chapter="1">
+  <div class="panel-inner panel-title">
+    <p class="chapter-label">I. Bölüm</p>
+    <p class="chapter-name">Üç Mahalle, Dokuz Ölüm</p>
+    <div class="amber-line"></div>
+  </div>
+</section>
+<section class="panel" data-chapter="1">
+  <div class="panel-inner epigraph-panel">
+    Dokuz ölüm. Beklenen: sıfıra yakın.<br>Rakamlar bağırmıyor — fısıldıyor.<br>Ama yeterince sessiz olursan duyarsın.
+    <span class="epigraph-source">— Grifin R. Koipak, Kişisel Notlar, 1903</span>
+  </div>
+</section>
+<section class="panel" data-chapter="1">
+  <div class="panel-inner">
+    <img src="interaktif/img/1_1.jpg" alt="" style="width:100%;display:block;border-radius:2px;box-shadow:0 8px 30px rgba(0,0,0,0.5);">
+  </div>
+</section>
+<section class="panel" data-chapter="1">
+  <div class="panel-inner narrative">
+    <p>Aralık soğuğu Kasım'dan farklıdır. Kasım sisi serer üstüne; ama Aralık keser — temiz, acımasız. <em>"Sis yok. Soğuk: keskin. Rüzgâr: kuzeydoğudan."</em></p>
+    <div class="speech">
+      <div class="speech-avatar hargrove">HG</div>
+      <div class="speech-bubble"><div class="speaker-name">Hargrove</div>"Bir salgın böyle görünmez. Salgın merkezden yayılır. Bu ölümler üç farklı mahallede, neredeyse aynı anda başlıyor. Ve sonra duruyor."</div>
+    </div>
     <div class="section-head">Rastgele Değişken</div>
-    <p>Her ölüm bir <strong>rastgele değişkenin</strong> gerçekleşmesiydi — X, belirli bir günde bu bölgede meydana gelen ölüm sayısını temsil ediyordu. Değeri önceden bilinemez, ama olasılık dağılımı modellenebilirdi.</p>
-
-    <table class="data-table">
-      <tr><th>#</th><th>Mahalle</th><th>Tarih</th><th>Gün №</th></tr>
-      <tr><td>1–4</td><td>Bermondsey</td><td>2, 4, 9, 16 Kasım</td><td>2, 4, 9, 16</td></tr>
-      <tr><td>5–7</td><td>Stepney</td><td>6, 11, 18 Kasım</td><td>6, 11, 18</td></tr>
-      <tr><td>8–9</td><td>Poplar</td><td>14, 21 Kasım</td><td>14, 21</td></tr>
-    </table>
-
+    <p>Her ölüm bir <strong>rastgele değişkenin</strong> gerçekleşmesiydi. Değeri önceden bilinemez, ama dağılımı modellenebilirdi. Tarihsel beklenti: <strong>0.058</strong>. Gözlem: <strong>9</strong>.</p>
+    <div class="data-table-container"><table class="data-table">
+      <tr><th>#</th><th>Mahalle</th><th>Tarihler</th><th>Hat</th></tr>
+      <tr><td>1–4</td><td>Bermondsey</td><td>2, 4, 9, 16 Kasım</td><td>7B</td></tr>
+      <tr><td>5–7</td><td>Stepney</td><td>6, 11, 18 Kasım</td><td>4C</td></tr>
+      <tr><td>8–9</td><td>Poplar</td><td>14, 21 Kasım</td><td>2A</td></tr>
+    </table></div>
     <div class="document-block">
-      <div class="doc-label">Koipak'ın Defterinden — 1 Aralık 1903</div>
-      <p>"9 ölüm. 21 gün. 3 mahalle. Beklenen: 0.06. Gözlemlenen: 9. Bu bir rastlantı olamaz — ama rastlantının tam olarak ne olmadığını anlamak için dağılımı kurmam gerekiyor. Yarın: Poisson."</p>
+      <div class="doc-title">Koipak'ın Defterinden — 1 Aralık 1903</div>
+      <p style="font-style:italic; color:#9a8e75;">"9 ölüm. 21 gün. 3 mahalle. Beklenen: 0.06. Bu bir rastlantı olamaz."</p>
+    </div>
+    <div class="chapter-end">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem;">Bu Bölümde</h4>
+        <ul class="concepts-list" style="justify-content:center;"><li>Rastgele Değişken</li><li>Beklenen Değer</li></ul>
+      </div>
+      <div class="chapter-nav"><a href="#" class="disabled">← Önceki</a><a href="#bolum2">II. Bölüm →</a></div>
     </div>
   </div>
-  <div class="concept-box">
-    <h4>Bu Bölümde</h4>
-    <ul class="concept-list"><li>Rastgele Değişken</li><li>Beklenen Değer</li></ul>
-  </div>
-</div>
-</div>
+</section>
 
-<!-- II. BÖLÜM -->
-<div class="panel" id="bolum2">
-<div class="panel-inner">
-  <div class="section-divider">✦ ✦ ✦</div>
-  <div class="panel-title">
-    <div class="chapter-label">II. Bölüm</div>
-    <div class="chapter-name">Yıldızların Dağılımı</div>
+<!-- II -->
+<section class="panel" id="bolum2" data-chapter="2">
+  <div class="panel-inner panel-title">
+    <p class="chapter-label">II. Bölüm</p>
+    <p class="chapter-name">Yıldızların Dağılımı</p>
+    <div class="amber-line"></div>
   </div>
-  <div class="amber-line"></div>
-  <img src="interaktif/img/2_1.jpg" class="scene-img" alt="UCL Semineri"/>
-  <div class="narrative">
-    <p>UCL'nin büyük amfisi o akşam dolmuştu. Koipak arka köşeye oturmuştu. Galli aksanıyla soru sorduğunda, öndeki sıralardaki bakışları hissedebiliyordu.</p>
-    <p><em>"Sıfır gözlemini dışarıda bırakırsanız, lambda'yı sistematik olarak abartırsınız."</em> Yanındaki adam kibarca müdahale etmişti. Dr. Edmund Ashby — UCL İstatistik Bölümü. Merthyr Tydfil maden verilerini okuduğunu söyledi. Koipak onu "sayılara saygı duyan nadir insanlardan biri" olarak zihnine kaydetti.</p>
-
+</section>
+<section class="panel" data-chapter="2">
+  <div class="panel-inner epigraph-panel">
+    Rastlantı, açıklanamayan şeyin adıdır.<br>Ama açıklanamayan şey, henüz doğru soruyu<br>sormadığımız şeydir.
+    <span class="epigraph-source">— Grifin R. Koipak, Kişisel Notlar, 1903</span>
+  </div>
+</section>
+<section class="panel" data-chapter="2">
+  <div class="panel-inner"><img src="interaktif/img/2_1.jpg" alt="" style="width:100%;display:block;border-radius:2px;box-shadow:0 8px 30px rgba(0,0,0,0.5);"></div>
+</section>
+<section class="panel" data-chapter="2">
+  <div class="panel-inner narrative">
+    <p>UCL'nin büyük amfisi o akşam dolmuştu. Koipak arka köşeye oturmuştu.</p>
+    <div class="speech">
+      <div class="speech-avatar" style="background:rgba(90,78,100,0.1);color:#a888cc;border-color:rgba(90,78,100,0.3);">AS</div>
+      <div class="speech-bubble"><div class="speaker-name">Dr. Ashby</div>"Sıfır gözlemini dışarıda bırakırsanız, lambda'yı sistematik olarak abartırsınız."</div>
+    </div>
     <div class="section-head">Poisson Dağılımı</div>
     <div class="formula-block">P(X = k) = e<sup>−λ</sup> · λ<sup>k</sup> / k!</div>
-    <p>Koipak lambda'yı tarihsel veriden hesapladı. Son beş yıl: 1, 0, 2, 1, 1 ölüm. Ortalama: yılda 1. Üç haftada beklenen: 1 × (21/365) ≈ <strong>0.058</strong>.</p>
-    <p>Beklenen 0.058 ölüme karşı 9 gözlem. Poisson ile P(X≥9 | λ=0.058) ≈ 10⁻¹². Bir trilyonda birden az.</p>
-    <p>Ama Koipak'ı asıl durduran şey sayı değildi — <em>zamanlama</em>ydı. Aralıklar: 2, 2, 3, 2, 3, 2, 2, 3. Gerçek Poisson sürecinde beklenen <strong>CV ≈ 1.0</strong>. Gözlemlenen: <strong>0.20</strong>.</p>
-
+    <p>Tarihsel λ = 0.058. P(X ≥ 9 | λ=0.058) ≈ <strong>10⁻¹²</strong>. Ama Koipak'ı asıl durduran zamanlama oldu.</p>
+    <p>Aralıklar: 2, 2, 3, 2, 3, 2, 2, 3. Gerçek Poisson'da <strong>CV ≈ 1.0</strong>. Gözlem: <strong>0.20</strong>. Beş kat fark.</p>
     <div class="document-block">
-      <div class="doc-label">Koipak'ın Defterinden — 2 Aralık 1903</div>
-      <p>"CV=0.20. Beklenen: 1.0. Fark beş kat. Bu veri üretilmiş. Birileri ölümlerin tarihlerini ayarlamış — ya da kayıtlardaki tarihleri değiştirmiş."</p>
+      <div class="doc-title">Koipak'ın Defterinden — 2 Aralık 1903</div>
+      <p style="font-style:italic; color:#9a8e75;">"CV=0.20. Beklenen: 1.0. Bu veri üretilmiş."</p>
+    </div>
+    <div class="chapter-end">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem;">Bu Bölümde</h4>
+        <ul class="concepts-list" style="justify-content:center;"><li>Poisson Dağılımı</li><li>Lambda (λ)</li><li>CV</li><li>Üstel Dağılım</li></ul>
+      </div>
+      <div class="chapter-nav"><a href="#bolum1">← I. Bölüm</a><a href="#bolum3">III. Bölüm →</a></div>
     </div>
   </div>
-  <div class="concept-box">
-    <h4>Bu Bölümde</h4>
-    <ul class="concept-list"><li>Poisson Dağılımı</li><li>Lambda (λ)</li><li>Değişim Katsayısı (CV)</li><li>Üstel Dağılım</li></ul>
-  </div>
-</div>
-</div>
+</section>
 
-<!-- III. BÖLÜM -->
-<div class="panel" id="bolum3">
-<div class="panel-inner">
-  <div class="section-divider">✦ ✦ ✦</div>
-  <div class="panel-title">
-    <div class="chapter-label">III. Bölüm</div>
-    <div class="chapter-name">Her Kişi Bir Deney</div>
+<!-- III -->
+<section class="panel" id="bolum3" data-chapter="3">
+  <div class="panel-inner panel-title">
+    <p class="chapter-label">III. Bölüm</p>
+    <p class="chapter-name">Her Kişi Bir Deney</p>
+    <div class="amber-line"></div>
   </div>
-  <div class="amber-line"></div>
-  <img src="interaktif/img/3_1.jpg" class="scene-img" alt="Albert sokaklarda"/>
-  <div class="narrative">
-    <p>Albert, Bermondsey'e Koipak'tan önce varmıştı. Dört kurbanın hepsi aynı su hattından: 7B. Stepney'dekiler 4C, Poplar'dakiler 2A.</p>
-
+</section>
+<section class="panel" data-chapter="3">
+  <div class="panel-inner"><img src="interaktif/img/3_1.jpg" alt="" style="width:100%;display:block;border-radius:2px;box-shadow:0 8px 30px rgba(0,0,0,0.5);"></div>
+</section>
+<section class="panel" data-chapter="3">
+  <div class="panel-inner narrative">
+    <p>Dört Bermondsey kurbanı — hepsi aynı su hattından: 7B. Toplam abone: 5.441. Ölüm: 9.</p>
     <div class="section-head">Binom Dağılımı</div>
     <div class="formula-block">P(X = k) = C(n,k) · p<sup>k</sup> · (1−p)<sup>n−k</sup></div>
-    <p>Toplam abone: 5.441. Ölüm: 9. MLE ile etkilenme olasılığı: p̂ = 9/5441 ≈ <strong>0.0017</strong>. Binde bir yedi.</p>
-    <p>Bu oran kontamine bir su kaynağı için çok düşüktü. Normal bir kontaminasyon çok daha fazlasını etkilerdi. Sonuç: kurbanlar rastgele seçilmemiş — o an suyu içenler belirli bir alt kümeydi.</p>
-    <p>Albert o sabah getirdi: Holloway komşusu geç saatte su içmiş, hastalanmamış. Holloway sabah yedide içmiş. <em>Basınç düşüşü sabah saatlerinde.</em></p>
+    <p>MLE: p̂ = 9/5441 ≈ <strong>0.0017</strong>. Binde bir yedi. Kontamine bir su kaynağı için çok düşük — seçici bir maruziyet söz konusu.</p>
+    <p>Albert'ın bulgusu: Holloway komşusu geç saatte su içmiş, hastalanmamış. Holloway sabah yedide içmiş. <em>Basınç düşüşü sabah saatlerindeydi.</em></p>
+    <div class="chapter-end">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem;">Bu Bölümde</h4>
+        <ul class="concepts-list" style="justify-content:center;"><li>Binom Dağılımı</li><li>MLE</li><li>Model Tutarsızlığı</li></ul>
+      </div>
+      <div class="chapter-nav"><a href="#bolum2">← II. Bölüm</a><a href="#bolum4">IV. Bölüm →</a></div>
+    </div>
   </div>
-  <div class="concept-box">
-    <h4>Bu Bölümde</h4>
-    <ul class="concept-list"><li>Binom Dağılımı</li><li>MLE Tahmini</li><li>Model Tutarsızlığı</li></ul>
-  </div>
-</div>
-</div>
+</section>
 
-<!-- IV. BÖLÜM -->
-<div class="panel" id="bolum4">
-<div class="panel-inner">
-  <div class="section-divider">✦ ✦ ✦</div>
-  <div class="panel-title">
-    <div class="chapter-label">IV. Bölüm</div>
-    <div class="chapter-name">Az Sayının Yalan Söylemesi</div>
+<!-- IV -->
+<section class="panel" id="bolum4" data-chapter="4">
+  <div class="panel-inner panel-title">
+    <p class="chapter-label">IV. Bölüm</p>
+    <p class="chapter-name">Az Sayının Yalan Söylemesi</p>
+    <div class="amber-line"></div>
   </div>
-  <div class="amber-line"></div>
-  <img src="interaktif/img/4_1.jpg" class="scene-img" alt="Üç dosya"/>
-  <div class="narrative">
-    <p>Poplar: iki ölüm. Bermondsey: dört. Stepney: üç. Her mahalleyi ayrı analiz edince oranlar çelişiyordu.</p>
-
+</section>
+<section class="panel" data-chapter="4">
+  <div class="panel-inner"><img src="interaktif/img/4_1.jpg" alt="" style="width:100%;display:block;border-radius:2px;box-shadow:0 8px 30px rgba(0,0,0,0.5);"></div>
+</section>
+<section class="panel" data-chapter="4">
+  <div class="panel-inner narrative">
+    <p>Poplar: iki ölüm. Bu sayıdan güvenilir bir oran çıkmaz.</p>
     <div class="section-head">Büyük Sayılar Yasası</div>
-    <p><strong>Büyük Sayılar Yasası:</strong> n büyüdükçe, örneklem ortalaması gerçek popülasyon ortalamasına yaklaşır. Tersinden: n küçükse, örneklem ortalaması gerçek değerden büyük sapmalar gösterebilir.</p>
-
-    <table class="data-table">
+    <p><strong>n büyüdükçe</strong> örneklem ortalaması gerçek değere yaklaşır. Mahalleler tek tek anlamsız — ama birleşince:</p>
+    <div class="data-table-container"><table class="data-table">
       <tr><th>Mahalle</th><th>Abone</th><th>Ölüm</th><th>Oran</th></tr>
       <tr><td>Bermondsey</td><td>2.347</td><td>4</td><td>1/587</td></tr>
       <tr><td>Stepney</td><td>1.891</td><td>3</td><td>1/630</td></tr>
       <tr><td>Poplar</td><td>1.203</td><td>2</td><td>1/602</td></tr>
-      <tr><td><strong>Birleşik</strong></td><td><strong>5.441</strong></td><td><strong>9</strong></td><td><strong>1/604</strong></td></tr>
-    </table>
-
-    <p>Albert nazikçe fark ettirmişti: <em>"Üç bağımsız gözlem var. Üçü de aynı yere işaret ediyor."</em> Haklıydı. Mahalleler birleşince oran stabilleşiyordu.</p>
-
-    <div class="document-block">
-      <div class="doc-label">Koipak'ın Defterinden — 3 Aralık 1903</div>
-      <p>"Tek tek bak, yanılırsın; birlikte bak, yaklaşırsın. Büyük sayılar yasası."</p>
+      <tr><td><strong>Birleşik</strong></td><td><strong>5.441</strong></td><td><strong>9</strong></td><td style="color:var(--amber);"><strong>1/604</strong></td></tr>
+    </table></div>
+    <div class="chapter-end">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem;">Bu Bölümde</h4>
+        <ul class="concepts-list" style="justify-content:center;"><li>Büyük Sayılar Yasası</li><li>Örneklem Büyüklüğü</li></ul>
+      </div>
+      <div class="chapter-nav"><a href="#bolum3">← III. Bölüm</a><a href="#bolum5">V. Bölüm →</a></div>
     </div>
   </div>
-  <div class="concept-box">
-    <h4>Bu Bölümde</h4>
-    <ul class="concept-list"><li>Büyük Sayılar Yasası</li><li>Örneklem Büyüklüğü</li><li>Birleşik Analiz</li></ul>
-  </div>
-</div>
-</div>
+</section>
 
-<!-- V. BÖLÜM -->
-<div class="panel" id="bolum5">
-<div class="panel-inner">
-  <div class="section-divider">✦ ✦ ✦</div>
-  <div class="panel-title">
-    <div class="chapter-label">V. Bölüm</div>
-    <div class="chapter-name">Küçüklerden Büyük Resim</div>
+<!-- V -->
+<section class="panel" id="bolum5" data-chapter="5">
+  <div class="panel-inner panel-title">
+    <p class="chapter-label">V. Bölüm</p>
+    <p class="chapter-name">Küçüklerden Büyük Resim</p>
+    <div class="amber-line"></div>
   </div>
-  <div class="amber-line"></div>
-  <img src="interaktif/img/5_1.jpg" class="scene-img" alt="Su şirketi arşivi"/>
-  <div class="narrative">
-    <p>Thames South & East Water'ın arşivinde üç hatta da Kasım ayı basınç düşüşleri vardı. Bakım günlükleri bu tarihleri içermiyordu. Ya hata, ya silme.</p>
-
+</section>
+<section class="panel" data-chapter="5">
+  <div class="panel-inner"><img src="interaktif/img/5_1.jpg" alt="" style="width:100%;display:block;border-radius:2px;box-shadow:0 8px 30px rgba(0,0,0,0.5);"></div>
+</section>
+<section class="panel" data-chapter="5">
+  <div class="panel-inner narrative">
+    <p>Thames South & East Water arşivinde üç hatta Kasım basınç düşüşleri vardı. Bakım günlükleri bu tarihleri içermiyordu.</p>
     <div class="section-head">Merkezi Limit Teoremi</div>
     <div class="formula-block">SE = √(p̂ · (1 − p̂) / n)</div>
-    <p>Birleşik örneklem (n=5441) ile standart hata: SE ≈ 0.000174. Gerçek oran yüzde doksan beş olasılıkla binde 1.3 ile binde 2.0 arasındaydı. CLT, küçük örneklemlerin göremediğini göstermişti.</p>
-    <p>Ve bu dar aralık, kontamine su hipoteziyle çelişiyordu: gerçek bir kontaminasyon oranı bu kadar düşük olamazdı. Seçici bir maruziyetin işaretiydi.</p>
-  </div>
-  <div class="concept-box">
-    <h4>Bu Bölümde</h4>
-    <ul class="concept-list"><li>Merkezi Limit Teoremi</li><li>Standart Hata</li><li>Güven Aralığı</li></ul>
-  </div>
-</div>
-</div>
-
-<!-- VI. BÖLÜM -->
-<div class="panel" id="bolum6">
-<div class="panel-inner">
-  <div class="section-divider">✦ ✦ ✦</div>
-  <div class="panel-title">
-    <div class="chapter-label">VI. Bölüm</div>
-    <div class="chapter-name">Çok Mükemmel Rastlantı</div>
-  </div>
-  <div class="amber-line"></div>
-  <img src="interaktif/img/6_1.jpg" class="scene-img" alt="Gareth ile karşılaşma"/>
-  <div class="narrative">
-    <p>Owen Gareth — Southgate Technical Services. Merthyr Tydfil, Güney Galler. Koipak kapıya geldiğinde Gallice konuştu; kapı açıldı. Gareth üç hatta özel bir karışımı basınç düşüşü sırasında vermiş. Emirler imzasız mektupla geliyordu.</p>
-    <p>Koipak duyduğunda dondu. <em>İmzasız mektuplar.</em> Calloway davası. Aynı örüntü, farklı bir dava. Ve taşeron adı: Meridian Pipe Works — Thames Life davasında da geçmişti.</p>
-
-    <div class="section-head">Yapay Rastgelelik</div>
-    <p>CV = 0.20. Gerçek Poisson'da beklenen: ≈ 1.0. Bu veri tasarlanmış. Ölümler planlandı ya da kayıtlar sonradan düzenlendi — birden fazla olayı "gıda zehirlenmesi" görünümünde yaymak için.</p>
-  </div>
-  <div class="concept-box">
-    <h4>Bu Bölümde</h4>
-    <ul class="concept-list"><li>Yapay Rastgelelik Testi</li><li>CV ile Poisson Kontrol</li><li>Veri Manipülasyonu</li></ul>
-  </div>
-</div>
-</div>
-
-<!-- VII. BÖLÜM -->
-<div class="panel" id="bolum7">
-<div class="panel-inner">
-  <div class="section-divider">✦ ✦ ✦</div>
-  <div class="panel-title">
-    <div class="chapter-label">VII. Bölüm</div>
-    <div class="chapter-name">Rastlantı Değil, Sistem</div>
-  </div>
-  <div class="amber-line"></div>
-  <img src="interaktif/img/7_1.jpg" class="scene-img" alt="Thames gecesi"/>
-  <div class="narrative">
-    <p>Harrington gözaltındaydı. Su hattı kapatıldı. Ama Koipak Scotland Yard'ın dışında bekliyordu.</p>
-    <p><em>"Meridian Pipe Works,"</em> dedi Albert. <em>"İki davada."</em></p>
-    <p>Koipak başını salladı. Veri yeterliydi — ama yeterlilik, her zaman doğruluk demek değildi. Daha fazla ip gerekirdi. Harrington konuşacaktı.</p>
-
-    <div class="document-block">
-      <div class="doc-label">Koipak'ın Defterinden — 5 Aralık 1903</div>
-      <p>"Prior: P(tek organizatör) ≈ 0.05. Kanıt: aynı taşeron, iki davada. Posterior: ~0.28. Düşük hâlâ. Ama sıfıra çok daha uzak. Yarın, Harrington'ın ifadesini bekliyorum."</p>
+    <p>Birleşik n=5441 ile SE ≈ 0.000174. %95 güven aralığı: binde 1.3 ile binde 2.0. CLT, küçük örneklemlerin göremediğini göstermişti — ve bu dar aralık, kontamine su hipoteziyle çelişiyordu.</p>
+    <div class="chapter-end">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem;">Bu Bölümde</h4>
+        <ul class="concepts-list" style="justify-content:center;"><li>Merkezi Limit Teoremi</li><li>Standart Hata</li><li>Güven Aralığı</li></ul>
+      </div>
+      <div class="chapter-nav"><a href="#bolum4">← IV. Bölüm</a><a href="#bolum6">VI. Bölüm →</a></div>
     </div>
   </div>
-  <div class="concept-box">
-    <h4>Bu Kitapta Geçen Kavramlar</h4>
-    <ul class="concept-list">
-      <li>Rastgele Değişken</li><li>Poisson Dağılımı</li><li>Lambda (λ)</li>
-      <li>Değişim Katsayısı</li><li>Üstel Dağılım</li><li>Binom Dağılımı</li>
-      <li>MLE</li><li>Büyük Sayılar Yasası</li><li>CLT</li>
-      <li>Standart Hata</li><li>Yapay Rastgelelik</li><li>Bayes Güncellemesi</li>
-    </ul>
-  </div>
-</div>
-</div>
+</section>
 
-<div class="panel final" style="min-height:auto; opacity:1; transform:none;">
-  <div>
-    <div class="final-symbol">✦ ✦ ✦</div>
-    <div class="final-label">İkinci Macera — Tamamlandı</div>
-    <p style="font-style:italic; color:#6a5e4a; font-size:0.9rem;">"Rakamlar yalan söylemez. Ama birisi rakamlara yalan söyletiyor." — Harold Fenwick</p>
-    <a href="../index.html" class="back-link">← Seriye Dön</a>
+<!-- VI -->
+<section class="panel" id="bolum6" data-chapter="6">
+  <div class="panel-inner panel-title">
+    <p class="chapter-label">VI. Bölüm</p>
+    <p class="chapter-name">Çok Mükemmel Rastlantı</p>
+    <div class="amber-line"></div>
   </div>
-</div>
+</section>
+<section class="panel" data-chapter="6">
+  <div class="panel-inner"><img src="interaktif/img/6_1.jpg" alt="" style="width:100%;display:block;border-radius:2px;box-shadow:0 8px 30px rgba(0,0,0,0.5);"></div>
+</section>
+<section class="panel" data-chapter="6">
+  <div class="panel-inner narrative">
+    <p>Owen Gareth — Southgate Technical Services, Merthyr Tydfil. Koipak Gallice konuştu; kapı açıldı. Emirler imzasız mektupla geliyordu. <em>İmzasız mektuplar.</em> Calloway davası. Aynı örüntü.</p>
+    <div class="section-head">Yapay Rastgelelik</div>
+    <p>CV = 0.20. Gerçek Poisson'da beklenen ≈ 1.0. <strong>Bu veri tasarlanmış.</strong> Ve taşeron adı — Meridian Pipe Works — Thames Life davasında da geçmişti.</p>
+    <div class="chapter-end">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem;">Bu Bölümde</h4>
+        <ul class="concepts-list" style="justify-content:center;"><li>Yapay Rastgelelik</li><li>CV Kontrol</li><li>Veri Manipülasyonu</li></ul>
+      </div>
+      <div class="chapter-nav"><a href="#bolum5">← V. Bölüm</a><a href="#bolum7">VII. Bölüm →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- VII -->
+<section class="panel" id="bolum7" data-chapter="7">
+  <div class="panel-inner panel-title">
+    <p class="chapter-label">VII. Bölüm</p>
+    <p class="chapter-name">Rastlantı Değil, Sistem</p>
+    <div class="amber-line"></div>
+  </div>
+</section>
+<section class="panel" data-chapter="7">
+  <div class="panel-inner"><img src="interaktif/img/7_1.jpg" alt="" style="width:100%;display:block;border-radius:2px;box-shadow:0 8px 30px rgba(0,0,0,0.5);"></div>
+</section>
+<section class="panel" data-chapter="7">
+  <div class="panel-inner narrative">
+    <p>Harrington gözaltındaydı. Su hattı kapatıldı. Ama Koipak Scotland Yard'ın dışında bekliyordu, Albert yanında.</p>
+    <div class="speech">
+      <div class="speech-avatar albert">AL</div>
+      <div class="speech-bubble"><div class="speaker-name">Albert</div>"Meridian Pipe Works. İki davada."</div>
+    </div>
+    <div class="speech right">
+      <div class="speech-avatar koipak">GK</div>
+      <div class="speech-bubble"><div class="speaker-name">Koipak</div>"Biliyorum. Ama henüz veri yok. Şüphe var."</div>
+    </div>
+    <div class="document-block">
+      <div class="doc-title">Koipak'ın Defterinden — 5 Aralık 1903</div>
+      <p style="font-style:italic; color:#9a8e75;">"Prior: P(tek organizatör) ≈ 0.05. Kanıt: aynı taşeron, iki davada. Posterior: ~0.28. Düşük hâlâ. Ama sıfıra çok daha uzak."</p>
+    </div>
+    <div class="chapter-end">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem;">Bu Kitapta Geçen Kavramlar</h4>
+        <ul class="concepts-list" style="justify-content:center;">
+          <li>Rastgele Değişken</li><li>Poisson</li><li>Lambda</li><li>CV</li>
+          <li>Üstel Dağılım</li><li>Binom</li><li>MLE</li><li>Büyük Sayılar</li>
+          <li>CLT</li><li>Standart Hata</li><li>Yapay Rastgelelik</li><li>Bayes</li>
+        </ul>
+      </div>
+      <div class="scene-break">✦ ✦ ✦</div>
+      <div class="chapter-nav">
+        <a href="#bolum6">← VI. Bölüm</a>
+        <a href="../index.html">İkinci Macera — Tamamlandı.</a>
+      </div>
+    </div>
+  </div>
+</section>
 
 <script>
-// Panel reveal
-const panels = document.querySelectorAll('.panel:not(.final)');
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
-}, {threshold:0.15});
-panels.forEach(p => obs.observe(p));
-
-// Nav active
-const navLinks = document.querySelectorAll('.nav-strip a');
-const sections = document.querySelectorAll('.panel[id]');
-const navObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
+var panels = document.querySelectorAll('.panel');
+var chNavBtns = document.querySelectorAll('.ch-nav-btn');
+var topNav = document.getElementById('topNav');
+var chLabel = document.getElementById('currentChLabel');
+var chNames = {1:'I. Bölüm',2:'II. Bölüm',3:'III. Bölüm',4:'IV. Bölüm',5:'V. Bölüm',6:'VI. Bölüm',7:'VII. Bölüm'};
+var scrolled = false;
+window.addEventListener('scroll', function(){ if(!scrolled){ scrolled=true; if(topNav) topNav.classList.add('visible'); } });
+var obs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
     if(e.isIntersecting){
-      navLinks.forEach(l => l.classList.remove('active'));
-      const l = document.querySelector(`.nav-strip a[href="#${e.target.id}"]`);
-      if(l) l.classList.add('active');
+      e.target.classList.add('visible');
+      var ch = parseInt(e.target.getAttribute('data-chapter')||0);
+      if(ch>0){
+        chNavBtns.forEach(function(b){ b.classList.toggle('active',parseInt(b.getAttribute('data-ch'))===ch); });
+        if(chLabel) chLabel.textContent = chNames[ch]||'';
+      }
     }
   });
-}, {threshold:0.4});
-sections.forEach(s => navObs.observe(s));
+},{threshold:0.2});
+panels.forEach(function(p){ obs.observe(p); });
+chNavBtns.forEach(function(btn){
+  btn.addEventListener('click',function(e){
+    e.preventDefault();
+    var target = document.getElementById('bolum'+btn.getAttribute('data-ch'));
+    if(target) target.scrollIntoView({behavior:'smooth'});
+  });
+});
 </script>
 </body>
 </html>

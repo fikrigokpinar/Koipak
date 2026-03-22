@@ -1,1158 +1,725 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Zehirin Dağılımı — Grifin R. Koipak</title>
-<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel+Decorative:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zehirin Dağılımı — İnteraktif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --ink: #1a1208;
-  --parchment: #f5ead8;
-  --amber: #c8860a;
-  --amber-dim: #8a5c06;
-  --blood: #7a1c1c;
-  --fog: #2a2318;
-  --fog2: #1a160e;
-  --gold: #d4a843;
-  --gold-dim: #8a6c2a;
-  --text: #e8d9bc;
-  --text-dim: #9a8a6a;
-  --panel: rgba(26,18,8,0.85);
+  --ink: #0e0b08; --ink-light: #2a2318; --ink-muted: #5a4e3f;
+  --parchment: #1a1610; --parchment-light: #231f18;
+  --amber: #c9942a; --amber-dim: #8b6914; --amber-glow: rgba(201,148,42,0.15);
+  --red: #8b2500;
 }
-
 * { margin:0; padding:0; box-sizing:border-box; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--fog2);
-  color: var(--text);
-  font-family: 'Crimson Pro', Georgia, serif;
-  font-size: 19px;
-  line-height: 1.75;
-  overflow-x: hidden;
-}
-
-/* ── KAPAK ── */
-#kapak {
-  position: relative;
-  height: 100vh;
-  min-height: 600px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding-bottom: 60px;
-  overflow: hidden;
-}
-#kapak-bg {
-  position: absolute; inset: 0;
-  background: url('img/kapak.jpg') center/cover no-repeat;
-  filter: brightness(0.55) saturate(0.8);
-}
-#kapak-vignette {
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.75) 100%);
-}
-#kapak-bottom {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 200px;
-  background: linear-gradient(to bottom, transparent, var(--fog2));
-}
-.kapak-content {
-  position: relative; z-index: 2;
-  text-align: center;
-}
-.kapak-seri {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.35em;
-  color: var(--gold-dim);
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-.kapak-baslik {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(2.2rem, 6vw, 4.5rem);
-  color: var(--gold);
-  line-height: 1.1;
-  text-shadow: 0 0 40px rgba(200,134,10,0.4), 2px 3px 8px rgba(0,0,0,0.9);
-  margin-bottom: 10px;
-}
-.kapak-altyazi {
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
-  font-size: 1.05rem;
-  color: var(--text-dim);
-  margin-bottom: 24px;
-}
-.kapak-yazar {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.8rem;
-  letter-spacing: 0.2em;
-  color: var(--gold-dim);
-}
-.asagi-ok {
-  position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
-  z-index: 3; color: var(--gold-dim); font-size: 1.6rem;
-  animation: bounce 2s infinite;
-  cursor: pointer; text-decoration: none;
-}
-@keyframes bounce {
-  0%,100%{transform:translateX(-50%) translateY(0)}
-  50%{transform:translateX(-50%) translateY(8px)}
-}
-
-/* ── NAV ── */
-#nav {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(16,12,6,0.96);
-  border-bottom: 1px solid rgba(212,168,67,0.2);
-  backdrop-filter: blur(8px);
-  padding: 0 24px;
-  display: flex; align-items: center; gap: 0;
-  overflow-x: auto;
-}
-.nav-link {
-  display: block;
-  padding: 14px 18px;
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.15em;
-  color: var(--text-dim);
-  text-decoration: none;
-  white-space: nowrap;
-  border-bottom: 2px solid transparent;
-  transition: color 0.2s, border-color 0.2s;
-}
-.nav-link:hover, .nav-link.active {
-  color: var(--gold);
-  border-bottom-color: var(--gold);
-}
-
-/* ── BÖLÜM ── */
-.bolum {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 80px 28px 60px;
-}
-.bolum-header {
-  margin-bottom: 52px;
-  text-align: center;
-}
-.bolum-no {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.4em;
-  color: var(--gold-dim);
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-.bolum-baslik {
-  font-family: 'IM Fell English', serif;
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
-  color: var(--gold);
-  line-height: 1.25;
-}
-.sep {
-  text-align: center;
-  color: var(--amber-dim);
-  letter-spacing: 0.8em;
-  margin: 36px 0;
-  font-size: 0.9rem;
-}
-p { margin-bottom: 1.1em; }
-em { font-style: italic; color: var(--text); }
-strong { font-weight: 600; color: var(--gold); }
-
-/* ── İLLÜSTRASYON ── */
-.illus {
-  width: 100%; max-width: 700px;
-  margin: 44px auto;
-  display: block;
-  border-radius: 3px;
-  border: 1px solid rgba(212,168,67,0.18);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.7);
-}
-
-/* ── DEFTER NOTU ── */
-.defter {
-  background: rgba(200,134,10,0.06);
-  border-left: 3px solid var(--amber-dim);
-  padding: 22px 28px;
-  margin: 36px 0;
-  font-style: italic;
-  color: var(--text-dim);
-  font-size: 0.95rem;
-  border-radius: 0 4px 4px 0;
-}
-.defter-baslik {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.55rem;
-  letter-spacing: 0.3em;
-  color: var(--amber-dim);
-  font-style: normal;
-  margin-bottom: 10px;
-}
-
-/* ── KAVRAM BAŞLIĞI ── */
-.kavram-baslik {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.85rem;
-  color: var(--gold);
-  letter-spacing: 0.1em;
-  margin: 40px 0 16px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(212,168,67,0.25);
-}
-
-/* ── TABLO ── */
-.veri-tablo {
-  width: 100%; border-collapse: collapse;
-  margin: 28px 0; font-size: 0.88rem;
-}
-.veri-tablo th {
-  background: rgba(212,168,67,0.12);
-  color: var(--gold);
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  padding: 10px 14px;
-  text-align: left;
-  border-bottom: 1px solid rgba(212,168,67,0.3);
-}
-.veri-tablo td {
-  padding: 9px 14px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  color: var(--text-dim);
-}
-.veri-tablo tr:hover td { background: rgba(212,168,67,0.05); color: var(--text); }
-.veri-tablo .vurgu { color: var(--blood); font-weight: 600; }
-
-/* ── FORMÜL ── */
-.formul {
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(212,168,67,0.2);
-  border-radius: 4px;
-  padding: 18px 24px;
-  margin: 24px 0;
-  font-family: 'Crimson Pro', serif;
-  font-size: 1.05rem;
-  color: var(--gold);
-  text-align: center;
-  letter-spacing: 0.05em;
-}
-
-/* ── KAVRAM KUTUSU ── */
-.kavram-kutu {
-  background: rgba(212,168,67,0.06);
-  border: 1px solid rgba(212,168,67,0.2);
-  border-radius: 6px;
-  padding: 24px 28px;
-  margin: 52px 0 20px;
-}
-.kavram-kutu h4 {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.55rem;
-  letter-spacing: 0.3em;
-  color: var(--gold-dim);
-  margin-bottom: 12px;
-}
-.kavram-kutu ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
-.kavram-kutu li {
-  background: rgba(212,168,67,0.1);
-  border: 1px solid rgba(212,168,67,0.25);
-  color: var(--gold);
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-family: 'Cinzel Decorative', serif;
-  letter-spacing: 0.05em;
-}
-
-/* ══════════════════════════════════════
-   WİDGET'LAR
-══════════════════════════════════════ */
-.widget {
-  background: rgba(10,8,4,0.8);
-  border: 1px solid rgba(212,168,67,0.25);
-  border-radius: 8px;
-  padding: 30px;
-  margin: 44px 0;
-}
-.widget-baslik {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.62rem;
-  letter-spacing: 0.25em;
-  color: var(--amber);
-  margin-bottom: 20px;
-  display: flex; align-items: center; gap: 10px;
-}
-.widget-baslik::before {
-  content: '◈';
-  font-size: 0.9rem;
-}
-.w-label {
-  font-size: 0.82rem;
-  color: var(--text-dim);
-  margin-bottom: 6px;
-}
-.w-slider {
-  width: 100%;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 4px;
-  background: rgba(212,168,67,0.2);
-  border-radius: 2px;
-  outline: none;
-  margin-bottom: 16px;
-}
-.w-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 18px; height: 18px;
-  background: var(--gold);
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: 0 0 8px rgba(212,168,67,0.5);
-}
-.w-result {
-  font-size: 1.6rem;
-  color: var(--gold);
-  font-family: 'Crimson Pro', serif;
-  text-align: center;
-  margin: 12px 0 6px;
-}
-.w-result-label {
-  font-size: 0.78rem;
-  color: var(--text-dim);
-  text-align: center;
-}
-canvas.w-canvas {
-  width: 100% !important;
-  max-height: 200px;
-  margin: 16px 0 0;
-  border-radius: 4px;
-}
-.w-row { display: flex; gap: 20px; flex-wrap: wrap; }
-.w-col { flex: 1; min-width: 200px; }
-.w-badge {
-  display: inline-block;
-  padding: 4px 14px;
-  border-radius: 20px;
-  font-size: 0.78rem;
-  font-family: 'Cinzel Decorative', serif;
-  letter-spacing: 0.08em;
-}
-.w-badge.gercek { background: rgba(100,180,100,0.15); border: 1px solid #4a8a4a; color: #7ac87a; }
-.w-badge.yapay  { background: rgba(180,60,60,0.15);  border: 1px solid #8a3a3a; color: #c87a7a; }
-.w-badge.belirsiz { background: rgba(212,168,67,0.1); border: 1px solid var(--gold-dim); color: var(--gold); }
-
-/* Harita */
-#harita-wrapper {
-  position: relative;
-  background: #0d1a20;
-  border-radius: 6px;
-  overflow: hidden;
-  margin: 16px 0;
-  min-height: 320px;
-}
-#harita-svg { width: 100%; height: 320px; }
-.harita-panel {
-  position: absolute; right: 0; top: 0; bottom: 0;
-  width: 220px;
-  background: rgba(10,8,4,0.95);
-  border-left: 1px solid rgba(212,168,67,0.2);
-  padding: 20px;
-  transform: translateX(100%);
-  transition: transform 0.3s;
-}
-.harita-panel.acik { transform: translateX(0); }
-.harita-panel h4 {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
-  color: var(--gold);
-  margin-bottom: 14px;
-}
-.harita-panel p { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 8px; }
-.harita-panel .olum { color: var(--blood); font-weight: 600; font-size: 1.2rem; }
-.nokta { cursor: pointer; transition: r 0.2s; }
-.nokta:hover circle { r: 14; }
-
-/* Büyük sayılar animasyonu */
-.bsl-bar-wrap { display: flex; gap: 4px; align-items: flex-end; height: 100px; margin: 12px 0; }
-.bsl-bar {
-  flex: 1;
-  background: rgba(212,168,67,0.3);
-  border-radius: 2px 2px 0 0;
-  transition: height 0.4s ease, background 0.3s;
-  min-height: 4px;
-}
-.w-btn {
-  background: rgba(212,168,67,0.12);
-  border: 1px solid rgba(212,168,67,0.35);
-  color: var(--gold);
-  padding: 9px 22px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.15em;
-  transition: background 0.2s;
-  margin-top: 12px;
-}
-.w-btn:hover { background: rgba(212,168,67,0.22); }
-
-/* CLT input */
-.w-input {
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(212,168,67,0.3);
-  color: var(--text);
-  padding: 8px 14px;
-  border-radius: 4px;
-  font-family: 'Crimson Pro', serif;
-  font-size: 1rem;
-  width: 100%;
-  margin-bottom: 8px;
-}
-.w-input:focus { outline: none; border-color: var(--gold); }
-
-/* ── DİPNOT ── */
-.dipnot {
-  font-size: 0.8rem;
-  color: var(--text-dim);
-  font-style: italic;
-  margin-top: -0.5em;
-  margin-bottom: 1em;
-}
-
-/* ── FİNAL ── */
-#final {
-  text-align: center;
-  padding: 80px 28px 100px;
-  border-top: 1px solid rgba(212,168,67,0.15);
-  max-width: 600px;
-  margin: 0 auto;
-}
-.final-sembol {
-  font-size: 2rem;
-  color: var(--gold-dim);
-  letter-spacing: 1em;
-  margin-bottom: 24px;
-}
-.final-baslik {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.3em;
-  color: var(--gold-dim);
-  margin-bottom: 14px;
-}
-
-/* ── RESPONSIVE ── */
-@media(max-width:600px){
-  .bolum{ padding:60px 18px 40px; }
-  .widget{ padding:20px; }
-  .harita-panel{ width:180px; padding:14px; }
-}
+html { scroll-behavior:smooth; }
+body { font-family:'EB Garamond',Georgia,serif; background:var(--parchment); color:#c4b99a; line-height:1.8; overflow-x:hidden; }
+body::after { content:''; position:fixed; top:0; left:0; right:0; bottom:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:99; }
+.cine-bar-top,.cine-bar-bottom { position:fixed; left:0; right:0; height:36px; background:#000; z-index:200; }
+.cine-bar-top { top:0; } .cine-bar-bottom { bottom:0; }
+.panel { min-height:80vh; display:flex; align-items:center; justify-content:center; padding:80px 2rem; position:relative; opacity:0; transform:translateY(30px); transition:opacity 1s ease,transform 1s ease; }
+.panel.visible { opacity:1; transform:translateY(0); }
+.panel-inner { max-width:700px; width:100%; }
+.panel-title { text-align:center; }
+.panel-title .chapter-label { font-family:'Cormorant Garamond',serif; font-size:0.8rem; letter-spacing:0.35em; color:var(--ink-muted); margin-bottom:0.5rem; }
+.panel-title .chapter-name { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:400; color:#c4b99a; }
+.amber-line { width:50px; height:1px; background:var(--amber-dim); margin:2rem auto; }
+.epigraph-panel { text-align:center; font-style:italic; color:#7a6e5a; font-size:1.02rem; line-height:2; position:relative; }
+.epigraph-panel::before { content:'"'; font-family:'Cormorant Garamond',serif; font-size:5rem; color:var(--amber-dim); opacity:0.3; position:absolute; top:-2rem; left:50%; transform:translateX(-50%); }
+.epigraph-source { display:block; font-size:0.76rem; font-style:normal; color:var(--ink-muted); margin-top:1rem; letter-spacing:0.1em; }
+.narrative p { margin-bottom:1.1rem; text-align:justify; hyphens:auto; font-size:1.02rem; }
+.narrative em { color:#a89775; }
+.narrative strong { color:var(--amber); font-weight:600; }
+.document-block { background:rgba(35,31,24,0.8); border-left:3px solid var(--amber-dim); padding:1.3rem 1.5rem; margin:1.5rem 0; font-size:0.9rem; position:relative; box-shadow:0 4px 20px rgba(0,0,0,0.3); }
+.doc-title { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber-dim); margin-bottom:0.6rem; padding-bottom:0.4rem; border-bottom:1px solid rgba(139,105,20,0.2); }
+.speech { margin:1.5rem 0; display:flex; gap:0.8rem; align-items:flex-start; }
+.speech.right { flex-direction:row-reverse; }
+.speech-avatar { width:40px; height:40px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:0.65rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; border:1px solid rgba(201,148,42,0.3); }
+.speech-avatar.koipak { background:rgba(201,148,42,0.1); color:var(--amber); }
+.speech-avatar.albert { background:rgba(100,120,80,0.1); color:#7a8a60; border-color:rgba(100,120,80,0.3); }
+.speech-avatar.hargrove { background:rgba(70,70,90,0.1); color:#8888aa; border-color:rgba(70,70,90,0.3); }
+.speech-avatar.gareth { background:rgba(80,100,70,0.1); color:#7a9060; border-color:rgba(80,100,70,0.3); }
+.speech-bubble { background:var(--parchment-light); border:1px solid rgba(196,185,154,0.1); border-radius:2px 12px 12px 12px; padding:0.9rem 1.2rem; font-size:0.92rem; max-width:80%; }
+.speech.right .speech-bubble { border-radius:12px 2px 12px 12px; }
+.speaker-name { font-family:'Cormorant Garamond',serif; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:0.2rem; }
+.scene-break { text-align:center; padding:1.5rem 0; color:var(--amber-dim); letter-spacing:0.8em; font-size:0.85rem; opacity:0.5; }
+.data-table-container { margin:1.5rem 0; overflow-x:auto; }
+.data-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+.data-table th { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--amber-dim); padding:0.6rem; text-align:left; border-bottom:2px solid var(--amber-dim); }
+.data-table td { padding:0.45rem 0.6rem; border-bottom:1px solid rgba(196,185,154,0.08); }
+.data-table tr:hover td { background:var(--amber-glow); }
+.red-mark { color:var(--red); font-weight:700; }
+.ch-nav { position:fixed; left:1.2rem; top:50%; transform:translateY(-50%); z-index:150; display:flex; flex-direction:column; gap:0.5rem; }
+.ch-nav-btn { font-family:'Cormorant Garamond',serif; font-size:0.72rem; font-weight:500; color:var(--ink-muted); text-decoration:none; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(196,185,154,0.08); border-radius:2px; transition:all 0.3s; background:rgba(26,22,16,0.8); }
+.ch-nav-btn:hover,.ch-nav-btn.active { color:var(--amber); border-color:var(--amber); background:rgba(201,148,42,0.08); }
+.top-nav { position:fixed; top:40px; left:0; right:0; z-index:150; background:rgba(26,22,16,0.92); backdrop-filter:blur(8px); padding:0.4rem 1.5rem; display:flex; align-items:center; justify-content:center; gap:1.5rem; font-family:'Cormorant Garamond',serif; font-size:0.7rem; border-bottom:1px solid rgba(184,134,11,0.1); opacity:0; transition:opacity 0.5s; }
+.top-nav.visible { opacity:1; }
+.top-nav a { color:var(--ink-muted); text-decoration:none; letter-spacing:0.1em; transition:color 0.3s; }
+.top-nav a:hover { color:var(--amber); }
+.top-nav .current-ch { color:var(--amber); }
+/* WIDGETS */
+.widget-panel { background:rgba(35,31,24,0.6); border:1px solid rgba(201,148,42,0.12); border-radius:4px; padding:1.5rem; margin:1.5rem 0; }
+.widget-title { font-family:'Cormorant Garamond',serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--amber); text-align:center; margin-bottom:1rem; }
+.widget-hint { font-size:0.72rem; color:var(--ink-muted); text-align:center; margin-top:0.8rem; font-style:italic; }
+input[type="range"] { -webkit-appearance:none; width:100%; height:4px; background:rgba(196,185,154,0.15); border-radius:2px; outline:none; margin:0.8rem 0; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:var(--amber); cursor:pointer; box-shadow:0 0 6px rgba(201,148,42,0.4); }
+.widget-value { font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--amber); text-align:center; margin:0.5rem 0; }
+.widget-label { font-size:0.78rem; color:#8a7d65; text-align:center; }
+.widget-row { display:flex; justify-content:space-around; gap:1rem; margin:1rem 0; flex-wrap:wrap; }
+.widget-stat { text-align:center; flex:1; min-width:80px; }
+.widget-stat .val { font-family:'Cormorant Garamond',serif; font-size:1.3rem; color:var(--amber); }
+.widget-stat .lbl { font-size:0.72rem; color:var(--ink-muted); }
+.w-input { background:rgba(0,0,0,0.4); border:1px solid rgba(139,105,20,0.3); color:#c4b99a; padding:8px 14px; border-radius:2px; font-family:'EB Garamond',serif; font-size:1rem; width:100%; margin-bottom:8px; }
+.w-input:focus { outline:none; border-color:var(--amber); }
+.w-badge { display:inline-block; padding:3px 12px; border-radius:20px; font-size:0.75rem; font-family:'Cormorant Garamond',serif; letter-spacing:0.05em; }
+.w-badge.gercek { background:rgba(100,180,100,0.1); border:1px solid #4a8a4a; color:#7ac87a; }
+.w-badge.yapay { background:rgba(180,60,60,0.1); border:1px solid #8a3a3a; color:#c87a7a; }
+.w-badge.belirsiz { background:rgba(201,148,42,0.08); border:1px solid var(--amber-dim); color:var(--amber); }
+.w-btn { background:rgba(201,148,42,0.1); border:1px solid rgba(201,148,42,0.3); color:var(--amber); padding:8px 20px; border-radius:2px; cursor:pointer; font-family:'Cormorant Garamond',serif; font-size:0.72rem; letter-spacing:0.12em; transition:background 0.2s; margin-top:10px; }
+.w-btn:hover { background:rgba(201,148,42,0.2); }
+.w-btn.danger { background:rgba(139,37,0,0.1); border-color:rgba(139,37,0,0.3); color:#c87a7a; }
+/* harita */
+#harita-wrapper { position:relative; background:#0d1a20; border-radius:3px; overflow:hidden; margin:12px 0; min-height:300px; }
+#harita-svg { width:100%; height:300px; }
+.harita-panel { position:absolute; right:0; top:0; bottom:0; width:200px; background:rgba(26,22,16,0.97); border-left:1px solid rgba(139,105,20,0.2); padding:18px; transform:translateX(100%); transition:transform 0.3s; }
+.harita-panel.acik { transform:translateX(0); }
+.harita-panel h4 { font-family:'Cormorant Garamond',serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--amber); margin-bottom:12px; }
+.harita-panel p { font-size:0.82rem; color:#8a7d65; margin-bottom:6px; }
+.harita-panel .olum { color:var(--red); font-weight:600; font-size:1.2rem; }
+.nokta { cursor:pointer; }
+/* bsl bars */
+.bsl-bar-wrap { display:flex; gap:3px; align-items:flex-end; height:80px; margin:10px 0; }
+.bsl-bar { flex:1; background:rgba(201,148,42,0.25); border-radius:1px 1px 0 0; transition:height 0.4s ease,background 0.3s; min-height:3px; }
+/* kavram kutusu */
+.concepts-list { list-style:none; display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.8rem; }
+.concepts-list li { font-size:0.75rem; color:#8a7d65; border:1px solid rgba(139,105,20,0.2); padding:0.2rem 0.7rem; border-radius:20px; }
+.chapter-end { margin-top:2.5rem; }
+.ornament { text-align:center; color:var(--amber-dim); letter-spacing:0.8em; margin-bottom:1rem; font-size:0.85rem; opacity:0.6; }
+.chapter-nav { display:flex; justify-content:space-between; font-family:'Cormorant Garamond',serif; font-size:0.8rem; }
+.chapter-nav a { color:var(--ink-muted); text-decoration:none; transition:color 0.3s; }
+.chapter-nav a:hover { color:var(--amber); }
+.chapter-nav a.disabled { color:rgba(90,78,63,0.3); pointer-events:none; }
+.formula-block { background:rgba(0,0,0,0.3); border:1px solid rgba(139,105,20,0.2); border-radius:3px; padding:0.9rem 1.5rem; margin:1.2rem 0; text-align:center; color:var(--amber); font-size:1.05rem; }
+.section-head { font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:var(--amber); margin:1.8rem 0 0.7rem; letter-spacing:0.05em; border-bottom:1px solid rgba(139,105,20,0.2); padding-bottom:0.4rem; }
+@media(max-width:768px) { .panel { padding:60px 1.2rem; min-height:70vh; } .cine-bar-top,.cine-bar-bottom { height:24px; } .ch-nav { display:none; } .top-nav { top:24px; font-size:0.62rem; gap:0.8rem; } }
 </style>
 </head>
 <body>
 
-<!-- KAPAK -->
-<section id="kapak">
-  <div id="kapak-bg"></div>
-  <div id="kapak-vignette"></div>
-  <div id="kapak-bottom"></div>
-  <div class="kapak-content">
-    <div class="kapak-seri">Bir İstatistik Dedektif Serisi · 2. Kitap</div>
-    <div class="kapak-baslik">Zehirin<br>Dağılımı</div>
-    <div class="kapak-altyazi">Grifin R. Koipak ve Belirsizliğin Bilimi</div>
-    <div class="kapak-yazar">Fikri Gökpınar</div>
-  </div>
-  <a href="#bolum1" class="asagi-ok">↓</a>
-</section>
+<div class="cine-bar-top"></div>
+<div class="cine-bar-bottom"></div>
 
-<!-- NAV -->
-<nav id="nav">
-  <a href="#bolum1" class="nav-link">I · Üç Mahalle</a>
-  <a href="#bolum2" class="nav-link">II · Poisson</a>
-  <a href="#bolum3" class="nav-link">III · Binom</a>
-  <a href="#bolum4" class="nav-link">IV · Büyük Sayılar</a>
-  <a href="#bolum5" class="nav-link">V · CLT</a>
-  <a href="#bolum6" class="nav-link">VI · Yapay Rastgelelik</a>
-  <a href="#bolum7" class="nav-link">VII · Sistem</a>
+<nav class="ch-nav" id="chNav">
+  <a href="#" data-ch="1" class="ch-nav-btn">I</a>
+  <a href="#" data-ch="2" class="ch-nav-btn">II</a>
+  <a href="#" data-ch="3" class="ch-nav-btn">III</a>
+  <a href="#" data-ch="4" class="ch-nav-btn">IV</a>
+  <a href="#" data-ch="5" class="ch-nav-btn">V</a>
+  <a href="#" data-ch="6" class="ch-nav-btn">VI</a>
+  <a href="#" data-ch="7" class="ch-nav-btn">VII</a>
 </nav>
 
-<!-- ═══════════════ I. BÖLÜM ═══════════════ -->
-<section id="bolum1">
-<div class="bolum">
-  <div class="bolum-header">
-    <div class="bolum-no">I. Bölüm</div>
-    <div class="bolum-baslik">Üç Mahalle, Dokuz Ölüm</div>
+<nav class="top-nav" id="topNav">
+  <a href="../../index.html">Seri</a>
+  <span style="color:rgba(196,185,154,0.15);">|</span>
+  <a href="../index.html">Klasik Oku</a>
+  <span style="color:rgba(196,185,154,0.15);">|</span>
+  <span class="current-ch" id="currentChLabel">I. Bölüm</span>
+</nav>
+
+<!-- KAPAK -->
+<section class="panel" data-chapter="0" style="min-height:100vh; padding:0; position:relative; overflow:hidden;">
+  <div style="position:absolute; inset:0; background:url('img/kapak.jpg') center/cover no-repeat; filter:brightness(0.45) saturate(0.8);"></div>
+  <div style="position:absolute; inset:0; background:radial-gradient(ellipse at center, transparent 25%, rgba(0,0,0,0.7) 100%);"></div>
+  <div style="position:absolute; bottom:0; left:0; right:0; height:180px; background:linear-gradient(to bottom, transparent, #1a1610);"></div>
+  <div class="panel-inner panel-title" style="position:relative; z-index:2;">
+    <p style="font-family:'Cormorant Garamond',serif; font-size:0.72rem; letter-spacing:0.45em; text-transform:uppercase; color:rgba(196,185,154,0.5); margin-bottom:1rem;">Bir İstatistik Dedektif Serisi · İkinci Macera</p>
+    <h1 style="font-family:'Cormorant Garamond',serif; font-size:clamp(1.8rem,4.5vw,3rem); font-weight:300; color:var(--amber); line-height:1.2; margin-bottom:0.5rem; text-shadow:0 2px 20px rgba(0,0,0,0.8);">Zehirin Dağılımı</h1>
+    <p style="font-family:'Cormorant Garamond',serif; font-size:1rem; font-style:italic; color:#8a7d65;">Grifin R. Koipak ve Belirsizliğin Bilimi</p>
+    <div class="amber-line"></div>
+    <p style="font-family:'Cormorant Garamond',serif; font-size:0.82rem; color:var(--ink-muted); letter-spacing:0.12em;">Fikri Gökpınar</p>
   </div>
-
-  <img src="img/1_1.jpg" class="illus" alt="Koipak arşivde"/>
-
-  <p>Aralık soğuğu Kasım'dan farklıdır. Kasım sisi serer üstüne, ağırlaştırır, boğazına yapıştırır; ama Aralık keser — temiz, acımasız, tartışmasız. Koipak bu ayrımı her yıl fark ederdi; sabah penceresini açtığında havanın burnunu yakma biçimi değişmişti. <em>"Sis yok. Soğuk: keskin. Rüzgâr: kuzeydoğudan."</em> Zihnini böyle çalıştırırdı.</p>
-
-  <p>Hargrove'un ofisindeki harita, üç kırmızı daireyle işaretlenmişti. Bermondsey güneydoğuda, Thames'in hemen güneyinde. Stepney doğuda, liman bölgesinde. Poplar daha doğuda, Blackwall'a yakın.</p>
-
-  <!-- WİDGET 1: İnteraktif Harita -->
-  <div class="widget">
-    <div class="widget-baslik">Londra Vakası — Tıklanabilir Harita</div>
-    <p class="w-label">Her mahalleye tıklayın:</p>
-    <div id="harita-wrapper">
-      <svg id="harita-svg" viewBox="0 0 500 320">
-        <!-- Londra Thames nehri -->
-        <path d="M0,200 Q80,195 160,205 Q240,215 320,200 Q400,188 500,195" stroke="#1a3a4a" stroke-width="18" fill="none" opacity="0.6"/>
-        <text x="20" y="215" fill="#2a5a6a" font-size="9" font-family="serif" opacity="0.7">Thames</text>
-        <!-- Mahalle noktaları -->
-        <g class="nokta" onclick="haritaAc('bermondsey')" id="nokta-bermondsey">
-          <circle cx="200" cy="175" r="11" fill="rgba(122,28,28,0.7)" stroke="#c84a4a" stroke-width="2"/>
-          <text x="200" y="179" text-anchor="middle" fill="white" font-size="9" font-family="serif">B</text>
-          <text x="200" y="160" text-anchor="middle" fill="#c84a4a" font-size="9" font-family="serif">Bermondsey</text>
-        </g>
-        <g class="nokta" onclick="haritaAc('stepney')" id="nokta-stepney">
-          <circle cx="310" cy="158" r="11" fill="rgba(122,28,28,0.7)" stroke="#c84a4a" stroke-width="2"/>
-          <text x="310" y="162" text-anchor="middle" fill="white" font-size="9" font-family="serif">S</text>
-          <text x="310" y="143" text-anchor="middle" fill="#c84a4a" font-size="9" font-family="serif">Stepney</text>
-        </g>
-        <g class="nokta" onclick="haritaAc('poplar')" id="nokta-poplar">
-          <circle cx="400" cy="148" r="11" fill="rgba(122,28,28,0.7)" stroke="#c84a4a" stroke-width="2"/>
-          <text x="400" y="152" text-anchor="middle" fill="white" font-size="9" font-family="serif">P</text>
-          <text x="400" y="133" text-anchor="middle" fill="#c84a4a" font-size="9" font-family="serif">Poplar</text>
-        </g>
-        <!-- şehir dokusu -->
-        <rect x="130" y="100" width="200" height="120" fill="none" stroke="rgba(212,168,67,0.08)" stroke-width="1" rx="2"/>
-        <text x="15" y="30" fill="rgba(212,168,67,0.3)" font-size="11" font-family="serif">Londra — Kasım 1903</text>
-      </svg>
-      <div class="harita-panel" id="harita-panel">
-        <h4 id="harita-baslik">—</h4>
-        <p>Ölüm sayısı: <span class="olum" id="harita-olum">—</span></p>
-        <p id="harita-hat">—</p>
-        <p id="harita-tarih">—</p>
-        <p id="harita-abone">—</p>
-      </div>
-    </div>
-    <p class="dipnot">Üç mahallenin su hatları ayrı görünse de tedarikçileri aynı: Thames South &amp; East Water Company.</p>
-  </div>
-
-  <div class="kavram-baslik">Rastgele Değişken</div>
-  <p>Her ölüm bir <strong>rastgele değişkenin</strong> gerçekleşmesiydi — X, belirli bir günde bu bölgede meydana gelen ölüm sayısını temsil ediyordu. Değeri önceden bilinemez, ama olasılık dağılımı modellenebilirdi.</p>
-
-  <table class="veri-tablo">
-    <tr><th>#</th><th>Mahalle</th><th>Tarih</th><th>Gün №</th></tr>
-    <tr><td>1</td><td>Bermondsey</td><td>2 Kasım</td><td>2</td></tr>
-    <tr><td>2</td><td>Bermondsey</td><td>4 Kasım</td><td>4</td></tr>
-    <tr><td>3</td><td>Stepney</td><td>6 Kasım</td><td>6</td></tr>
-    <tr><td>4</td><td>Bermondsey</td><td>9 Kasım</td><td>9</td></tr>
-    <tr><td>5</td><td>Stepney</td><td>11 Kasım</td><td>11</td></tr>
-    <tr><td>6</td><td>Poplar</td><td>14 Kasım</td><td>14</td></tr>
-    <tr><td>7</td><td>Bermondsey</td><td>16 Kasım</td><td>16</td></tr>
-    <tr><td>8</td><td>Stepney</td><td>18 Kasım</td><td>18</td></tr>
-    <tr><td>9</td><td>Poplar</td><td class="vurgu">21 Kasım</td><td>21</td></tr>
-  </table>
-
-  <div class="defter">
-    <div class="defter-baslik">Koipak'ın Defterinden — 1 Aralık 1903</div>
-    "9 ölüm. 21 gün. 3 mahalle. Beklenen: 0.06. Gözlemlenen: 9. Bu bir rastlantı olamaz — ama rastlantının tam olarak ne olmadığını anlamak için dağılımı kurmam gerekiyor."
-  </div>
-
-  <div class="kavram-kutu">
-    <h4>Bu Bölümde</h4>
-    <ul><li>Rastgele Değişken</li><li>Beklenen Değer</li></ul>
-  </div>
-</div>
 </section>
 
-<!-- ═══════════════ II. BÖLÜM ═══════════════ -->
-<section id="bolum2">
-<div class="bolum">
-  <div class="sep">✦ ✦ ✦</div>
-  <div class="bolum-header">
-    <div class="bolum-no">II. Bölüm</div>
-    <div class="bolum-baslik">Yıldızların Dağılımı</div>
+<!-- I. BÖLÜM -->
+<section class="panel" data-chapter="1">
+  <div class="panel-inner panel-title">
+    <p class="chapter-label">I. Bölüm</p>
+    <p class="chapter-name">Üç Mahalle, Dokuz Ölüm</p>
+    <div class="amber-line"></div>
   </div>
-
-  <img src="img/2_1.jpg" class="illus" alt="UCL Semineri"/>
-
-  <p>UCL'nin büyük amfisi o akşam dolmuştu. Karl Pearson'ın aylık istatistik seminerleri genellikle düzinelerce öğrenciyi çekerdi. Koipak arka köşeye oturmuştu — öne oturmaktan kaçınırdı. Galli aksanıyla soru sorduğunda, öndeki sıralardaki bakışları hissedebiliyordu.</p>
-
-  <p><em>"Sıfır gözlemini dışarıda bırakırsanız, lambda'yı sistematik olarak abartırsınız."</em> Yanındaki adam kibarca müdahale etmişti. Dr. Edmund Ashby — UCL İstatistik ve Aktüerya Bölümü. Koipak onu "sayılara saygı duyan nadir insanlardan biri" olarak kaydetti.</p>
-
-  <div class="kavram-baslik">Poisson Dağılımı</div>
-
-  <div class="formul">
-    P(X = k) = e<sup>−λ</sup> · λ<sup>k</sup> / k!
-  </div>
-
-  <!-- WİDGET 2: Poisson Slider -->
-  <div class="widget">
-    <div class="widget-baslik">Poisson Lambda Keşfedici</div>
-    <div class="w-row">
-      <div class="w-col">
-        <p class="w-label">λ (birim başına beklenen olay): <strong id="lambda-val">0.06</strong></p>
-        <input type="range" class="w-slider" id="lambda-slider" min="0.01" max="5" step="0.01" value="0.06"/>
-        <p class="w-label">k (gözlemlenen): <strong id="k-val">9</strong></p>
-        <input type="range" class="w-slider" id="k-slider" min="0" max="20" step="1" value="9"/>
-      </div>
-      <div class="w-col" style="text-align:center; display:flex; flex-direction:column; justify-content:center;">
-        <div class="w-result" id="poisson-prob">—</div>
-        <div class="w-result-label">P(X = k)</div>
-        <div style="margin-top:12px; font-size:0.8rem; color:var(--text-dim)" id="poisson-yorum"></div>
-      </div>
-    </div>
-    <canvas id="poisson-canvas" class="w-canvas" height="160"></canvas>
-    <p class="dipnot">Tarihsel λ = 0.058 (21 günde beklenen). 9 ölümün bu λ ile ortaya çıkma olasılığı: 10⁻¹²'den az.</p>
-  </div>
-
-  <!-- WİDGET 3: CV Hesaplayıcı -->
-  <div class="kavram-baslik">Yapay Düzenlilik — CV Testi</div>
-  <p>Koipak tarihlerin aralıklarını hesapladı: 2, 2, 3, 2, 3, 2, 2, 3. Gerçek bir Poisson sürecinde aralıklar üstel dağılır — ve bu dağılımın <strong>değişim katsayısı (CV) her zaman 1.0'a yakındır.</strong></p>
-
-  <div class="widget">
-    <div class="widget-baslik">CV Dedektifi — Gerçek mi, Yapay mı?</div>
-    <p class="w-label">Gün aralıklarını virgülle girin (örnek: 2,2,3,2,3,2,2,3):</p>
-    <input type="text" class="w-input" id="cv-input" value="2,2,3,2,3,2,2,3" placeholder="2,2,3,2,3,2,2,3"/>
-    <div class="w-row" style="margin-top:16px; align-items:center;">
-      <div class="w-col">
-        <div class="w-result" id="cv-sonuc">—</div>
-        <div class="w-result-label">Hesaplanan CV</div>
-      </div>
-      <div class="w-col" style="display:flex; flex-direction:column; gap:8px;">
-        <div><span class="w-badge gercek">CV ≈ 1.0 → Gerçek</span></div>
-        <div><span class="w-badge yapay">CV &lt; 0.5 → Yapay</span></div>
-        <div><span class="w-badge belirsiz">0.5–0.8 → Belirsiz</span></div>
-      </div>
-      <div class="w-col" style="display:flex; align-items:center; justify-content:center;">
-        <div id="cv-karar" style="font-family:'Cinzel Decorative',serif; font-size:0.7rem; letter-spacing:0.1em; text-align:center; padding:12px; border-radius:4px;"></div>
-      </div>
-    </div>
-    <canvas id="cv-canvas" class="w-canvas" height="120"></canvas>
-    <p class="dipnot">Romanın verileri: CV = 0.20. Beklenen: ~1.0. Bu veri üretilmiş.</p>
-  </div>
-
-  <div class="defter">
-    <div class="defter-baslik">Koipak'ın Defterinden — 2 Aralık 1903</div>
-    "Poisson bana iki şey söyledi: birincisi, bu ölümler doğal değil. İkincisi, daha da önemlisi: ölümlerin zamanlaması da doğal değil. CV=0.20, rastlantının değil, tasarımın işareti."
-  </div>
-
-  <div class="kavram-kutu">
-    <h4>Bu Bölümde</h4>
-    <ul><li>Poisson Dağılımı</li><li>Lambda (λ)</li><li>Değişim Katsayısı (CV)</li><li>Üstel Dağılım</li></ul>
-  </div>
-</div>
 </section>
 
-<!-- ═══════════════ III. BÖLÜM ═══════════════ -->
-<section id="bolum3">
-<div class="bolum">
-  <div class="sep">✦ ✦ ✦</div>
-  <div class="bolum-header">
-    <div class="bolum-no">III. Bölüm</div>
-    <div class="bolum-baslik">Her Kişi Bir Deney</div>
+<section class="panel" data-chapter="1">
+  <div class="panel-inner epigraph-panel">
+    Dokuz ölüm. Beklenen: sıfıra yakın.<br>
+    Rakamlar bağırmıyor — fısıldıyor.<br>
+    Ama yeterince sessiz olursan duyarsın.
+    <span class="epigraph-source">— Grifin R. Koipak, Kişisel Notlar, 1903</span>
   </div>
+</section>
 
-  <img src="img/3_1.jpg" class="illus" alt="Albert sokaklarda"/>
-
-  <p>Albert, Bermondsey'e Koipak'tan önce varmıştı. Koipak onu ilk kurbanın eski komşusuyla konuşurken gördü. Albert not alıyordu, küçük bir deftere. <em>Öğreniyor,</em> diye düşündü.</p>
-
-  <p>Dört Bermondsey kurbanı. Hepsi aynı su hattından: 7B. Stepney'de 4C, Poplar'da 2A. Her biri farklı hat — ama tedarikçi aynı.</p>
-
-  <div class="kavram-baslik">Binom Dağılımı</div>
-
-  <div class="formul">
-    P(X = k) = C(n,k) · p<sup>k</sup> · (1−p)<sup>n−k</sup>
+<section class="panel" data-chapter="1">
+  <div class="panel-inner">
+    <div style="margin:1.5rem 0;"><img src="img/1_1.jpg" alt="Koipak haritada" style="width:100%;display:block;border-radius:2px;box-shadow:0 8px 30px rgba(0,0,0,0.5);"></div>
   </div>
+</section>
 
-  <!-- WİDGET 4: Binom Hesaplayıcı -->
-  <div class="widget">
-    <div class="widget-baslik">Binom Olasılık Hesaplayıcı</div>
-    <div class="w-row">
-      <div class="w-col">
-        <p class="w-label">n (toplam abone): <strong id="binom-n-val">5441</strong></p>
-        <input type="range" class="w-slider" id="binom-n" min="100" max="10000" step="100" value="5441"/>
-        <p class="w-label">p (etkilenme olasılığı): <strong id="binom-p-val">0.0017</strong></p>
-        <input type="range" class="w-slider" id="binom-p" min="0.0001" max="0.05" step="0.0001" value="0.0017"/>
-        <p class="w-label">k (ölüm sayısı): <strong id="binom-k-val">9</strong></p>
-        <input type="range" class="w-slider" id="binom-k" min="0" max="30" step="1" value="9"/>
+<section class="panel" data-chapter="1">
+  <div class="panel-inner narrative">
+    <p>Aralık soğuğu Kasım'dan farklıdır. Kasım sisi serer üstüne, ağırlaştırır; ama Aralık keser — temiz, acımasız. <em>"Sis yok. Soğuk: keskin. Rüzgâr: kuzeydoğudan."</em></p>
+    <p>Hargrove'un zarfı sabahın sekizini çeyrek geçe gelmişti. Bermondsey, Stepney, Poplar. Üç mahalle, üç haftada dokuz ölüm. Resmi kayıt: gıda zehirlenmesi.</p>
+  </div>
+</section>
+
+<section class="panel" data-chapter="1">
+  <div class="panel-inner narrative">
+    <div class="speech">
+      <div class="speech-avatar hargrove">HG</div>
+      <div class="speech-bubble">
+        <div class="speaker-name">Hargrove</div>
+        "Bir salgın böyle görünmez. Salgın yayılır — merkezden dışarıya, dalgalar halinde. Bu ölümler üç farklı mahallede, neredeyse aynı anda başlıyor. Ve sonra duruyor."
       </div>
-      <div class="w-col" style="display:flex; flex-direction:column; justify-content:center; align-items:center; gap:12px;">
-        <div>
-          <div class="w-result" id="binom-beklenti">—</div>
-          <div class="w-result-label">Beklenen (n·p)</div>
-        </div>
-        <div>
-          <div class="w-result" id="binom-prob" style="font-size:1.2rem;">—</div>
-          <div class="w-result-label">P(X = k)</div>
+    </div>
+
+    <!-- WİDGET 1: Harita -->
+    <div class="widget-panel">
+      <div class="widget-title">◈ Londra Vakası — Tıklanabilir Harita</div>
+      <div id="harita-wrapper">
+        <svg id="harita-svg" viewBox="0 0 500 300">
+          <path d="M0,190 Q80,185 160,195 Q240,205 320,190 Q400,178 500,185" stroke="#1a3a4a" stroke-width="16" fill="none" opacity="0.5"/>
+          <text x="20" y="205" fill="#2a5a6a" font-size="9" font-family="serif" opacity="0.6">Thames</text>
+          <g class="nokta" onclick="haritaAc('bermondsey')">
+            <circle cx="200" cy="165" r="10" fill="rgba(139,37,0,0.6)" stroke="#c84a4a" stroke-width="2"/>
+            <text x="200" y="169" text-anchor="middle" fill="white" font-size="8" font-family="serif">B</text>
+            <text x="200" y="152" text-anchor="middle" fill="#c84a4a" font-size="8" font-family="serif">Bermondsey</text>
+          </g>
+          <g class="nokta" onclick="haritaAc('stepney')">
+            <circle cx="310" cy="148" r="10" fill="rgba(139,37,0,0.6)" stroke="#c84a4a" stroke-width="2"/>
+            <text x="310" y="152" text-anchor="middle" fill="white" font-size="8" font-family="serif">S</text>
+            <text x="310" y="135" text-anchor="middle" fill="#c84a4a" font-size="8" font-family="serif">Stepney</text>
+          </g>
+          <g class="nokta" onclick="haritaAc('poplar')">
+            <circle cx="400" cy="138" r="10" fill="rgba(139,37,0,0.6)" stroke="#c84a4a" stroke-width="2"/>
+            <text x="400" y="142" text-anchor="middle" fill="white" font-size="8" font-family="serif">P</text>
+            <text x="400" y="125" text-anchor="middle" fill="#c84a4a" font-size="8" font-family="serif">Poplar</text>
+          </g>
+          <text x="15" y="25" fill="rgba(201,148,42,0.25)" font-size="10" font-family="serif">Londra — Kasım 1903</text>
+        </svg>
+        <div class="harita-panel" id="harita-panel">
+          <h4 id="harita-baslik">—</h4>
+          <p>Ölüm: <span class="olum" id="harita-olum">—</span></p>
+          <p id="harita-hat" style="color:#8a7d65;"></p>
+          <p id="harita-tarih" style="color:#8a7d65;"></p>
+          <p id="harita-abone" style="color:#8a7d65;"></p>
         </div>
       </div>
+      <div class="widget-hint">Mahallelere tıklayın</div>
     </div>
-    <canvas id="binom-canvas" class="w-canvas" height="150"></canvas>
-    <p class="dipnot">MLE ile p̂ = 9/5441 ≈ 0.0017. Kontamine su için bu çok düşük — seçici maruziyet hipotezi.</p>
-  </div>
 
-  <div class="kavram-kutu">
-    <h4>Bu Bölümde</h4>
-    <ul><li>Binom Dağılımı</li><li>MLE Tahmini</li><li>Model Tutarsızlığı</li></ul>
+    <div class="section-head">Rastgele Değişken</div>
+    <p>Her ölüm bir <strong>rastgele değişkenin</strong> gerçekleşmesiydi. Değeri önceden bilinemez, ama olasılık dağılımı modellenebilirdi. Tarihsel beklenti: <strong>0.058</strong>. Gözlem: <strong>9</strong>.</p>
+
+    <div class="document-block">
+      <div class="doc-title">Koipak'ın Defterinden — 1 Aralık 1903</div>
+      <p style="font-style:italic; color:#9a8e75;">"9 ölüm. 21 gün. 3 mahalle. Beklenen: 0.06. Bu bir rastlantı olamaz — ama rastlantının tam olarak ne olmadığını anlamak için dağılımı kurmam gerekiyor."</p>
+    </div>
+
+    <div class="chapter-end">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem;">Bu Bölümde</h4>
+        <ul class="concepts-list" style="justify-content:center;"><li>Rastgele Değişken</li><li>Beklenen Değer</li></ul>
+      </div>
+      <div class="chapter-nav"><a href="#" class="disabled">← Önceki</a><a href="#bolum2">II. Bölüm →</a></div>
+    </div>
   </div>
-</div>
 </section>
 
-<!-- ═══════════════ IV. BÖLÜM ═══════════════ -->
-<section id="bolum4">
-<div class="bolum">
-  <div class="sep">✦ ✦ ✦</div>
-  <div class="bolum-header">
-    <div class="bolum-no">IV. Bölüm</div>
-    <div class="bolum-baslik">Az Sayının Yalan Söylemesi</div>
+<!-- II. BÖLÜM -->
+<section class="panel" id="bolum2" data-chapter="2">
+  <div class="panel-inner panel-title">
+    <p class="chapter-label">II. Bölüm</p>
+    <p class="chapter-name">Yıldızların Dağılımı</p>
+    <div class="amber-line"></div>
   </div>
-
-  <img src="img/4_1.jpg" class="illus" alt="Koipak üç dosyayla"/>
-
-  <p>Poplar'da iki ölüm. Bu sayı yeterliydi bir oran hesaplamak için — ama bu oranın güvenilirliği neydi? Koipak durdu. Tek mahalleyi ayrı analiz etmek tehlikeliydi. <strong>Büyük Sayılar Yasası</strong> bunu söylüyordu: n küçükse, örneklem ortalaması gerçek değerden büyük sapmalar gösterebilir.</p>
-
-  <div class="kavram-baslik">Büyük Sayılar Yasası</div>
-
-  <!-- WİDGET 5: Büyük Sayılar Animasyonu -->
-  <div class="widget">
-    <div class="widget-baslik">Büyük Sayılar — Mahalle Mahalle Ekle</div>
-    <p class="w-label">Her "At" butonuyla bir mahallenin verisi ekleniyor. Oran nasıl stabilleşiyor?</p>
-    <div class="bsl-bar-wrap" id="bsl-bars"></div>
-    <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-dim); margin-bottom:12px;">
-      <span>Bermondsey</span><span>Stepney</span><span>Poplar</span><span>Birleşik</span>
-    </div>
-    <div class="w-row" style="align-items:center;">
-      <div class="w-col">
-        <div class="w-result" id="bsl-oran">—</div>
-        <div class="w-result-label">Anlık Oran (ölüm/abone)</div>
-      </div>
-      <div class="w-col">
-        <div class="w-result" id="bsl-n">0</div>
-        <div class="w-result-label">Toplam abone (n)</div>
-      </div>
-    </div>
-    <button class="w-btn" onclick="bslEkle()">+ Mahalle Ekle</button>
-    <button class="w-btn" onclick="bslSifirla()" style="margin-left:10px; background:rgba(122,28,28,0.12); border-color:rgba(122,28,28,0.35); color:#c87a7a;">Sıfırla</button>
-    <p class="dipnot">Mahalleler birleştikçe oran 1/600'e yaklaşıp stabilleşir.</p>
-  </div>
-
-  <div class="defter">
-    <div class="defter-baslik">Koipak'ın Defterinden — 3 Aralık 1903</div>
-    "Poplar'ın iki ölümü tek başına anlamsız. Ama üçü bir arada anlamlı. Büyük sayılar yasası: tek tek bak, yanılırsın; birlikte bak, yaklaşırsın."
-  </div>
-
-  <div class="kavram-kutu">
-    <h4>Bu Bölümde</h4>
-    <ul><li>Büyük Sayılar Yasası</li><li>Örneklem Büyüklüğü</li><li>Birleşik Analiz</li></ul>
-  </div>
-</div>
 </section>
 
-<!-- ═══════════════ V. BÖLÜM ═══════════════ -->
-<section id="bolum5">
-<div class="bolum">
-  <div class="sep">✦ ✦ ✦</div>
-  <div class="bolum-header">
-    <div class="bolum-no">V. Bölüm</div>
-    <div class="bolum-baslik">Küçüklerden Büyük Resim</div>
+<section class="panel" data-chapter="2">
+  <div class="panel-inner epigraph-panel">
+    Rastlantı, açıklanamayan şeyin adıdır.<br>
+    Ama açıklanamayan şey, henüz doğru soruyu<br>
+    sormadığımız şeydir.
+    <span class="epigraph-source">— Grifin R. Koipak, Kişisel Notlar, 1903</span>
   </div>
+</section>
 
-  <img src="img/5_1.jpg" class="illus" alt="Su şirketi arşivi"/>
-
-  <p>Thames South & East Water Company kayıtlarında üç hatta da Kasım basınç düşüşleri vardı. Ama bakım günlükleri bu tarihleri içermiyordu. Koipak bunun anlamını biliyordu: ya hata, ya silme.</p>
-
-  <div class="kavram-baslik">Merkezi Limit Teoremi</div>
-
-  <div class="formul">
-    SE = √(p̂ · (1 − p̂) / n)
+<section class="panel" data-chapter="2">
+  <div class="panel-inner">
+    <div style="margin:1.5rem 0;"><img src="img/2_1.jpg" alt="UCL semineri" style="width:100%;display:block;border-radius:2px;box-shadow:0 8px 30px rgba(0,0,0,0.5);"></div>
   </div>
+</section>
 
-  <!-- WİDGET 6: CLT Görselleştirici -->
-  <div class="widget">
-    <div class="widget-baslik">Merkezi Limit Teoremi — Örneklem Büyüttükçe</div>
-    <p class="w-label">n (örneklem büyüklüğü): <strong id="clt-n-val">9</strong></p>
-    <input type="range" class="w-slider" id="clt-n" min="1" max="200" step="1" value="9"/>
-    <div class="w-row">
-      <div class="w-col">
-        <div class="w-result" id="clt-se">—</div>
-        <div class="w-result-label">Standart Hata</div>
-      </div>
-      <div class="w-col">
-        <div class="w-result" id="clt-ci">—</div>
-        <div class="w-result-label">%95 Güven Aralığı</div>
+<section class="panel" data-chapter="2">
+  <div class="panel-inner narrative">
+    <p>UCL'nin büyük amfisi o akşam dolmuştu. Koipak arka köşeye oturmuştu — Galli aksanıyla soru sorduğunda, öndeki sıralardaki bakışları hissedebiliyordu.</p>
+    <div class="speech">
+      <div class="speech-avatar" style="background:rgba(90,78,100,0.1); color:#a888cc; border-color:rgba(90,78,100,0.3);">AS</div>
+      <div class="speech-bubble">
+        <div class="speaker-name">Dr. Ashby</div>
+        "Sıfır gözlemini dışarıda bırakırsanız, lambda'yı sistematik olarak abartırsınız."
       </div>
     </div>
-    <canvas id="clt-canvas" class="w-canvas" height="160"></canvas>
-    <p class="dipnot">n büyüdükçe örneklem dağılımı normal şekle yaklaşır ve SE azalır. Bu tahminimizi güvenilir kılar.</p>
-  </div>
+    <p>Dr. Edmund Ashby — UCL İstatistik Bölümü. Merthyr Tydfil maden verilerini okuduğunu söyledi. Koipak onu zihnine kaydetti: sayılara saygı duyan nadir insanlardan biri.</p>
 
-  <div class="kavram-kutu">
-    <h4>Bu Bölümde</h4>
-    <ul><li>Merkezi Limit Teoremi</li><li>Standart Hata</li><li>Güven Aralığı</li></ul>
+    <div class="section-head">Poisson Dağılımı</div>
+    <div class="formula-block">P(X = k) = e<sup>−λ</sup> · λ<sup>k</sup> / k!</div>
+
+    <!-- WİDGET 2: Poisson -->
+    <div class="widget-panel">
+      <div class="widget-title">◈ Poisson Lambda Keşfedici</div>
+      <p style="font-size:0.82rem; color:var(--ink-muted); margin-bottom:0.5rem;">λ (birim başına beklenen): <strong id="lambda-val" style="color:var(--amber);">0.06</strong></p>
+      <input type="range" id="lambda-slider" min="0.01" max="5" step="0.01" value="0.06"/>
+      <p style="font-size:0.82rem; color:var(--ink-muted); margin-bottom:0.5rem; margin-top:0.5rem;">k (gözlemlenen): <strong id="k-val" style="color:var(--amber);">9</strong></p>
+      <input type="range" id="k-slider" min="0" max="20" step="1" value="9"/>
+      <div class="widget-row">
+        <div class="widget-stat"><div class="val" id="poisson-prob">—</div><div class="lbl">P(X = k)</div></div>
+        <div class="widget-stat" style="text-align:left; flex:2;"><div style="font-size:0.8rem; color:var(--ink-muted); margin-top:0.5rem;" id="poisson-yorum"></div></div>
+      </div>
+      <canvas id="poisson-canvas" style="width:100%;max-height:160px;margin-top:10px;border-radius:2px;"></canvas>
+      <div class="widget-hint">Tarihsel λ = 0.058 · 9 ölüm için olasılık: 10⁻¹²'den az</div>
+    </div>
+
+    <!-- WİDGET 3: CV -->
+    <div class="section-head">Yapay Düzenlilik — CV Testi</div>
+    <p>Gün aralıkları: 2, 2, 3, 2, 3, 2, 2, 3. Gerçek Poisson sürecinde <strong>CV ≈ 1.0</strong> beklenir. Gözlem: <strong>0.20</strong>.</p>
+    <div class="widget-panel">
+      <div class="widget-title">◈ CV Dedektifi</div>
+      <p style="font-size:0.82rem; color:var(--ink-muted); margin-bottom:0.5rem;">Aralıkları girin (virgülle):</p>
+      <input type="text" class="w-input" id="cv-input" value="2,2,3,2,3,2,2,3"/>
+      <div class="widget-row" style="align-items:center;">
+        <div class="widget-stat"><div class="val" id="cv-sonuc">—</div><div class="lbl">CV</div></div>
+        <div class="widget-stat">
+          <div style="font-size:0.75rem; margin-bottom:5px;"><span class="w-badge gercek">CV≈1.0 Gerçek</span></div>
+          <div style="font-size:0.75rem; margin-bottom:5px;"><span class="w-badge yapay">CV&lt;0.5 Yapay</span></div>
+        </div>
+        <div class="widget-stat"><div id="cv-karar" style="font-family:'Cormorant Garamond',serif; font-size:0.78rem; padding:8px; border-radius:2px; text-align:center;"></div></div>
+      </div>
+      <canvas id="cv-canvas" style="width:100%;max-height:100px;margin-top:8px;border-radius:2px;"></canvas>
+      <div class="widget-hint">Romanın verisi: CV = 0.20 → veri düzenlenmiş</div>
+    </div>
+
+    <div class="document-block">
+      <div class="doc-title">Koipak'ın Defterinden — 2 Aralık 1903</div>
+      <p style="font-style:italic; color:#9a8e75;">"CV=0.20. Beklenen: 1.0. Bu veri üretilmiş. Birileri ölümlerin tarihlerini ayarlamış."</p>
+    </div>
+
+    <div class="chapter-end">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem;">Bu Bölümde</h4>
+        <ul class="concepts-list" style="justify-content:center;"><li>Poisson Dağılımı</li><li>Lambda (λ)</li><li>CV</li><li>Üstel Dağılım</li></ul>
+      </div>
+      <div class="chapter-nav"><a href="#bolum2">← I. Bölüm</a><a href="#bolum3">III. Bölüm →</a></div>
+    </div>
   </div>
-</div>
 </section>
 
-<!-- ═══════════════ VI. BÖLÜM ═══════════════ -->
-<section id="bolum6">
-<div class="bolum">
-  <div class="sep">✦ ✦ ✦</div>
-  <div class="bolum-header">
-    <div class="bolum-no">VI. Bölüm</div>
-    <div class="bolum-baslik">Çok Mükemmel Rastlantı</div>
+<!-- III. BÖLÜM -->
+<section class="panel" id="bolum3" data-chapter="3">
+  <div class="panel-inner panel-title">
+    <p class="chapter-label">III. Bölüm</p>
+    <p class="chapter-name">Her Kişi Bir Deney</p>
+    <div class="amber-line"></div>
   </div>
-
-  <img src="img/6_1.jpg" class="illus" alt="Gareth ile karşılaşma"/>
-
-  <p>Southgate Technical Services. Owen Gareth — Merthyr Tydfil, Güney Galler. Koipak Gallice konuştu; kapı açıldı. Gareth üç su hattına özel bir kimyasal karışımı, basınç düşüşü sırasında vermiş. <em>"Zararsız, sadece test"</em> demişlerdi. Emirler mektupla, imzasız geliyordu.</p>
-
-  <p>Koipak duyduğunda dondu. <em>İmzasız mektuplar.</em> Calloway davası. Aynı örüntü, farklı bir dava.</p>
-
-  <div class="kavram-baslik">Yapay Rastgeleliği Tespit Etmek</div>
-  <p>Gerçek Poisson sürecinde aralıklar üstel dağılır, CV ≈ 1.0. Romanın verisi: CV = 0.20. Fark beş kat. <strong>Bu veri tasarlanmış.</strong></p>
-
-  <table class="veri-tablo">
-    <tr><th>Özellik</th><th>Gerçek Rastgele</th><th>Bu Veri</th></tr>
-    <tr><td>CV beklentisi</td><td>≈ 1.0</td><td class="vurgu">0.20</td></tr>
-    <tr><td>Aralık dağılımı</td><td>Üstel (değişken)</td><td class="vurgu">Neredeyse sabit</td></tr>
-    <tr><td>Örüntü</td><td>Rastlantısal</td><td class="vurgu">2-2-3 ritmi</td></tr>
-  </table>
-
-  <div class="kavram-kutu">
-    <h4>Bu Bölümde</h4>
-    <ul><li>Yapay Rastgelelik Testi</li><li>CV ile Poisson Kontrol</li><li>Veri Manipülasyonu</li></ul>
-  </div>
-</div>
 </section>
 
-<!-- ═══════════════ VII. BÖLÜM ═══════════════ -->
-<section id="bolum7">
-<div class="bolum">
-  <div class="sep">✦ ✦ ✦</div>
-  <div class="bolum-header">
-    <div class="bolum-no">VII. Bölüm</div>
-    <div class="bolum-baslik">Rastlantı Değil, Sistem</div>
+<section class="panel" data-chapter="3">
+  <div class="panel-inner">
+    <div style="margin:1.5rem 0;"><img src="img/3_1.jpg" alt="Albert sokaklarda" style="width:100%;display:block;border-radius:2px;box-shadow:0 8px 30px rgba(0,0,0,0.5);"></div>
   </div>
-
-  <img src="img/7_1.jpg" class="illus" alt="Thames gecesi"/>
-
-  <p>Harrington'ın gözaltına alınması akşama kadar tamamlandı. Ama Koipak Scotland Yard'ın dışında bekliyordu. Albert yanındaydı.</p>
-
-  <p><em>"Bitti mi?"</em> dedi Albert.</p>
-  <p><em>"Harrington için bitti. Ama..."</em> Koipak cebinden küçük bir not çıkardı. <em>"Meridian Pipe Works — Thames Life davasının arka planında da geçiyordu bu isim. İki farklı şirkette, iki farklı davada. Aynı taşeron."</em></p>
-
-  <div class="defter">
-    <div class="defter-baslik">Koipak'ın Defterinden — 5 Aralık 1903</div>
-    "Prior: P(tek organizatör) ≈ 0.05. Kanıt: aynı taşeron, iki davada. Posterior: ~0.28. Düşük hâlâ. Ama sıfıra çok daha uzak. Harrington konuşacak. Ondan Gölge'ye giden bir ip bulabilirim."
-  </div>
-
-  <div class="kavram-kutu">
-    <h4>Bu Kitapta Geçen Tüm Kavramlar</h4>
-    <ul>
-      <li>Rastgele Değişken</li>
-      <li>Poisson Dağılımı</li>
-      <li>Lambda (λ)</li>
-      <li>Değişim Katsayısı (CV)</li>
-      <li>Üstel Dağılım</li>
-      <li>Binom Dağılımı</li>
-      <li>MLE Tahmini</li>
-      <li>Büyük Sayılar Yasası</li>
-      <li>Merkezi Limit Teoremi</li>
-      <li>Standart Hata</li>
-      <li>Yapay Rastgelelik</li>
-      <li>Bayes Güncellemesi</li>
-    </ul>
-  </div>
-</div>
 </section>
 
-<!-- FİNAL -->
-<div id="final">
-  <div class="final-sembol">✦ ✦ ✦</div>
-  <div class="final-baslik">İkinci Macera — Tamamlandı</div>
-  <p style="color:var(--text-dim); font-style:italic; font-size:0.9rem;">
-    "Rakamlar yalan söylemez. Ama birisi rakamlara yalan söyletiyor."<br>
-    — Harold Fenwick
-  </p>
-</div>
+<section class="panel" data-chapter="3">
+  <div class="panel-inner narrative">
+    <p>Albert, Bermondsey'e Koipak'tan önce varmıştı. Dört kurbanın hepsi aynı su hattından: 7B. Stepney 4C, Poplar 2A.</p>
+
+    <div class="section-head">Binom Dağılımı</div>
+    <div class="formula-block">P(X = k) = C(n,k) · p<sup>k</sup> · (1−p)<sup>n−k</sup></div>
+
+    <!-- WİDGET 4: Binom -->
+    <div class="widget-panel">
+      <div class="widget-title">◈ Binom Hesaplayıcı</div>
+      <p style="font-size:0.82rem; color:var(--ink-muted); margin-bottom:0.3rem;">n (abone): <strong id="bn-val" style="color:var(--amber);">5441</strong></p>
+      <input type="range" id="binom-n" min="100" max="10000" step="100" value="5441"/>
+      <p style="font-size:0.82rem; color:var(--ink-muted); margin-bottom:0.3rem;">p (olasılık): <strong id="bp-val" style="color:var(--amber);">0.0017</strong></p>
+      <input type="range" id="binom-p" min="0.0001" max="0.05" step="0.0001" value="0.0017"/>
+      <p style="font-size:0.82rem; color:var(--ink-muted); margin-bottom:0.3rem;">k (ölüm): <strong id="bk-val" style="color:var(--amber);">9</strong></p>
+      <input type="range" id="binom-k" min="0" max="30" step="1" value="9"/>
+      <div class="widget-row">
+        <div class="widget-stat"><div class="val" id="binom-beklenti">—</div><div class="lbl">Beklenen (n·p)</div></div>
+        <div class="widget-stat"><div class="val" id="binom-prob" style="font-size:1.1rem;">—</div><div class="lbl">P(X=k)</div></div>
+      </div>
+      <canvas id="binom-canvas" style="width:100%;max-height:140px;margin-top:10px;border-radius:2px;"></canvas>
+      <div class="widget-hint">MLE: p̂ = 9/5441 ≈ 0.0017 · Kontamine su için çok düşük</div>
+    </div>
+
+    <div class="chapter-end">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem;">Bu Bölümde</h4>
+        <ul class="concepts-list" style="justify-content:center;"><li>Binom Dağılımı</li><li>MLE</li><li>Model Tutarsızlığı</li></ul>
+      </div>
+      <div class="chapter-nav"><a href="#bolum2">← II. Bölüm</a><a href="#bolum4">IV. Bölüm →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- IV. BÖLÜM -->
+<section class="panel" id="bolum4" data-chapter="4">
+  <div class="panel-inner panel-title">
+    <p class="chapter-label">IV. Bölüm</p>
+    <p class="chapter-name">Az Sayının Yalan Söylemesi</p>
+    <div class="amber-line"></div>
+  </div>
+</section>
+
+<section class="panel" data-chapter="4">
+  <div class="panel-inner">
+    <div style="margin:1.5rem 0;"><img src="img/4_1.jpg" alt="Üç dosya" style="width:100%;display:block;border-radius:2px;box-shadow:0 8px 30px rgba(0,0,0,0.5);"></div>
+  </div>
+</section>
+
+<section class="panel" data-chapter="4">
+  <div class="panel-inner narrative">
+    <p>Poplar: iki ölüm. Bu sayı yeterliydi bir oran hesaplamak için — ama bu oranın güvenilirliği neydi?</p>
+
+    <div class="section-head">Büyük Sayılar Yasası</div>
+    <p><strong>n büyüdükçe</strong>, örneklem ortalaması gerçek değere yaklaşır. n küçükse, büyük sapmalar kaçınılmazdır.</p>
+
+    <!-- WİDGET 5: BSY Animasyonu -->
+    <div class="widget-panel">
+      <div class="widget-title">◈ Büyük Sayılar — Mahalle Mahalle Ekle</div>
+      <div class="bsl-bar-wrap" id="bsl-bars"></div>
+      <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--ink-muted); margin-bottom:10px; font-family:'Cormorant Garamond',serif; letter-spacing:0.1em;">
+        <span>Bermondsey</span><span>Stepney</span><span>Poplar</span><span style="color:var(--amber);">Birleşik</span>
+      </div>
+      <div class="widget-row">
+        <div class="widget-stat"><div class="val" id="bsl-oran">—</div><div class="lbl">Anlık Oran</div></div>
+        <div class="widget-stat"><div class="val" id="bsl-n">0</div><div class="lbl">Toplam n</div></div>
+      </div>
+      <button class="w-btn" onclick="bslEkle()">+ Mahalle Ekle</button>
+      <button class="w-btn danger" onclick="bslSifirla()" style="margin-left:8px;">Sıfırla</button>
+      <div class="widget-hint">Mahalleler birleştikçe oran 1/600'e yaklaşır</div>
+    </div>
+
+    <div class="chapter-end">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem;">Bu Bölümde</h4>
+        <ul class="concepts-list" style="justify-content:center;"><li>Büyük Sayılar Yasası</li><li>Örneklem Büyüklüğü</li></ul>
+      </div>
+      <div class="chapter-nav"><a href="#bolum3">← III. Bölüm</a><a href="#bolum5">V. Bölüm →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- V. BÖLÜM -->
+<section class="panel" id="bolum5" data-chapter="5">
+  <div class="panel-inner panel-title">
+    <p class="chapter-label">V. Bölüm</p>
+    <p class="chapter-name">Küçüklerden Büyük Resim</p>
+    <div class="amber-line"></div>
+  </div>
+</section>
+
+<section class="panel" data-chapter="5">
+  <div class="panel-inner">
+    <div style="margin:1.5rem 0;"><img src="img/5_1.jpg" alt="Arşiv" style="width:100%;display:block;border-radius:2px;box-shadow:0 8px 30px rgba(0,0,0,0.5);"></div>
+  </div>
+</section>
+
+<section class="panel" data-chapter="5">
+  <div class="panel-inner narrative">
+    <p>Thames South & East Water arşivinde üç hatta Kasım basınç düşüşleri vardı. Bakım günlükleri bu tarihleri içermiyordu. Ya hata, ya silme.</p>
+
+    <div class="section-head">Merkezi Limit Teoremi</div>
+    <div class="formula-block">SE = √(p̂ · (1 − p̂) / n)</div>
+
+    <!-- WİDGET 6: CLT -->
+    <div class="widget-panel">
+      <div class="widget-title">◈ CLT — Örneklem Büyüdükçe</div>
+      <p style="font-size:0.82rem; color:var(--ink-muted); margin-bottom:0.3rem;">n: <strong id="clt-n-val" style="color:var(--amber);">9</strong></p>
+      <input type="range" id="clt-n" min="1" max="200" step="1" value="9"/>
+      <div class="widget-row">
+        <div class="widget-stat"><div class="val" id="clt-se">—</div><div class="lbl">Standart Hata</div></div>
+        <div class="widget-stat"><div class="val" id="clt-ci" style="font-size:0.9rem;">—</div><div class="lbl">%95 GA</div></div>
+      </div>
+      <canvas id="clt-canvas" style="width:100%;max-height:150px;margin-top:10px;border-radius:2px;"></canvas>
+      <div class="widget-hint">n büyüdükçe normal eğri daralır, tahmin güvenilir hale gelir</div>
+    </div>
+
+    <div class="chapter-end">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem;">Bu Bölümde</h4>
+        <ul class="concepts-list" style="justify-content:center;"><li>Merkezi Limit Teoremi</li><li>Standart Hata</li><li>Güven Aralığı</li></ul>
+      </div>
+      <div class="chapter-nav"><a href="#bolum4">← IV. Bölüm</a><a href="#bolum6">VI. Bölüm →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- VI. BÖLÜM -->
+<section class="panel" id="bolum6" data-chapter="6">
+  <div class="panel-inner panel-title">
+    <p class="chapter-label">VI. Bölüm</p>
+    <p class="chapter-name">Çok Mükemmel Rastlantı</p>
+    <div class="amber-line"></div>
+  </div>
+</section>
+
+<section class="panel" data-chapter="6">
+  <div class="panel-inner">
+    <div style="margin:1.5rem 0;"><img src="img/6_1.jpg" alt="Gareth" style="width:100%;display:block;border-radius:2px;box-shadow:0 8px 30px rgba(0,0,0,0.5);"></div>
+  </div>
+</section>
+
+<section class="panel" data-chapter="6">
+  <div class="panel-inner narrative">
+    <div class="speech">
+      <div class="speech-avatar gareth">OG</div>
+      <div class="speech-bubble">
+        <div class="speaker-name">Owen Gareth</div>
+        "Zararsız, sadece test demişlerdi. Emirler mektupla geliyordu. İmzasız."
+      </div>
+    </div>
+    <p>Koipak duyduğunda dondu. <em>İmzasız mektuplar.</em> Calloway davası. Aynı örüntü. Ve taşeron adı: Meridian Pipe Works — Thames Life davasında da geçmişti.</p>
+
+    <div class="section-head">Yapay Rastgelelik</div>
+    <div class="data-table-container">
+      <table class="data-table">
+        <tr><th>Özellik</th><th>Gerçek Rastgele</th><th>Bu Veri</th></tr>
+        <tr><td>CV beklentisi</td><td>≈ 1.0</td><td style="color:var(--red);">0.20</td></tr>
+        <tr><td>Aralık dağılımı</td><td>Üstel</td><td style="color:var(--red);">Neredeyse sabit</td></tr>
+        <tr><td>Örüntü</td><td>Rastlantısal</td><td style="color:var(--red);">2-2-3 ritmi</td></tr>
+      </table>
+    </div>
+
+    <div class="chapter-end">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem;">Bu Bölümde</h4>
+        <ul class="concepts-list" style="justify-content:center;"><li>Yapay Rastgelelik</li><li>CV Kontrol</li><li>Veri Manipülasyonu</li></ul>
+      </div>
+      <div class="chapter-nav"><a href="#bolum5">← V. Bölüm</a><a href="#bolum7">VII. Bölüm →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- VII. BÖLÜM -->
+<section class="panel" id="bolum7" data-chapter="7">
+  <div class="panel-inner panel-title">
+    <p class="chapter-label">VII. Bölüm</p>
+    <p class="chapter-name">Rastlantı Değil, Sistem</p>
+    <div class="amber-line"></div>
+  </div>
+</section>
+
+<section class="panel" data-chapter="7">
+  <div class="panel-inner">
+    <div style="margin:1.5rem 0;"><img src="img/7_1.jpg" alt="Thames gecesi" style="width:100%;display:block;border-radius:2px;box-shadow:0 8px 30px rgba(0,0,0,0.5);"></div>
+  </div>
+</section>
+
+<section class="panel" data-chapter="7">
+  <div class="panel-inner narrative">
+    <p>Harrington gözaltındaydı. Su hattı kapatıldı. Ama Koipak Scotland Yard'ın dışında bekliyordu, Albert yanında.</p>
+    <div class="speech">
+      <div class="speech-avatar albert">AL</div>
+      <div class="speech-bubble"><div class="speaker-name">Albert</div>"Meridian Pipe Works. İki davada."</div>
+    </div>
+    <div class="speech right">
+      <div class="speech-avatar koipak">GK</div>
+      <div class="speech-bubble"><div class="speaker-name">Koipak</div>"Biliyorum. Ama henüz veri yok. Şüphe var."</div>
+    </div>
+
+    <div class="document-block">
+      <div class="doc-title">Koipak'ın Defterinden — 5 Aralık 1903</div>
+      <p style="font-style:italic; color:#9a8e75;">"Prior: P(tek organizatör) ≈ 0.05. Kanıt: aynı taşeron, iki davada. Posterior: ~0.28. Düşük hâlâ. Ama sıfıra çok daha uzak."</p>
+    </div>
+
+    <div class="chapter-end">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="document-block" style="text-align:center; border-left-color:var(--amber);">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:0.6rem;">Bu Kitapta Geçen Kavramlar</h4>
+        <ul class="concepts-list" style="justify-content:center;">
+          <li>Rastgele Değişken</li><li>Poisson</li><li>Lambda</li><li>CV</li>
+          <li>Üstel Dağılım</li><li>Binom</li><li>MLE</li><li>Büyük Sayılar</li>
+          <li>CLT</li><li>Standart Hata</li><li>Yapay Rastgelelik</li><li>Bayes</li>
+        </ul>
+      </div>
+      <div class="scene-break">✦ ✦ ✦</div>
+      <div class="chapter-nav">
+        <a href="#bolum6">← VI. Bölüm</a>
+        <a href="../../index.html">İkinci Macera — Tamamlandı.</a>
+      </div>
+    </div>
+  </div>
+</section>
 
 <script>
-// ── NAV ACTIVE ──
-const bolumler = document.querySelectorAll('section[id^="bolum"]');
-const navLinks = document.querySelectorAll('.nav-link');
+// Panel reveal + chapter nav
+const panels = document.querySelectorAll('.panel');
+const chNavBtns = document.querySelectorAll('.ch-nav-btn');
+const topNav = document.getElementById('topNav');
+const chLabel = document.getElementById('currentChLabel');
+const chNames = {1:'I. Bölüm',2:'II. Bölüm',3:'III. Bölüm',4:'IV. Bölüm',5:'V. Bölüm',6:'VI. Bölüm',7:'VII. Bölüm'};
+
+let scrolled = false;
+window.addEventListener('scroll', () => { if(!scrolled){ scrolled=true; topNav.classList.add('visible'); } });
+
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if(e.isIntersecting){
-      navLinks.forEach(l => l.classList.remove('active'));
-      const link = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
-      if(link) link.classList.add('active');
+      e.target.classList.add('visible');
+      const ch = parseInt(e.target.dataset.chapter);
+      if(ch > 0){
+        chNavBtns.forEach(b => { b.classList.toggle('active', parseInt(b.dataset.ch)===ch); });
+        if(chLabel) chLabel.textContent = chNames[ch]||'';
+      }
     }
   });
-}, {threshold:0.3});
-bolumler.forEach(s => obs.observe(s));
+}, {threshold:0.2});
+panels.forEach(p => obs.observe(p));
 
-// ── HARITA ──
+chNavBtns.forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    const ch = btn.dataset.ch;
+    const target = document.querySelector(`[id="bolum${ch}"]`) || document.querySelector(`[data-chapter="${ch}"]`);
+    if(target) target.scrollIntoView({behavior:'smooth'});
+  });
+});
+
+// HARITA
 const haritaData = {
-  bermondsey: {baslik:'Bermondsey', olum:4, hat:'Su hattı: 7B', tarih:'2–16 Kasım', abone:'Abone: 2.347'},
-  stepney:    {baslik:'Stepney',    olum:3, hat:'Su hattı: 4C', tarih:'6–18 Kasım', abone:'Abone: 1.891'},
-  poplar:     {baslik:'Poplar',     olum:2, hat:'Su hattı: 2A', tarih:'14–21 Kasım',abone:'Abone: 1.203'},
+  bermondsey:{baslik:'Bermondsey',olum:4,hat:'Su hattı: 7B',tarih:'2–16 Kasım',abone:'Abone: 2.347'},
+  stepney:{baslik:'Stepney',olum:3,hat:'Su hattı: 4C',tarih:'6–18 Kasım',abone:'Abone: 1.891'},
+  poplar:{baslik:'Poplar',olum:2,hat:'Su hattı: 2A',tarih:'14–21 Kasım',abone:'Abone: 1.203'},
 };
-let aktifHarita = null;
+let aktifHarita=null;
 function haritaAc(id){
-  const panel = document.getElementById('harita-panel');
-  const d = haritaData[id];
-  if(aktifHarita === id){ panel.classList.remove('acik'); aktifHarita=null; return; }
-  document.getElementById('harita-baslik').textContent = d.baslik;
-  document.getElementById('harita-olum').textContent = d.olum;
-  document.getElementById('harita-hat').textContent = d.hat;
-  document.getElementById('harita-tarih').textContent = d.tarih;
-  document.getElementById('harita-abone').textContent = d.abone;
-  panel.classList.add('acik');
-  aktifHarita = id;
+  const panel=document.getElementById('harita-panel'), d=haritaData[id];
+  if(aktifHarita===id){ panel.classList.remove('acik'); aktifHarita=null; return; }
+  document.getElementById('harita-baslik').textContent=d.baslik;
+  document.getElementById('harita-olum').textContent=d.olum;
+  document.getElementById('harita-hat').textContent=d.hat;
+  document.getElementById('harita-tarih').textContent=d.tarih;
+  document.getElementById('harita-abone').textContent=d.abone;
+  panel.classList.add('acik'); aktifHarita=id;
 }
 
-// ── POISSON ──
-function poisson(k, lam){
-  if(lam <= 0) return 0;
-  let log = -lam + k * Math.log(lam);
-  for(let i=1;i<=k;i++) log -= Math.log(i);
-  return Math.exp(log);
-}
-function poissoncdf(k, lam){
-  let s=0; for(let i=0;i<=k;i++) s+=poisson(i,lam); return s;
-}
-function fmtSci(x){
-  if(x === 0) return '0';
-  if(x >= 0.001) return x.toFixed(6);
-  const e = Math.floor(Math.log10(x));
-  const m = (x / Math.pow(10,e)).toFixed(2);
-  return `${m} × 10<sup>${e}</sup>`;
-}
+// POISSON
+function poisson(k,lam){ if(lam<=0) return 0; let log=-lam+k*Math.log(lam); for(let i=1;i<=k;i++) log-=Math.log(i); return Math.exp(log); }
 function drawPoisson(){
-  const lam = parseFloat(document.getElementById('lambda-slider').value);
-  const k   = parseInt(document.getElementById('k-slider').value);
-  document.getElementById('lambda-val').textContent = lam.toFixed(3);
-  document.getElementById('k-val').textContent = k;
-  const p = poisson(k, lam);
-  document.getElementById('poisson-prob').innerHTML = p < 1e-10 ? '≈ 0' : fmtSci(p);
-  const yorum = lam < 0.1 ? `λ=${lam.toFixed(3)}: tarihi normal. ${k} ölüm için olasılık astronomik derecede küçük.`
-               : lam > 3 ? `λ=${lam.toFixed(1)}: salgın senaryosu. ${k} ölüm makul.`
-               : `λ=${lam.toFixed(2)}: orta senaryo.`;
-  document.getElementById('poisson-yorum').textContent = yorum;
-
-  const cvs = document.getElementById('poisson-canvas');
-  const ctx = cvs.getContext('2d');
-  cvs.width = cvs.offsetWidth * window.devicePixelRatio || 600;
-  cvs.height = 160 * window.devicePixelRatio;
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  const W = cvs.offsetWidth, H = 160;
-  ctx.clearRect(0,0,W,H);
-  const maxK = Math.max(20, k+5);
-  const probs = Array.from({length:maxK+1},(_,i)=>poisson(i,lam));
-  const maxP = Math.max(...probs) || 1;
-  const bw = W/(maxK+1);
-  for(let i=0;i<=maxK;i++){
-    const bh = (probs[i]/maxP)*(H-30);
-    ctx.fillStyle = i===k ? 'rgba(200,134,10,0.85)' : 'rgba(212,168,67,0.25)';
-    ctx.fillRect(i*bw+2, H-30-bh, bw-4, bh);
-    if(i%5===0||i===k){
-      ctx.fillStyle='rgba(200,200,180,0.5)'; ctx.font='10px serif';
-      ctx.fillText(i, i*bw+bw/2-4, H-15);
-    }
-  }
+  const lam=parseFloat(document.getElementById('lambda-slider').value);
+  const k=parseInt(document.getElementById('k-slider').value);
+  document.getElementById('lambda-val').textContent=lam.toFixed(3);
+  document.getElementById('k-val').textContent=k;
+  const p=poisson(k,lam);
+  document.getElementById('poisson-prob').textContent=p<1e-10?'≈ 0':p.toFixed(6);
+  document.getElementById('poisson-yorum').textContent=lam<0.1?`λ=${lam.toFixed(3)}: tarihi normal, ${k} ölüm inanılmaz düşük olasılıklı`:lam>3?`λ=${lam.toFixed(1)}: salgın senaryosu, ${k} ölüm makul`:`λ=${lam.toFixed(2)}: orta senaryo`;
+  const cvs=document.getElementById('poisson-canvas');
+  const ctx=cvs.getContext('2d'); cvs.width=cvs.offsetWidth*devicePixelRatio||600; cvs.height=160*devicePixelRatio; ctx.scale(devicePixelRatio,devicePixelRatio);
+  const W=cvs.offsetWidth,H=160; ctx.clearRect(0,0,W,H);
+  const maxK=Math.max(20,k+5); const probs=Array.from({length:maxK+1},(_,i)=>poisson(i,lam)); const maxP=Math.max(...probs)||1; const bw=W/(maxK+1);
+  for(let i=0;i<=maxK;i++){ const bh=(probs[i]/maxP)*(H-28); ctx.fillStyle=i===k?'rgba(201,148,42,0.8)':'rgba(201,148,42,0.2)'; ctx.fillRect(i*bw+1,H-28-bh,bw-2,bh); if(i%5===0||i===k){ ctx.fillStyle='rgba(196,185,154,0.4)'; ctx.font='9px serif'; ctx.fillText(i,i*bw+bw/2-4,H-12); } }
 }
-document.getElementById('lambda-slider').oninput = drawPoisson;
-document.getElementById('k-slider').oninput = drawPoisson;
+document.getElementById('lambda-slider').oninput=drawPoisson;
+document.getElementById('k-slider').oninput=drawPoisson;
 drawPoisson();
 
-// ── CV ──
+// CV
 function calcCV(){
-  const raw = document.getElementById('cv-input').value;
-  const vals = raw.split(',').map(s=>parseFloat(s.trim())).filter(v=>!isNaN(v)&&v>0);
-  if(vals.length < 2){ document.getElementById('cv-sonuc').textContent='—'; return; }
-  const mean = vals.reduce((a,b)=>a+b,0)/vals.length;
-  const std = Math.sqrt(vals.reduce((a,b)=>a+(b-mean)**2,0)/(vals.length-1));
-  const cv = std/mean;
-  document.getElementById('cv-sonuc').textContent = cv.toFixed(3);
-  const karar = document.getElementById('cv-karar');
-  if(cv < 0.5){
-    karar.style.background='rgba(122,28,28,0.2)';
-    karar.style.border='1px solid #8a3a3a';
-    karar.style.color='#c87a7a';
-    karar.textContent='YAPAY — Veri düzenlenmiş';
-  } else if(cv < 0.8){
-    karar.style.background='rgba(212,168,67,0.1)';
-    karar.style.border='1px solid var(--gold-dim)';
-    karar.style.color='var(--gold)';
-    karar.textContent='BELİRSİZ';
-  } else {
-    karar.style.background='rgba(74,138,74,0.15)';
-    karar.style.border='1px solid #4a8a4a';
-    karar.style.color='#7ac87a';
-    karar.textContent='GERÇEK — Doğal dağılım';
-  }
-  // mini bar chart
-  const cvs = document.getElementById('cv-canvas');
-  const ctx = cvs.getContext('2d');
-  cvs.width = cvs.offsetWidth * window.devicePixelRatio||600;
-  cvs.height = 120 * window.devicePixelRatio;
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  const W=cvs.offsetWidth, H=120;
-  ctx.clearRect(0,0,W,H);
-  const maxV=Math.max(...vals);
-  const bw = W/vals.length;
-  vals.forEach((v,i)=>{
-    const bh=(v/maxV)*(H-24);
-    ctx.fillStyle='rgba(212,168,67,0.35)';
-    ctx.fillRect(i*bw+2,H-24-bh,bw-4,bh);
-  });
-  // mean line
-  ctx.strokeStyle='rgba(200,134,10,0.7)'; ctx.lineWidth=1.5; ctx.setLineDash([4,3]);
-  const my=H-24-(mean/maxV)*(H-24);
-  ctx.beginPath(); ctx.moveTo(0,my); ctx.lineTo(W,my); ctx.stroke();
-  ctx.setLineDash([]);
+  const vals=document.getElementById('cv-input').value.split(',').map(s=>parseFloat(s.trim())).filter(v=>!isNaN(v)&&v>0);
+  if(vals.length<2){ document.getElementById('cv-sonuc').textContent='—'; return; }
+  const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
+  const std=Math.sqrt(vals.reduce((a,b)=>a+(b-mean)**2,0)/(vals.length-1));
+  const cv=std/mean; document.getElementById('cv-sonuc').textContent=cv.toFixed(3);
+  const karar=document.getElementById('cv-karar');
+  if(cv<0.5){ karar.style.cssText='background:rgba(139,37,0,0.15);border:1px solid rgba(139,37,0,0.4);color:#c87a7a;'; karar.textContent='YAPAY'; }
+  else if(cv<0.8){ karar.style.cssText='background:rgba(201,148,42,0.08);border:1px solid var(--amber-dim);color:var(--amber);'; karar.textContent='BELİRSİZ'; }
+  else { karar.style.cssText='background:rgba(74,138,74,0.12);border:1px solid #4a8a4a;color:#7ac87a;'; karar.textContent='GERÇEK'; }
+  const cvs=document.getElementById('cv-canvas'); const ctx=cvs.getContext('2d');
+  cvs.width=cvs.offsetWidth*devicePixelRatio||600; cvs.height=100*devicePixelRatio; ctx.scale(devicePixelRatio,devicePixelRatio);
+  const W=cvs.offsetWidth,H=100; ctx.clearRect(0,0,W,H);
+  const maxV=Math.max(...vals); const bw=W/vals.length;
+  vals.forEach((v,i)=>{ const bh=(v/maxV)*(H-20); ctx.fillStyle='rgba(201,148,42,0.3)'; ctx.fillRect(i*bw+1,H-20-bh,bw-2,bh); });
+  ctx.strokeStyle='rgba(201,148,42,0.6)'; ctx.lineWidth=1.5; ctx.setLineDash([3,3]);
+  const my=H-20-(mean/maxV)*(H-20); ctx.beginPath(); ctx.moveTo(0,my); ctx.lineTo(W,my); ctx.stroke(); ctx.setLineDash([]);
 }
-document.getElementById('cv-input').oninput = calcCV;
-calcCV();
+document.getElementById('cv-input').oninput=calcCV; calcCV();
 
-// ── BİNOM ──
-function logBinom(n,k){
-  let r=0;
-  for(let i=0;i<k;i++) r+=Math.log(n-i)-Math.log(i+1);
-  return r;
-}
+// BİNOM
+function logBinom(n,k){ let r=0; for(let i=0;i<k;i++) r+=Math.log(n-i)-Math.log(i+1); return r; }
 function drawBinom(){
   const n=parseInt(document.getElementById('binom-n').value);
   const p=parseFloat(document.getElementById('binom-p').value);
   const k=parseInt(document.getElementById('binom-k').value);
-  document.getElementById('binom-n-val').textContent=n;
-  document.getElementById('binom-p-val').textContent=p.toFixed(4);
-  document.getElementById('binom-k-val').textContent=k;
+  document.getElementById('bn-val').textContent=n;
+  document.getElementById('bp-val').textContent=p.toFixed(4);
+  document.getElementById('bk-val').textContent=k;
   document.getElementById('binom-beklenti').textContent=(n*p).toFixed(1);
-  const logP = logBinom(n,k)+k*Math.log(p)+(n-k)*Math.log(1-p);
-  const prob = Math.exp(logP);
-  document.getElementById('binom-prob').textContent=prob<0.001?prob.toExponential(2):prob.toFixed(4);
+  const logP=logBinom(n,k)+k*Math.log(p)+(n-k)*Math.log(1-p);
+  const prob=Math.exp(logP); document.getElementById('binom-prob').textContent=prob<0.001?prob.toExponential(2):prob.toFixed(4);
+  const cvs=document.getElementById('binom-canvas'); const ctx=cvs.getContext('2d');
+  cvs.width=cvs.offsetWidth*devicePixelRatio||600; cvs.height=140*devicePixelRatio; ctx.scale(devicePixelRatio,devicePixelRatio);
+  const W=cvs.offsetWidth,H=140; ctx.clearRect(0,0,W,H);
+  const mu=n*p,sig=Math.sqrt(n*p*(1-p)),lo=Math.max(0,Math.floor(mu-4*sig)),hi=Math.ceil(mu+4*sig);
+  const probs2=[]; for(let i=lo;i<=hi;i++){ const lp=logBinom(n,i)+i*Math.log(p)+(n-i)*Math.log(1-p); probs2.push({i,p:Math.exp(lp)}); }
+  const maxP2=Math.max(...probs2.map(x=>x.p))||1; const bw2=W/(hi-lo+1);
+  probs2.forEach(({i,p:pv})=>{ const bh=(pv/maxP2)*(H-24); ctx.fillStyle=i===k?'rgba(201,148,42,0.8)':'rgba(201,148,42,0.2)'; ctx.fillRect((i-lo)*bw2+1,H-24-bh,bw2-2,bh); });
+}
+['binom-n','binom-p','binom-k'].forEach(id=>document.getElementById(id).oninput=drawBinom); drawBinom();
 
-  const cvs=document.getElementById('binom-canvas');
-  const ctx=cvs.getContext('2d');
-  cvs.width=cvs.offsetWidth*window.devicePixelRatio||600;
-  cvs.height=150*window.devicePixelRatio;
-  ctx.scale(window.devicePixelRatio,window.devicePixelRatio);
-  const W=cvs.offsetWidth,H=150;
-  ctx.clearRect(0,0,W,H);
-  const mu=n*p, sig=Math.sqrt(n*p*(1-p));
-  const lo=Math.max(0,Math.floor(mu-4*sig)), hi=Math.ceil(mu+4*sig);
-  const range=hi-lo+1;
-  const probs=[];
-  for(let i=lo;i<=hi;i++){
-    const lp=logBinom(n,i)+i*Math.log(p)+(n-i)*Math.log(1-p);
-    probs.push({i,p:Math.exp(lp)});
-  }
-  const maxP=Math.max(...probs.map(x=>x.p))||1;
-  const bw=W/range;
-  probs.forEach(({i,p:pv})=>{
-    const bh=(pv/maxP)*(H-24);
-    ctx.fillStyle=i===k?'rgba(200,134,10,0.85)':'rgba(212,168,67,0.22)';
-    ctx.fillRect((i-lo)*bw+1,H-24-bh,bw-2,bh);
-  });
+// BÜYÜK SAYILAR
+const bslData=[{olum:4,abone:2347},{olum:3,abone:1891},{olum:2,abone:1203}];
+let bslIdx=0,bslO=0,bslA=0;
+function bslBarlar(){
+  const wrap=document.getElementById('bsl-bars'); wrap.innerHTML='';
+  const all=[...bslData.map((d,i)=>({v:i<bslIdx?d.olum/d.abone:0,aktif:i<bslIdx})),{v:bslIdx>0?bslO/bslA:0,aktif:bslIdx>0,b:true}];
+  const maxV=Math.max(...all.map(x=>x.v),1/587)||1/587;
+  all.forEach(d=>{ const bar=document.createElement('div'); bar.className='bsl-bar'; bar.style.height=d.aktif?(d.v/maxV*74)+'px':'3px'; bar.style.background=d.b?'rgba(201,148,42,0.7)':d.aktif?'rgba(201,148,42,0.35)':'rgba(201,148,42,0.1)'; wrap.appendChild(bar); });
 }
-['binom-n','binom-p','binom-k'].forEach(id=>document.getElementById(id).oninput=drawBinom);
-drawBinom();
-
-// ── BÜYÜK SAYILAR ──
-const bslData=[
-  {olum:4, abone:2347, isim:'Bermondsey'},
-  {olum:3, abone:1891, isim:'Stepney'},
-  {olum:2, abone:1203, isim:'Poplar'},
-];
-let bslIndex=0, bslTotalO=0, bslTotalA=0;
-function bslBarlar(vals, maxV){
-  const wrap=document.getElementById('bsl-bars');
-  wrap.innerHTML='';
-  // her mahalle + birleşik
-  const all=[...bslData.map((d,i)=>({
-    v:i<bslIndex?d.olum/d.abone:0,
-    aktif:i<bslIndex
-  })),{v:bslIndex>0?bslTotalO/bslTotalA:0, aktif:bslIndex>0, birlesik:true}];
-  all.forEach(d=>{
-    const bar=document.createElement('div');
-    bar.className='bsl-bar';
-    bar.style.height=d.aktif?(d.v/maxV*90)+'px':'4px';
-    bar.style.background=d.birlesik?'rgba(200,134,10,0.7)':d.aktif?'rgba(212,168,67,0.4)':'rgba(212,168,67,0.1)';
-    wrap.appendChild(bar);
-  });
-}
-function bslEkle(){
-  if(bslIndex>=bslData.length) return;
-  const d=bslData[bslIndex];
-  bslTotalO+=d.olum; bslTotalA+=d.abone; bslIndex++;
-  const oran=bslTotalO/bslTotalA;
-  document.getElementById('bsl-oran').textContent='1/'+Math.round(1/oran);
-  document.getElementById('bsl-n').textContent=bslTotalA.toLocaleString();
-  const maxV=Math.max(...bslData.map(d2=>d2.olum/d2.abone), bslTotalO/bslTotalA);
-  bslBarlar(bslData, maxV);
-}
-function bslSifirla(){
-  bslIndex=0; bslTotalO=0; bslTotalA=0;
-  document.getElementById('bsl-oran').textContent='—';
-  document.getElementById('bsl-n').textContent='0';
-  bslBarlar(bslData,1/587);
-}
+function bslEkle(){ if(bslIdx>=bslData.length) return; const d=bslData[bslIdx]; bslO+=d.olum; bslA+=d.abone; bslIdx++; document.getElementById('bsl-oran').textContent='1/'+Math.round(1/(bslO/bslA)); document.getElementById('bsl-n').textContent=bslA.toLocaleString(); bslBarlar(); }
+function bslSifirla(){ bslIdx=0;bslO=0;bslA=0; document.getElementById('bsl-oran').textContent='—'; document.getElementById('bsl-n').textContent='0'; bslBarlar(); }
 bslSifirla();
 
-// ── CLT ──
+// CLT
 function drawCLT(){
-  const n=parseInt(document.getElementById('clt-n').value);
-  document.getElementById('clt-n-val').textContent=n;
-  const phat=0.00165;
-  const se=Math.sqrt(phat*(1-phat)/n);
+  const n=parseInt(document.getElementById('clt-n').value); document.getElementById('clt-n-val').textContent=n;
+  const phat=0.00165,se=Math.sqrt(phat*(1-phat)/n);
   document.getElementById('clt-se').textContent=se.toFixed(5);
-  const lo=(phat-1.96*se).toFixed(5), hi=(phat+1.96*se).toFixed(5);
-  document.getElementById('clt-ci').textContent=`[${lo}, ${hi}]`;
-
-  const cvs=document.getElementById('clt-canvas');
-  const ctx=cvs.getContext('2d');
-  cvs.width=cvs.offsetWidth*window.devicePixelRatio||600;
-  cvs.height=160*window.devicePixelRatio;
-  ctx.scale(window.devicePixelRatio,window.devicePixelRatio);
-  const W=cvs.offsetWidth,H=160;
-  ctx.clearRect(0,0,W,H);
-  // normal eğrisi çiz
-  const mu=phat, sig=se;
-  const lo2=mu-4*sig, hi2=mu+4*sig;
-  const steps=200;
-  const dx=(hi2-lo2)/steps;
-  function normalPDF(x){
-    return Math.exp(-0.5*((x-mu)/sig)**2)/(sig*Math.sqrt(2*Math.PI));
-  }
-  const yvals=Array.from({length:steps+1},(_,i)=>normalPDF(lo2+i*dx));
-  const maxY=Math.max(...yvals);
-  ctx.beginPath();
-  ctx.moveTo(0,H-24);
-  for(let i=0;i<=steps;i++){
-    const x=(i/steps)*W;
-    const y=H-24-(yvals[i]/maxY)*(H-40);
-    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-  }
-  ctx.lineTo(W,H-24); ctx.lineTo(0,H-24); ctx.closePath();
-  ctx.fillStyle='rgba(212,168,67,0.15)';
-  ctx.fill();
-  ctx.strokeStyle='rgba(212,168,67,0.6)'; ctx.lineWidth=2;
-  ctx.beginPath();
-  for(let i=0;i<=steps;i++){
-    const x=(i/steps)*W;
-    const y=H-24-(yvals[i]/maxY)*(H-40);
-    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-  }
-  ctx.stroke();
-  // merkez çizgisi
-  ctx.strokeStyle='rgba(200,134,10,0.8)'; ctx.lineWidth=1.5; ctx.setLineDash([4,3]);
-  ctx.beginPath(); ctx.moveTo(W/2,20); ctx.lineTo(W/2,H-24); ctx.stroke();
-  ctx.setLineDash([]);
+  document.getElementById('clt-ci').textContent=`[${(phat-1.96*se).toFixed(5)}, ${(phat+1.96*se).toFixed(5)}]`;
+  const cvs=document.getElementById('clt-canvas'); const ctx=cvs.getContext('2d');
+  cvs.width=cvs.offsetWidth*devicePixelRatio||600; cvs.height=150*devicePixelRatio; ctx.scale(devicePixelRatio,devicePixelRatio);
+  const W=cvs.offsetWidth,H=150; ctx.clearRect(0,0,W,H);
+  const mu=phat,sig=se,lo2=mu-4*sig,hi2=mu+4*sig,steps=200,dx=(hi2-lo2)/steps;
+  function npdf(x){ return Math.exp(-0.5*((x-mu)/sig)**2)/(sig*Math.sqrt(2*Math.PI)); }
+  const yvals=Array.from({length:steps+1},(_,i)=>npdf(lo2+i*dx)); const maxY=Math.max(...yvals);
+  ctx.beginPath(); ctx.moveTo(0,H-24);
+  for(let i=0;i<=steps;i++){ const x=i/steps*W,y=H-24-(yvals[i]/maxY)*(H-38); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); }
+  ctx.lineTo(W,H-24); ctx.lineTo(0,H-24); ctx.closePath(); ctx.fillStyle='rgba(201,148,42,0.12)'; ctx.fill();
+  ctx.strokeStyle='rgba(201,148,42,0.5)'; ctx.lineWidth=2; ctx.beginPath();
+  for(let i=0;i<=steps;i++){ const x=i/steps*W,y=H-24-(yvals[i]/maxY)*(H-38); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); } ctx.stroke();
+  ctx.strokeStyle='rgba(201,148,42,0.7)'; ctx.lineWidth=1.5; ctx.setLineDash([4,3]);
+  ctx.beginPath(); ctx.moveTo(W/2,20); ctx.lineTo(W/2,H-24); ctx.stroke(); ctx.setLineDash([]);
 }
-document.getElementById('clt-n').oninput=drawCLT;
-drawCLT();
+document.getElementById('clt-n').oninput=drawCLT; drawCLT();
 </script>
 </body>
 </html>
